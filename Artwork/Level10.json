@@ -1,0 +1,176 @@
+{
+    "LevelData": {
+        "ID": 10,
+        "Debug": false,
+        "GravityX": 0,
+        "GravityY": -400,
+        "Damping": 0.9,
+        
+        "StaticBackground":[
+            { "Name":"StaticBlueSky.png", "Anchor":{"X":0.5, "Y":0.5}, "X":0.5, "Y":0.5}
+        ],
+        
+        "Background":[
+            { "Name":"Cloud14.png", "X":336.591, "Y":567.51, "FlipY":true },
+            { "Name":"Cloud8.png",  "X":3420.55, "Y":201.538, "FlipY":true },
+            { "Name":"Cloud9.png",  "X":2620.907, "Y":906.047, "FlipY":true },
+            { "Name":"Cloud5.png",  "X":1074.054, "Y":1891.551, "FlipY":true },
+            { "Name":"Cloud12.png", "X":2013.526, "Y":2426.327, "FlipY":true },
+            { "Name":"Cloud15.png", "X":2896.937, "Y":2043.238, "FlipY":true },
+            { "Name":"Target.png",  "X":1972.197, "Y":1528.73,  "FlipY":true }
+        ],
+        
+        "Foreground":[
+            { "Name":"Cloud6.png",  "X":157.797,    "Y":133.5,      "FlipY":true },
+            { "Name":"Cloud3.png",  "X":1555.461,   "Y":510.487,    "FlipY":true },
+            { "Name":"Cloud4.png",  "X":2450.541,   "Y":278.576,    "FlipY":true },
+            { "Name":"Cloud7.png",  "X":3588.128,   "Y":938.698,    "FlipY":true },
+            { "Name":"Cloud1.png",  "X":2872.323,   "Y":1347.885,   "FlipY":true },
+            { "Name":"Cloud10.png", "X":1555.461,   "Y":1285.238,   "FlipY":true },
+            { "Name":"Cloud2.png",  "X":385.817,    "Y":1536.375,   "FlipY":true },
+            { "Name":"Cloud12.png", "X":1721.473,   "Y":1681.605,   "FlipY":true },
+            { "Name":"Cloud13.png", "X":240.439,    "Y":2387.327,   "FlipY":true }
+        ],
+        
+        "LoadResources":[
+            { "Type":"Spritesheet", "File":"CloudLibrary" }
+        ]
+    },
+    
+    "CCWRotatingPlank":{
+        "Class": "FieldObject",
+        "Type": "Plank",
+        "Angle": 90,
+        "Animations":[
+	        { "Type":"Rotation", 	"Frequency":1.5, "Direction":"CounterClockwise" }
+        ]
+    },
+
+    "CWRotatingPlank":{
+        "Class": "FieldObject",
+        "Type": "Plank",
+        "Angle": 90,
+        "Animations":[
+	        { "Type":"Rotation", 	"Frequency":1.5, "Direction":"Clockwise" }
+        ]
+    },
+
+    "FloatingPlank":{
+        "Class": "FieldObject",
+        "Type":  "Slide",
+        "Angle": 0,
+        "Animations":[
+            { "Type":"Rotation",    "Frequency":1, "Direction":"Clockwise" },
+            { "Type":"FollowPath",  "Path":"Downslope", "Duration":10, "Loop":true }
+        ]
+    },
+    
+    "FloatingDrum1":{
+        "Class": "FieldObject",
+        "Type":  "Trampoline2x",
+        "Angle": -45,
+        "Animations":[
+                      { "Type":"Rotation",    "Frequency":0.025, "Direction":"Clockwise" },
+                      { "Type":"FollowPath",  "Path":"BigLoop", "Duration":20, "Loop":true }
+                      ]
+    },
+
+    "FloatingPlank3":{
+        "Class": "FieldObject",
+        "Type":  "Slide",
+        "Angle": 0,
+        "Animations":[
+            { "Type":"Rotation",    "Frequency":2, "Direction":"CounterClockwise" },
+            { "Type":"FollowPath",  "Path":"Upslope", "Duration":10, "Loop":true }
+        ]
+    },
+
+    
+    "ProjectileSources":[
+        {
+            "position":{"x":-50, "y":2000},
+            "rotationAngle":0,
+            "rate":0.2,
+            "initialVelocity":{"x":800,"y":800},
+            "impulseCount":1,
+            "impulseTimer":20000,
+            "impulse":{"x":0, "y":0},
+            "objectType":"Boulder",
+            "maxCurrent":10
+        },
+        {
+            "position":{"x":4146, "y":1800},
+            "rotationAngle":0,
+            "rate":0.2,
+            "initialDelay":0.5,
+            "initialVelocity":{"x":-800,"y":700},
+            "impulseCount":1,
+            "impulseTimer":20000,
+            "impulse":{"x":0, "y":0},
+            "objectType":"Boulder",
+            "maxCurrent":50
+        },
+                         {
+                         "position":{"x":-50, "y":3072},
+                         "rotationAngle":0,
+                         "rate":0.33,
+                         "initialDelay":2.0,
+                         "initialVelocity":{"x":700,"y":350},
+                         "impulseCount":2,
+                         "impulseTimer":50,
+                         "impulse":{"x":20, "y":50},
+                         "objectType":"Bird2",
+                         "maxCurrent":10
+                         },
+                         {
+                         "position":{"x":4100, "y":2048},
+                         "rotationAngle":0,
+                         "rate":0.5,
+                         "initialDelay":1.0,
+                         "initialVelocity":{"x":-700,"y":350},
+                         "impulseCount":2,
+                         "impulseTimer":50,
+                         "impulse":{"x":-20, "y":50},
+                         "objectType":"Bird",
+                         "maxCurrent":10
+                         },
+                         {
+                         "position":{"x":2048, "y":0},
+                         "rotationAngle":0,
+                         "rate":0.2,
+                         "initialDelay":1,
+                         "initialVelocity":{"x":-400,"y":1500},
+                         "impulseCount":1,
+                         "impulseTimer":20000,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"Accelerator2X",
+                         "maxCurrent":1
+                         },
+                         {
+                         "position":{"x":2048, "y":0},
+                         "rotationAngle":0,
+                         "rate":0.2,
+                         "initialDelay":1,
+                         "initialVelocity":{"x":400,"y":1500},
+                         "impulseCount":1,
+                         "impulseTimer":20000,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"Accelerator2X",
+                         "maxCurrent":1
+                         },
+                         {
+                         "position":{"x":2048, "y":0},
+                         "rotationAngle":0,
+                         "rate":0.2,
+                         "initialDelay":1,
+                         "initialVelocity":{"x":0,"y":1700},
+                         "impulseCount":1,
+                         "impulseTimer":20000,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"AntiGravity",
+                         "maxCurrent":1
+                         }
+    ]
+
+    
+}

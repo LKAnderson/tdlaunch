@@ -1,0 +1,46 @@
+{
+    "LevelData": {
+        "ID": 5,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "Foreground":[
+                      { "Name":"OrangeStar.png", "X":3488, "Y":1462, "Z":10001, "Visible":false, "FlipY":true }
+                      ]
+    },
+
+    "FirstHillSensor": {
+        "Class":"Sensor",
+        "Type":"TogglePhysics",
+        "Name":"FirstHill",
+        "Indicator":"OrangeStar.png"
+    },
+        
+    "ProjectileSources":[
+         {
+             "position":{"x":4100, "y":1600},
+             "rotationAngle":0,
+             "rate":0.25,
+             "initialVelocity":{"x":-950,"y":350},
+             "impulseCount":4,
+             "impulseTimer":2,
+             "impulse":{"x":0, "y":280},
+             "objectType":"Bird",
+             "endAnimation":"poof"
+         },
+         {
+             "initialDelay":3,
+             "position":{"x":4100, "y":1700},
+             "rotationAngle":0,
+             "rate":0.15,
+             "initialVelocity":{"x":-1350,"y":360},
+             "impulseCount":3,
+             "impulseTimer":2,
+             "impulse":{"x":0, "y":285},
+             "objectType":"Bird",
+             "endAnimation":"poof"
+         }
+     ]
+
+}

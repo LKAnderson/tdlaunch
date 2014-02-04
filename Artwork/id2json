@@ -1,0 +1,20 @@
+#!/usr/bin/python
+
+import json
+import sys
+import subprocess
+import zipfile
+
+if len(sys.argv) < 2:
+    print >> sys.stderr, "idraw2json  idraw-file"
+    sys.exit(1)
+    
+    
+idraw = zipfile.ZipFile(sys.argv[1], "r")
+plist = idraw.open("data.xml")
+plutil = subprocess.Popen(["/usr/bin/plutil", "-convert", "json", "-o", "-", "-"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+data, err = plutil.communicate(input=plist.read())
+plist.close()
+idraw.close()
+
+print json.dumps(json.loads(data), indent=2)

@@ -1,0 +1,583 @@
+#!/usr/bin/python
+
+import xml.dom.minidom as xml
+import sys
+
+def plistArray(array):
+    return "<array>" + "".join([x.to_plist() for x in array]) + "</array>"
+
+
+class Wall:
+    def __init__(self):
+        self.obstacleType = "Wall"
+        self.friction = 0
+        self.elasticity = 0
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+        self.isSensor = False
+        self.properties = {}
+
+
+
+
+class LaunchPad:
+    def __init__(self):
+        self.left = 0
+        self.right = 0
+        self.height = 0
+        self.forceX = 0
+        self.forceY = 0
+
+    def fromWall(self, wall):
+        self.left = wall.x1
+        self.right = wall.x2
+        self.height = wall.y1
+        self.forceX = wall.properties["ForceX"] if wall.properties["ForceX"] else 0
+        self.forceY = wall.properties["ForceY"] if wall.properties["ForceY"] else 0
+        return self
+
+
+
+class Target:
+    def __init__(self):
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+
+    def fromWall(self, wall):
+        self.x1, self.y1, self.x2, self.y2 = wall.x1, wall.y1, wall.x2, wall.y2
+        return self
+
+
+
+
+class AvailableFieldObject:
+    def __init__(self):
+        self.defintion = None
+        self.count = 0
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Definition</key><string>%s</string>
+            <key>Count</key><integer>%s</integer>
+        </dict>
+        """ % (self.definition, str(self.count))
+
+
+class Gem:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.type = "Square"
+
+
+
+
+
+class FieldObjectObstacle:
+    def __init__(self):
+        self.obstacleType = "FieldObject"
+        self.fotype = None
+        self.x = 0
+        self.y = 0
+        self.angle = 0
+        self.animations = []
+
+
+
+class OscillationAnimation:
+    def __init__(self):
+        self.animationType = "Oscillation"
+        self.direction = "Horizontal"
+        self.frequency = 1
+        self.range = 0
+
+
+
+class RotationAnimation:
+    def __init__(self):
+        self.animationType = "Rotation"
+        self.frequency = 1
+        self.direction = "Clockwise"
+
+
+
+class SceneryImage:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.image = "None"
+
+
+
+
+class SpaceDefinition:
+    def __init__(self):
+        self.ID = 0
+        self.debug = False
+        self.width = 0
+        self.height = 0
+        self.gravityX = 0
+        self.gravityY = 0
+        self.damping = 0
+        self.ceiling = None 
+        self.rightWall = None
+        self.leftWall = None
+        self.ground = None
+        self.launchpad = None
+        self.targets = []
+        self.availableFieldObjects = []
+        self.gems = []
+        self.obstacles = []
+        self.backgroundImages = []
+        self.foregroundImages = []
+
+
+    def generate(self):
+        header = '// AUTO-GENERATED: LEVEL %d\n' % (self.ID,)
+        header += '#import "GameLevel.h"\n'
+        header += '@interface GameLevel_%d : GameLevel\n' % (self.ID,)
+        header += '@end\n'
+        
+        code = '// AUTO-GENERATED: LEVEL %d\n' % (self.ID,)
+        code += '#import "Level%d.h"\n' % (self.ID,)
+        code += '#import "Character.h"\n'
+        code += '#import "FieldObject.h"\n'
+        code += '#import "CollisionTypes.h"\n'
+        code += '#import "Screen.h"\n'
+        code += '#import "Animation.h"\n'
+        
+        code += '\n'
+        code += '#define POSSIBLY_UNUSED(A) if (A)\n'
+        code += '\n'
+        
+        code += '@implementation GameLevel_%d\n' % (self.ID,)
+        code += ''
+        code += '- (bool) debug { return %s; }\n\n' % (("YES" if self.debug else "NO"),)
+        code += '- (id) init {\n'
+        code += '  if ((self = [super init])){\n'
+        code += '    self.ID = %d;\n' % (self.ID,)
+        code += '    self.gameSize = CGSizeMake(SCRNX(%d),SCRNY( %d));\n' % (self.width, self.height)
+        
+        code += '    //AvailableFieldObjects\n'
+        code += '    AvailableFieldObject *afo;                         POSSIBLY_UNUSED(afo);\n'
+        for afo in self.availableFieldObjects:
+            code += '    afo = [[AvailableFieldObject alloc] init];\n'
+            code += '    afo.definition = [FieldObjectFactory fieldObjectForName:@"%s"];\n' % (afo.definition,)
+            code += '    afo.count = %d;\n' % (afo.count,)
+            code += '    [self.availableFieldObjects addObject:afo];\n'
+        
+        code += '    //Gems/Balloons\n'
+        for gem in self.gems:
+            gemType = 0
+            if gem.type in ("Diamond", "Yellow"):
+                gemType = 1
+            elif gem.type in ("Circle", "Blue"):
+                gemType = 2
+            code += '    [self.gems addObject:[GemDefinition gem:%d at:ccp(SCRNX(%f),SCRNY(%f))]];\n' % (gemType, gem.x, gem.y)
+        
+        code += '\n'
+        code += '  }\n'
+        code += '  return self;\n'
+        code += '}\n'
+        code += '\n'
+        
+        code += '- (ChipmunkSpace*) createSpace {\n'
+        code += '  ChipmunkSpace *space = [[ChipmunkSpace alloc] init];\n'
+        code += '  space.gravity = cpv(%f,%f);\n' % (self.gravityX, self.gravityY)
+        code += '  space.damping = %f;\n' % (self.damping,)
+        
+        code += '  ChipmunkShape *wall;                             POSSIBLY_UNUSED(wall);\n'
+        
+        for wall in (self.ceiling, self.ground, self.leftWall, self.rightWall):
+            if wall is None:
+                continue
+                
+            radius = 0
+            if "Radius" in wall.properties:
+                radius = float(wall.properties["Radius"])
+
+            code += '  wall = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:%f];\n' % (
+                        wall.x1, wall.y1, wall.x2, wall.y2, radius)
+            code += '  wall.elasticity = %f;\n' % (wall.elasticity,)
+            code += '  wall.friction = %f;\n' % (wall.friction,)
+            code += '  [space addStaticShape:wall];\n'
+
+        
+        code += '  //LaunchPad\n'
+        code += '  self.launchPad = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:0];\n' % (
+                        self.launchpad.left, self.launchpad.height, self.launchpad.right, self.launchpad.height)
+        code += '  self.launchPad.elasticity = 0;\n'
+        code += '  self.launchPad.friction = 0;\n'
+        code += '  self.launchForce = cpv(SCRNX(%f),SCRNY(%f));\n' % (float(self.launchpad.forceX), float(self.launchpad.forceY))
+        code += '  [space add:self.launchPad];\n'
+        code += '  self.launchSensor = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:0];\n' % (
+                        self.launchpad.left, self.launchpad.height, self.launchpad.right, self.launchpad.height)
+        code += '  self.launchSensor.sensor = YES;\n'
+        code += '  self.launchSensor.collisionType = CT_LaunchPad;\n'
+        code += '  [space add:self.launchSensor];\n'
+        
+        code += '  //Target(s)\n'
+        for target in self.targets:
+            code += '  self.target = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:2];\n' % (
+                    target.x1, target.y1, target.x2, target.y2)
+            code += '  self.target.elasticity = 0;\n'
+            code += '  self.target.friction = 2.5;\n'
+            code += '  self.target.collisionType = CT_Target;\n'
+            code += '  [space add:self.target];\n'
+        
+        code += '  //Obstacles\n'
+        
+        code += '  Sensor *sensor;                                  POSSIBLY_UNUSED(sensor);\n'
+        code += '  ActiveFieldObject *afo;                          POSSIBLY_UNUSED(afo);\n'
+        code += '  RotationAnimation *rotation;                     POSSIBLY_UNUSED(rotation);\n'
+        code += '  OscillationAnimation *oscillation;               POSSIBLY_UNUSED(oscillation);\n'
+        
+        for obstacle in self.obstacles:
+            obType = obstacle.obstacleType
+            radius = 0
+            if obType == "Wall":
+                if "Type" in obstacle.properties:
+                    obType = obstacle.properties["Type"]
+                if "Radius" in obstacle.properties:
+                    radius = float(obstacle.properties["Radius"])
+                    
+            if obType in ("Wall", "ApplyForce", "ToggleSprite", "TogglePhysics"):
+                code += '  wall = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:%f];\n' % (
+                            float(obstacle.x1), float(obstacle.y1), float(obstacle.x2), float(obstacle.y2), float(radius))
+                code += '  wall.elasticity = %f;\n' % (obstacle.elasticity,)
+                code += '  wall.friction = %f;\n' % (obstacle.friction,)
+                if "Name" in obstacle.properties:
+                    code += '  wall.collisionType = CT_NamedWall;\n'
+                    code += '  wall.data = @"%s";\n' % (obstacle.properties["Name"],)
+                if obstacle.isSensor:
+                    code += '  wall.sensor = YES;\n'
+                    code += '  wall.collisionType = CT_Sensor;\n'
+                    code += '  sensor = [[Sensor alloc] init];\n'
+                    if obType == "ApplyForce":
+                        code += '  sensor.type = ApplyForce_Sensor;\n'
+                        code += '  sensor.forceX = %f;\n' % (float(obstacle.properties["ForceX"]),)
+                        code += '  sensor.forceY = %f;\n' % (float(obstacle.properties["ForceY"]),)
+                    elif obType == "ToggleSprite":
+                        code += '  sensor.type = ToggleSprite_Sensor;\n'
+                        code += '  sensor.spriteNames = @[ @"%s" ];\n' % (obstacle.properties["Sprite"],)
+                        code += '  sensor.leftBegin = Toggle_%s;\n' % ((obstacle.properties["LeftBegin"] if "LeftBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.leftEnd = Toggle_%s;\n' % ((obstacle.properties["LeftEnd"] if "LeftEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.rightBegin = Toggle_%s;\n' % ((obstacle.properties["RightBegin"] if "RightBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.rightEnd = Toggle_%s;\n' % ((obstacle.properties["RightEnd"] if "RightEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.topBegin = Toggle_%s;\n' % ((obstacle.properties["TopBegin"] if "TopBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.topEnd = Toggle_%s;\n' % ((obstacle.properties["TopEnd"] if "TopEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.bottomBegin = Toggle_%s;\n' % ((obstacle.properties["BottomBegin"] if "BottomBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.bottomEnd = Toggle_%s;\n' % ((obstacle.properties["BottomEnd"] if "BottomEnd" in obstacle.properties else "Undefined"),)
+                    elif obType == "TogglePhysics":
+                        code += '  sensor.type = TogglePhysics_Sensor;\n'
+                        code += '  sensor.physicsName = @"%s";\n' % (obstacle.properties["Name"],)
+                        
+                    code += '  wall.data = sensor;\n'
+                    code += '  [self.sensors addObject:sensor];\n'
+
+                code += '  [space add:wall];\n'
+                    
+            elif obType in ("FieldObject"):
+                code += '  afo = [[ActiveFieldObject alloc] init];\n'
+                code += '  afo.definition = [FieldObjectFactory fieldObjectForName:@"%s"];\n' % (obstacle.fotype,)
+                code += '  afo.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (obstacle.x, obstacle.y)
+                code += '  afo.settings.rotation = %f;\n' % (obstacle.angle,)
+                for anim in obstacle.animations:
+                    if anim.animationType == "Rotation":
+                        code += '  rotation = [[RotationAnimation alloc] init];\n'
+                        code += '  rotation.frequency = %f;\n' % (anim.frequency,)
+                        code += '  rotation.isClockwise = %s;\n' % (("YES" if anim.direction == "Clockwise" else "NO"),)
+                        code += '  [afo addAnimation:rotation];\n'
+                    
+                    elif anim.animationType == "Oscillation":
+                        code += '  oscillation = [[OscillationAnimation alloc] init];\n'
+                        code += '  oscillation.homePosition = afo.position;\n'
+                        code += '  oscillation.frequency = %f;\n' % (anim.frequency,)
+                        code += '  oscillation.range = %f;\n' % (anim.range,)
+                        code += '  oscillation.isHorizontal = %s;\n' % (("YES" if anim.direction == "Horizontal" else "NO"),)
+                        code += '  [afo addAnimation:oscillation];\n'
+                        
+                code += '  [self.staticFieldObjects addObject:afo];\n'
+                        
+        code += '  //Gems\n'
+        code += '  for (GemDefinition* gem in self.gems){\n'
+        code += '    ChipmunkBody *body = [ChipmunkBody staticBody];\n'
+        code += '    body.pos = gem.position;\n'
+        code += '    ChipmunkShape *shape;\n'
+        code += '    int size = 40 - (5 * gem.type);\n'
+        code += '    shape = [ChipmunkPolyShape boxWithBody:body width:SCRNX(size) height:SCRNY(size)];\n'
+        code += '    shape.sensor = YES;\n'
+        code += '    shape.collisionType = CT_Gem;\n'
+        code += '    gem.shape = shape;\n'
+        code += '  }\n'
+        
+        code += '  //ActiveFieldObjects\n'
+        code += '  for (ActiveFieldObject *obj in self.gameData.activeFieldObjects){\n'
+        code += '    obj.body = [obj.definition createInSpace:space position:obj.position angle:obj.settings.rotation rogue:NO];\n'
+        code += '  }\n'
+        
+        code += '  return space;\n'
+        code += '} // end of createSpace()\n'
+        
+        code += '\n'
+        code += '- (void) addSceneryToNode:(CCNode*)node{\n'
+        code += '  CCSprite *image;                                       POSSIBLY_UNUSED(image);\n'
+        for img in self.backgroundImages:
+            code += '  image = [self loadImage:@"%s"];\n' % (img.image,)
+            code += '  image.anchorPoint = ccp(0,0);\n'
+            code += '  image.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (float(img.x), float(img.y))
+            code += '  [node addChild:image z:-999999];\n'
+        for img in self.foregroundImages:
+            code += '  image = [self loadImage:@"%s"];\n' % (img.image,)
+            code += '  image.anchorPoint = ccp(0,0);\n'
+            code += '  image.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (float(img.x), float(img.y))
+            code += '  [node addChild:image z:999];\n'
+            code += '  [self.namedSprites setObject:image forKey:@"%s"];\n' % (img.image,)
+        code += '}\n'
+        
+        code += "@end\n"
+        
+        return header, code
+        
+    
+
+
+def parseProperties(propString):
+    props = {}
+    for line in propString.split("\n"):
+        if line.strip() == "":
+            continue
+
+        name, value = [x.strip() for x in line.split(":", 1)]
+        if name[0] == "[":
+            if not name in props:
+                props[name] = []
+            props[name].append(value)
+        else:
+            props[name] = value
+    return props
+
+
+
+def pathToLineSegments( pathString, space=None, dx=0, dy=0 ):
+
+    mode = "rel"
+    points = []
+    closePath = False
+    for cmd in pathString.split(" "):
+        if cmd == "m":
+            mode = "rel"
+            points.append("break")
+        elif cmd == "M":
+            mode = "abs"
+            points.append("break")
+        elif cmd in ("z", "Z"):
+            closePath = True
+        else:
+            x,y = cmd.split(",")
+            points.append([float(x),float(y)])
+
+    if mode == "rel":
+        for i in range(1, len(points)):
+            if points[i] == "break":
+                continue
+            points[i][0] += points[i-1][0]
+            points[i][1] += points[i-1][1]
+
+
+    # Ok, now we know everything is in absolute coords, we can apply the space.height adjustment
+    for point in points:
+        if point == "break":
+            continue
+        point[0] = round(point[0] + dx)
+        if space is None:
+            point[1] = round(point[1] + dy)
+        else:
+            point[1] = round(space.height - (point[1] + dy))
+
+    if closePath:
+        points.append(points[0])
+
+    segments = []
+    for i in range(1, len(points)):
+        if points[i] == "break" or points[i-1] == "break":
+            continue
+        segments.append( (points[i-1], points[i]) )
+
+    return segments
+
+
+def getTranslation(transformString):
+    if transformString is None or transformString.strip() == "":
+        return (0,0)
+
+    dx, dy = [float(n) for n in transformString.replace("translate(", "").replace(")", "").split(",")]
+    return (dx,dy)
+    
+
+
+def processSpaceLayer(layer, space):
+    # find the translation transform and get the base coordinates we
+    # will need to adjust all coordinates to 0-based
+    layerdx, layerdy = getTranslation(layer.getAttribute("transform"))
+
+
+    # Rects are obstacles: Gems or FieldObjects
+    for element in layer.getElementsByTagName("rect"):
+        x, y, w, h = [float(element.getAttribute(n)) for n in ["x", "y", "width", "height"]]
+        centerX = round(x + (w/2) + layerdx)  
+        centerY = space.height - round((y + (h/2)) + layerdy)
+
+        props = parseProperties( element.getElementsByTagName("desc")[0].firstChild.data )
+        if props["Class"] == "Gem" or props["Class"] == "Balloon":
+            gem = Gem()
+            gem.x = centerX
+            gem.y = centerY
+            gem.type = props["Type"] if "Type" in props else "Red"
+            space.gems.append(gem)
+
+        elif props["Class"] == "FieldObject":
+            fo = FieldObjectObstacle()
+            fo.x = centerX
+            fo.y = centerY
+            fo.fotype = props["Type"] if "Type" in props else None
+            fo.angle = float(props["Angle"]) if "Angle" in props else 0
+            if "[Animation" in props:
+                for animStr in props["[Animation"]:
+                    animProps = animStr.split(",")
+                    if animProps[0] == "Oscillation":
+                        anim = OscillationAnimation()
+                        anim.direction = animProps[1].strip()
+                        anim.frequency = float(animProps[2].strip())
+                        anim.range = float(animProps[3].strip())
+                        fo.animations.append(anim)
+
+                    elif animProps[0] == "Rotation":
+                        anim = RotationAnimation()
+                        anim.frequency = float(animProps[1].strip())
+                        anim.direction = animProps[2].strip()
+                        fo.animations.append(anim)
+
+            space.obstacles.append(fo)
+
+    # Paths are walls
+    for element in layer.getElementsByTagName("path"):
+        dx, dy = 0,0
+        if element.hasAttribute("transform"):
+            dx,dy = getTranslation(element.getAttribute("transform"))
+
+        # convert lines to walls
+        walls = []
+        for line in pathToLineSegments( element.getAttribute("d"), space, layerdx + dx, layerdy + dy ):
+            wall = Wall()
+            wall.x1, wall.y1 = line[0][0], line[0][1]
+            wall.x2, wall.y2 = line[1][0], line[1][1]
+            props = parseProperties(element.getElementsByTagName("desc")[0].firstChild.data)
+            wall.friction = float(props["Friction"]) if "Friction" in props else 0
+            wall.elasticiy = float(props["Elasticity"]) if "Elasticity" in props else 0
+            wall.properties = props
+            if "Class" in props and props["Class"] == "Sensor":
+                wall.isSensor = True
+                if "Left" in props:
+                    props["LeftEnd"] = props["Left"]
+                if "Right" in props:
+                    props["RightEnd"] = props["Right"]
+                if "Top" in props:
+                    props["TopEnd"] = props["Top"]
+                if "Bottom" in props:
+                    props["BottomEnd"] = props["Bottom"]
+
+            walls.append(wall)
+
+        ID = element.getAttribute("id")
+        if ID == "Left": 
+            space.leftWall = walls[0]
+        elif ID == "Right": 
+            space.rightWall = walls[0]
+        elif ID == "Ceiling":
+            space.ceiling = walls[0]
+        elif ID == "Ground":
+            space.ground = walls[0]
+        elif ID == "LaunchPad":
+            space.launchpad = LaunchPad().fromWall(walls[0])
+        else:
+            if "Class" in walls[0].properties and walls[0].properties["Class"] == "Target":
+                space.targets.append(Target().fromWall(walls[0]))
+            else:
+                for wall in walls:
+                    space.obstacles.append(wall)
+
+
+
+
+
+def processSvgFile(module, svgFile):
+    svg = xml.parse(file(svgFile)).documentElement
+    space = SpaceDefinition()
+    space.width = int(svg.getAttribute("width"))
+    space.height = int(svg.getAttribute("height"))
+
+    props = parseProperties(svg.getElementsByTagName("dc:description")[0].firstChild.data)
+    for (name, value) in [ (key, props[key]) for key in props ]:
+        if name == "ID":
+            space.ID = int(value)
+        elif name == "Debug":
+            space.debug = True if value.lower() == "true" else False
+        elif name == "GravityX":
+            space.gravityX = float(value)
+        elif name == "GravityY":
+            space.gravityY = float(value)
+        elif name == "Damping":
+            space.damping = float(value)
+        elif name == "[AvailableFieldObject":
+            for afovalue in value:
+                afo = AvailableFieldObject()
+                afo.definition, afo.count = afovalue.split(",")
+                afo.definition = afo.definition.strip()
+                afo.count = int(afo.count.strip())
+                space.availableFieldObjects.append(afo)
+        elif name in ("[Background", "[Foreground"):
+            for imgvalue in value:
+                si = SceneryImage()
+                si.image, si.x, si.y = [n.strip() for n in imgvalue.split(",")]
+                if name == "[Background":
+                    space.backgroundImages.append(si)
+                else:
+                    space.foregroundImages.append(si)
+
+
+    for layer in svg.getElementsByTagName("g"):
+        if layer.getAttribute("inkscape:label") == "Space":
+            processSpaceLayer(layer, space)
+
+        
+
+
+    header, code = space.generate()
+    if module == "header":
+        print header
+    else:
+        print code
+
+
+
+if __name__ == "__main__":
+    for arg in sys.argv[2:]:
+        processSvgFile(sys.argv[1], arg)
+
+            
+                    
+            
+                    
+
+                
+
+
+
+
+

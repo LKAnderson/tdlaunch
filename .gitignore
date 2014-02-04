@@ -1,0 +1,61 @@
+
+
+# /Artwork/Levels/
+Artwork/Levels/*.plist
+
+# /Artwork/exported/
+Artwork/exported/*.png
+Artwork/exported/*.plist
+Artwork/exported/Levels/*
+Artwork/Levels/*
+
+# /TD Launch/Resources/
+TD Launch/Resources/Characters*
+TD Launch/Resources/SmallCharacters*
+TD Launch/Resources/Day*
+TD Launch/Resources/L1*
+TD Launch/Resources/L2*
+TD Launch/Resources/L3*
+TD Launch/Resources/L4*
+TD Launch/Resources/L5*
+TD Launch/Resources/L6*
+TD Launch/Resources/L7*
+TD Launch/Resources/L8*
+TD Launch/Resources/L9*
+TD Launch/Resources/CliffGrass*
+TD Launch/Resources/LeftCloud*
+TD Launch/Resources/RightCloud*
+TD Launch/Resources/LevelMenu*
+TD Launch/Resources/LevelMenuItems*
+TD Launch/Resources/Menu*
+TD Launch/Resources/Numbers*
+TD Launch/Resources/RecapMenu*
+TD Launch/Resources/Tools*
+TD Launch/Resources/ObjectDial*
+TD Launch/Resources/*.png
+TD Launch/Resources/*.mp3
+TD Launch/Resources/*.m4a
+TD Launch/Resources/FieldTutorial*
+TD Launch/Resources/ObstacleSheet*
+TD Launch/Resources/RecapBoard*
+TD Launch/Resources/CloudLibrary*
+TD Launch/Resources/TDFont*
+
+
+TD Launch/Images.xcassets
+
+# /TD Launch/Resources/Levels/
+TD Launch/Resources/Levels/*.plist
+TD Launch/Levels/*
+
+# /TD Launch.xcodeproj/
+TD Launch.xcodeproj/project.xcworkspace
+
+# /TD Launch.xcodeproj/project.xcworkspace/
+TD Launch.xcodeproj/project.xcworkspace/xcuserdata
+TD Launch.xcodeproj/xcuserdata
+
+Archives/*
+
+# MacOS stuff
+.DS_Store

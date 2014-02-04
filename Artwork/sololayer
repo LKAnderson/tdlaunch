@@ -1,0 +1,51 @@
+#!/usr/bin/python
+
+import xml.dom.minidom as xml
+import sys
+
+if len(sys.argv) < 3:
+    print >> sys.stderr, "sololayer inputSVG layerName"
+    sys.exit(1)
+
+inputSVG = sys.argv[1]
+layerName = sys.argv[2]
+
+
+svg = xml.parse(file(inputSVG)).documentElement
+
+groups = svg.getElementsByTagName("g")
+for group in groups:
+    if group.getAttribute("inkscape:groupmode") == "layer":
+        if group.getAttribute("inkscape:label") == layerName:
+            style = group.getAttribute("style")
+            if style:
+                style = style.replace("display:none", "") # Just in case
+                group.setAttribute("style", style)
+
+        else:
+            style = group.getAttribute("style")
+            if style is None:
+                style = "";
+            if "display:none" not in style:
+                if len(style) > 0:
+                    style += ";"
+                style += "display:none"
+                group.setAttribute("style", style)
+
+
+svg.writexml(sys.stdout)
+
+
+
+
+            
+                    
+            
+                    
+
+                
+
+
+
+
+

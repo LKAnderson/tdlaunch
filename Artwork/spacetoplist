@@ -1,0 +1,484 @@
+#!/usr/bin/python
+
+import xml.dom.minidom as xml
+import sys
+
+def plistArray(array):
+    return "<array>" + "".join([x.to_plist() for x in array]) + "</array>"
+
+
+class Wall:
+    def __init__(self):
+        self.friction = 0
+        self.elasticity = 0
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+        self.isSensor = False
+        self.properties = {}
+
+    def to_plist(self):
+        plist = """
+         <dict>
+             <key>Type</key><string>Wall</string>
+             <key>Friction</key><real>%s</real>
+             <key>Elasticity</key><real>%s</real>
+             <key>X1</key><string>%s</string>
+             <key>Y1</key><string>%s</string>
+             <key>X2</key><string>%s</string>
+             <key>Y2</key><string>%s</string>
+             <key>IsSensor</key>%s
+         """ % (str(self.friction), str(self.elasticity), str(self.x1), str(self.y1), 
+                 str(self.x2), str(self.y2), "<true/>" if self.isSensor else "<false/>")
+        for key in self.properties.keys():
+            plist += "<key>%s</key><string>%s</string>" % (key, self.properties[key])
+        plist += "</dict>"
+        return plist
+
+
+
+
+class LaunchPad:
+    def __init__(self):
+        self.left = 0
+        self.right = 0
+        self.height = 0
+        self.forceX = 0
+        self.forceY = 0
+
+    def fromWall(self, wall):
+        self.left = wall.x1
+        self.right = wall.x2
+        self.height = wall.y1
+        self.forceX = wall.properties["ForceX"] if wall.properties["ForceX"] else 0
+        self.forceY = wall.properties["ForceY"] if wall.properties["ForceY"] else 0
+        return self
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Left</key><string>%s</string>
+            <key>Right</key><string>%s</string>
+            <key>Height</key><string>%s</string>
+            <key>ForceX</key><string>%s</string>
+            <key>ForceY</key><string>%s</string>
+        </dict>
+        """ % (str(self.left), str(self.right), str(self.height), str(self.forceX), str(self.forceY))
+
+
+class Target:
+    def __init__(self):
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+
+    def fromWall(self, wall):
+        self.x1, self.y1, self.x2, self.y2 = wall.x1, wall.y1, wall.x2, wall.y2
+        return self
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>X1</key><string>%s</string>
+            <key>Y1</key><string>%s</string>
+            <key>X2</key><string>%s</string>
+            <key>Y2</key><string>%s</string>
+        </dict>
+        """ % (str(self.x1), str(self.y1), str(self.x2), str(self.y2))
+
+
+class AvailableFieldObject:
+    def __init__(self):
+        self.defintion = None
+        self.count = 0
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Definition</key><string>%s</string>
+            <key>Count</key><integer>%s</integer>
+        </dict>
+        """ % (self.definition, str(self.count))
+
+
+class Gem:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.type = "Square"
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>X</key><string>%s</string>
+            <key>Y</key><string>%s</string>
+            <key>Type</key><string>%s</string>
+        </dict>
+        """ % (str(self.x), str(self.y), self.type)
+
+
+
+class FieldObjectObstacle:
+    def __init__(self):
+        self.fotype = None
+        self.x = 0
+        self.y = 0
+        self.angle = 0
+        self.animations = []
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Type</key><string>FieldObject</string>
+            <key>Object</key><string>%s</string>
+            <key>X</key><string>%s</string>
+            <key>Y</key><string>%s</string>
+            <key>Angle</key><real>%s</real>
+            <key>Animations</key>%s
+        </dict>
+        """ % (self.fotype, str(self.x), str(self.y), str(self.angle), plistArray(self.animations))
+
+
+class OscillationAnimation:
+    def __init__(self):
+        self.direction = "Horizontal"
+        self.frequency = 1
+        self.range = 0
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Type</key><string>Oscillation</string>
+            <key>Direction</key><string>%s</string>
+            <key>Frequency</key><real>%s</real>
+            <key>Range</key><real>%s</real>
+        </dict>
+        """ % (self.direction, str(self.frequency), str(self.range))
+
+class RotationAnimation:
+    def __init__(self):
+        self.frequency = 1
+        self.direction = "Clockwise"
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Type</key><string>Rotation</string>
+            <key>Frequency</key><real>%s</real>
+            <key>Direction</key><string>%s</string>
+        </dict>
+        """ % (str(self.frequency), self.direction)
+
+
+class SceneryImage:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.image = "None"
+
+    def to_plist(self):
+        return """
+        <dict>
+            <key>Image</key><string>%s</string>
+            <key>X</key><string>%s</string>
+            <key>Y</key><string>%s</string>
+        </dict>
+        """ % (self.image, str(self.x), str(self.y))
+
+
+
+class SpaceDefinition:
+    def __init__(self):
+        self.ID = 0
+        self.debug = False
+        self.width = 0
+        self.height = 0
+        self.gravityX = 0
+        self.gravityY = 0
+        self.damping = 0
+        self.ceiling = None 
+        self.rightWall = None
+        self.leftWall = None
+        self.ground = None
+        self.launchpad = None
+        self.targets = []
+        self.availableFieldObjects = []
+        self.gems = []
+        self.obstacles = []
+        self.backgroundImages = []
+        self.foregroundImages = []
+
+    def to_plist(self):
+        xml = """<?xml version="1.0"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+        """
+
+        xml += "<key>Debug</key>%s" % ( "<true/>" if self.debug else "<false/>", )
+        xml += "<key>ID</key><integer>%s</integer>" % (self.ID,)
+        xml += "<key>Width</key><integer>%s</integer>" % (str(self.width),)
+        xml += "<key>Height</key><integer>%s</integer>" % (str(self.height),)
+        xml += "<key>GravityX</key><real>%s</real>" % (str(self.gravityX),)
+        xml += "<key>GravityY</key><real>%s</real>" % (str(self.gravityY),)
+        xml += "<key>Damping</key><real>%s</real>" % (str(self.damping),)
+
+        xml += "<key>Walls</key><dict>"
+        if self.ceiling is not None:
+            xml += "<key>Ceiling</key>" + self.ceiling.to_plist()
+        if self.ground is not None:
+            xml += "<key>Ground</key>" + self.ground.to_plist()
+        if self.leftWall is not None:
+            xml += "<key>Left</key>" + self.leftWall.to_plist()
+        if self.rightWall is not None:
+            xml += "<key>Right</key>" + self.rightWall.to_plist()
+        xml += "</dict>"
+
+        if self.launchpad is not None:
+            xml += "<key>LaunchPad</key>" + self.launchpad.to_plist()
+
+        if len(self.targets) > 0:
+            xml += "<key>Targets</key>" + plistArray(self.targets)
+
+        if len(self.availableFieldObjects) > 0:
+            xml += "<key>AvailableFieldObjects</key>" + plistArray(self.availableFieldObjects)
+
+        if len(self.gems) > 0:
+            xml += "<key>Gems</key>" + plistArray(self.gems)
+
+        if len(self.obstacles) > 0:
+            xml += "<key>Obstacles</key>" + plistArray(self.obstacles)
+
+        if len(self.backgroundImages) > 0 or len(self.foregroundImages) > 0:
+            xml += "<key>Scenery</key><dict>"
+            xml += "<key>Background</key>" + plistArray(self.backgroundImages)
+            xml += "<key>Foreground</key>" + plistArray(self.foregroundImages)
+            xml += "</dict>"
+
+        xml += "</dict></plist>"
+        return xml
+
+
+def parseProperties(propString):
+    props = {}
+    for line in propString.split("\n"):
+        if line.strip() == "":
+            continue
+
+        name, value = [x.strip() for x in line.split(":", 1)]
+        if name[0] == "[":
+            if not name in props:
+                props[name] = []
+            props[name].append(value)
+        else:
+            props[name] = value
+    return props
+
+
+
+def pathToLineSegments( pathString, space=None, dx=0, dy=0 ):
+
+    mode = "rel"
+    points = []
+    closePath = False
+    for cmd in pathString.split(" "):
+        if cmd == "m":
+            mode = "rel"
+            points.append("break")
+        elif cmd == "M":
+            mode = "abs"
+            points.append("break")
+        elif cmd in ("z", "Z"):
+            closePath = True
+        else:
+            x,y = cmd.split(",")
+            points.append([float(x),float(y)])
+
+    if mode == "rel":
+        for i in range(1, len(points)):
+            if points[i] == "break":
+                continue
+            points[i][0] += points[i-1][0]
+            points[i][1] += points[i-1][1]
+
+
+    # Ok, now we know everything is in absolute coords, we can apply the space.height adjustment
+    for point in points:
+        if point == "break":
+            continue
+        point[0] = round(point[0] + dx)
+        if space is None:
+            point[1] = round(point[1] + dy)
+        else:
+            point[1] = round(space.height - (point[1] + dy))
+
+    if closePath:
+        points.append(points[0])
+
+    segments = []
+    for i in range(1, len(points)):
+        if points[i] == "break" or points[i-1] == "break":
+            continue
+        segments.append( (points[i-1], points[i]) )
+
+    return segments
+
+
+def getTranslation(transformString):
+    if transformString is None or transformString.strip() == "":
+        return (0,0)
+
+    dx, dy = [float(n) for n in transformString.replace("translate(", "").replace(")", "").split(",")]
+    return (dx,dy)
+    
+
+
+def processSpaceLayer(layer, space):
+    # find the translation transform and get the base coordinates we
+    # will need to adjust all coordinates to 0-based
+    layerdx, layerdy = getTranslation(layer.getAttribute("transform"))
+
+
+    # Rects are obstacles: Gems or FieldObjects
+    for element in layer.getElementsByTagName("rect"):
+        x, y, w, h = [float(element.getAttribute(n)) for n in ["x", "y", "width", "height"]]
+        centerX = round(x + (w/2) + layerdx)  
+        centerY = space.height - round((y + (h/2)) + layerdy)
+
+        props = parseProperties( element.getElementsByTagName("desc")[0].firstChild.data )
+        if props["Class"] == "Gem" or props["Class"] == "Balloon":
+            gem = Gem()
+            gem.x = centerX
+            gem.y = centerY
+            gem.type = props["Type"] if "Type" in props else "Red"
+            space.gems.append(gem)
+
+        elif props["Class"] == "FieldObject":
+            fo = FieldObjectObstacle()
+            fo.x = centerX
+            fo.y = centerY
+            fo.fotype = props["Type"] if "Type" in props else None
+            fo.angle = float(props["Angle"]) if "Angle" in props else 0
+            if "[Animation" in props:
+                for animStr in props["[Animation"]:
+                    animProps = animStr.split(",")
+                    if animProps[0] == "Oscillation":
+                        anim = OscillationAnimation()
+                        anim.direction = animProps[1].strip()
+                        anim.frequency = float(animProps[2].strip())
+                        anim.range = float(animProps[3].strip())
+                        fo.animations.append(anim)
+
+                    elif animProps[0] == "Rotation":
+                        anim = RotationAnimation()
+                        anim.frequency = float(animProps[1].strip())
+                        anim.direction = animProps[2].strip()
+                        fo.animations.append(anim)
+
+            space.obstacles.append(fo)
+
+    # Paths are walls
+    for element in layer.getElementsByTagName("path"):
+        dx, dy = 0,0
+        if element.hasAttribute("transform"):
+            dx,dy = getTranslation(element.getAttribute("transform"))
+
+        # convert lines to walls
+        walls = []
+        for line in pathToLineSegments( element.getAttribute("d"), space, layerdx + dx, layerdy + dy ):
+            wall = Wall()
+            wall.x1, wall.y1 = line[0][0], line[0][1]
+            wall.x2, wall.y2 = line[1][0], line[1][1]
+            props = parseProperties(element.getElementsByTagName("desc")[0].firstChild.data)
+            wall.friction = float(props["Friction"]) if "Friction" in props else 0
+            wall.elasticiy = float(props["Elasticity"]) if "Elasticity" in props else 0
+            wall.properties = props
+            if "Class" in props and props["Class"] == "Sensor":
+                wall.isSensor = True
+            walls.append(wall)
+
+        ID = element.getAttribute("id")
+        if ID == "Left": 
+            space.leftWall = walls[0]
+        elif ID == "Right": 
+            space.rightWall = walls[0]
+        elif ID == "Ceiling":
+            space.ceiling = walls[0]
+        elif ID == "Ground":
+            space.ground = walls[0]
+        elif ID == "LaunchPad":
+            space.launchpad = LaunchPad().fromWall(walls[0])
+        else:
+            if "Class" in walls[0].properties and walls[0].properties["Class"] == "Target":
+                space.targets.append(Target().fromWall(walls[0]))
+            else:
+                for wall in walls:
+                    space.obstacles.append(wall)
+
+
+
+
+
+def processSvgFile(svgFile):
+    svg = xml.parse(file(svgFile)).documentElement
+    space = SpaceDefinition()
+    space.width = int(svg.getAttribute("width"))
+    space.height = int(svg.getAttribute("height"))
+
+    props = parseProperties(svg.getElementsByTagName("dc:description")[0].firstChild.data)
+    for (name, value) in [ (key, props[key]) for key in props ]:
+        if name == "ID":
+            space.ID = int(value)
+        elif name == "Debug":
+            space.debug = True if value.lower() == "true" else False
+        elif name == "GravityX":
+            space.gravityX = float(value)
+        elif name == "GravityY":
+            space.gravityY = float(value)
+        elif name == "Damping":
+            space.damping = float(value)
+        elif name == "[AvailableFieldObject":
+            for afovalue in value:
+                afo = AvailableFieldObject()
+                afo.definition, afo.count = afovalue.split(",")
+                afo.definition = afo.definition.strip()
+                afo.count = int(afo.count.strip())
+                space.availableFieldObjects.append(afo)
+        elif name in ("[Background", "[Foreground"):
+            for imgvalue in value:
+                si = SceneryImage()
+                si.image, si.x, si.y = [n.strip() for n in imgvalue.split(",")]
+                if name == "[Background":
+                    space.backgroundImages.append(si)
+                else:
+                    space.foregroundImages.append(si)
+
+
+    for layer in svg.getElementsByTagName("g"):
+        if layer.getAttribute("inkscape:label") == "Space":
+            processSpaceLayer(layer, space)
+
+        
+
+
+    print space.to_plist()
+
+
+
+if __name__ == "__main__":
+    for arg in sys.argv[1:]:
+        processSvgFile(arg)
+
+            
+                    
+            
+                    
+
+                
+
+
+
+
+

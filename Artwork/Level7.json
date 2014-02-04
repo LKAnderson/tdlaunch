@@ -1,0 +1,90 @@
+{
+    "LevelData": {
+        "ID": 7,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "Foreground":[
+            { "Name":"L7-Cave1.png", "X":3626.324, "Y":222.005, "Z":500, "Visible":false },
+            { "Name":"L7-Cave2.png", "X":3626.324, "Y":996.005, "Z":500, "Visible":false },
+            { "Name":"L7-Spray.png", "X":3228.138, "Y":123.024, "Z":100002 },
+            { "Name":"L7-River1.png", "X":-1,    "Y":203.744, "Z":100001 },
+            { "Name":"L7-River2.png", "X":1023, "Y":203.744, "Z":100001 },
+            { "Name":"L7-River3.png", "X":2047, "Y":203.744, "Z":100001 },
+            { "Name":"L7-River4.png", "X":3071, "Y":203.744, "Z":100001 }
+        ]
+    },
+
+    "RiverWater": {
+        "Class":"Sensor",
+        "Type":"ApplyForce",
+        "ForceX":-2.5,
+        "ForceY":0
+    },
+
+    "VerticalFalls": {
+        "Class":"Sensor",
+        "Type":"ApplyForce",
+        "ForceX": 0,
+        "ForceY": -20
+    },
+
+    "CaveSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "Sprites":["L7-Cave1.png", "L7-Cave2.png"],
+        "InArea":"On"
+    },
+    
+    "RotatingPlank":{
+        "Class": "FieldObject",
+        "Type": "Plank",
+        "Angle": 0,
+        "Animations":[
+                      { "Type":"Rotation", 	"Frequency":0.75, "Direction":"Clockwise" },
+                      { "Type":"Oscillation", "Direction":"Vertical", "Frequency":0.1, "RangeBegin":250, "RangeEnd":1700 }
+                      ]
+    },
+    
+    
+    
+    "ProjectileSources":[
+                         {
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.20,
+                         "initialVelocity":{"x":-900,"y":250},
+                         "impulseCount":4,
+                         "impulseTimer":2,
+                         "impulse":{"x":0, "y":200},
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "initialDelay":3,
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.13,
+                         "initialVelocity":{"x":-1150,"y":260},
+                         "impulseCount":3,
+                         "impulseTimer":2,
+                         "impulse":{"x":0, "y":285},
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "position":{"x":2048, "y":2100},
+                         "rotationAngle":0,
+                         "rate":0.033,
+                         "initialDelay":60,
+                         "initialVelocity":{"x":0,"y":0},
+                         "impulseCount":1,
+                         "impulseTimer":15,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"AntiGravity",
+                         "maxCurrent":1
+                         }
+                         ]
+    
+}

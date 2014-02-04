@@ -1,0 +1,83 @@
+{
+    "LevelData": {
+        "ID": 9,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "Foreground":[
+            { "Name":"L9-BldgCover.png", "X":6.717, "Y":1584.938, "Z":10005, "Visible":true },
+            { "Name":"L9-BldgHole.png", "X":45.418, "Y":1627.167, "Z":9998, "Visible":true },
+            { "Name":"L9-BldgTunnel.png", "X":40.998, "Y":1343.663, "Z":10001, "Visible":false },
+            { "Name":"L9-HutHole.png", "X":3487.575, "Y":1573.338, "Z":9998, "Visible":true },
+            { "Name":"L9-HutTunnel.png", "X":3470.150, "Y":1303.392, "Z":10001, "Visible":false }
+        ]
+    },
+
+    "BuildingHoleSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "Sprites":["L9-BldgTunnel.png"],
+        "InArea":"On"
+    },
+
+
+    "HutHoleSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "Sprites":["L9-HutTunnel.png"],
+        "InArea":"On"
+    },
+
+
+    "BuildingSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "Sprites":["L9-BldgCover.png"],
+        "InArea":"Off"
+    },
+    
+    "ProjectileSources":[
+                         
+                         {
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.20,
+                         "initialVelocity":{"x":-900,"y":340},
+                         "impulseCount":3,
+                         "impulseTimer":2,
+                         "impulse":{"x":0, "y":200},
+                         "maxCurrent":5,
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "initialDelay":3,
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.20,
+                         "initialDelay":1.0,
+                         "initialVelocity":{"x":-1150,"y":260},
+                         "impulseCount":3,
+                         "impulseTimer":2.5,
+                         "impulse":{"x":0, "y":200},
+                         "maxCurrent":5,
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "position":{"x":2048, "y":0},
+                         "rotationAngle":0,
+                         "rate":0.2,
+                         "initialDelay":20,
+                         "initialVelocity":{"x":0,"y":1700},
+                         "impulseCount":1,
+                         "impulseTimer":8,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"AntiGravity",
+                         "maxCurrent":1
+                         }
+                         ]
+
+
+}

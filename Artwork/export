@@ -1,0 +1,741 @@
+#!/usr/bin/python
+import sys
+import subprocess
+import os.path
+
+outputDirectory = "exported"
+inkScape = "/Applications/Inkscape.app/Contents/Resources/bin/inkscape"
+products = []
+copyProducts = []
+debug = False
+characterScale = 0.67
+
+exported = []
+def isExported(s):
+    if len(exported) == 0:
+        return True
+    if s in exported:
+        return True
+    return False
+
+
+def GetResolutions(w,h):
+    return [    ["-ipadhd", w*2, h*2], 
+                ["-ipad",   w, h]
+            ]
+
+
+def ExportItem(inputFile, outputFile, itemId, width, height, install=False):
+
+    for suffix, w, h in GetResolutions(width,height):
+        product = "%s/%s%s.png" % (outputDirectory, outputFile, suffix)
+        if install:
+            products.append(product)
+
+        cmd = [inkScape]
+        cmd += [inputFile]
+        cmd += ["--without-gui"]
+        cmd += ["--export-png=" + product]
+        cmd += ["--export-id=" + itemId]
+        cmd += ["--export-id-only"]
+        cmd += ["--export-width=" + str(w)]
+        cmd += ["--export-height=" + str(h)]
+        print "%s[%s] --> %s : (%dx%d)" % (inputFile, itemId, outputFile, w, h)
+        if debug: 
+            print cmd
+        
+        subprocess.call(cmd, stdout=file("/dev/null"), stderr=subprocess.STDOUT)
+
+            
+
+
+
+def ExportArea(inputFile, outputFile, width, height, x1, y1, x2, y2, install=False):
+
+    for suffix, w, h in GetResolutions(width,height):
+        product = "%s/%s%s.png" % (outputDirectory, outputFile, suffix)
+        if install:
+            products.append(product)
+
+        cmd = [inkScape]
+        cmd += [inputFile]
+        cmd += ["--without-gui"]
+        cmd += ["--export-png=" + product]
+        cmd += ["--export-area=%d:%d:%d:%d" % (x1,y1,x2,y2)]
+        cmd += ["--export-width=" + str(w)]
+        cmd += ["--export-height=" + str(h)]
+        print "%s[%d:%d:%d:%d] --> %s : %dx%d" % (inputFile, x1,y1,x2,y2, outputFile, w,h)
+        if debug:
+            print cmd
+        subprocess.call(cmd, stdout=file("/dev/null"), stderr=subprocess.STDOUT)
+
+
+
+def ExportBackgroundPanels( inputFile, layerName, outputFile, width, height, tileWidth, tileHeight=0):
+    if tileHeight == 0:
+        tileHeight = tileWidth
+
+    tmpFile = "/tmp/" + inputFile
+    SoloLayer(inputFile, tmpFile, layerName)
+
+    y1 = 0
+    y2 = y1 + tileHeight 
+
+    while y1 < height:
+        x1 = 0
+        x2 = x1 + tileWidth
+        while x1 < width:
+            ExportArea( tmpFile, "%s-%d-%d" % (outputFile, x1, y1), 
+                    tileWidth, tileHeight, x1, y1, x2, y2, True )
+            x1 = x2
+            x2 = x1 + tileWidth
+            if x2 > width:
+                x2 = width
+
+        y1 = y2
+        y2 = y1 + tileHeight
+        if y2 > height:
+            y2 = height
+
+    DeleteFile(tmpFile)
+    
+    
+def ExportBackgroundPanels2( inputFile, outputFile, imgWidth, imgHeight, tileWidth, tileHeight=0, install=False):
+    
+    if not os.path.exists(inputFile+"-ipad.png") or not os.path.exists(inputFile+"-ipadhd.png"):
+        print "ExportBackgroundPanels2: input file does not exist:", inputFile+"-ipad.png", "or", inputFile+"-ipadhd.png"
+        return
+    
+    if tileHeight == 0:
+        tileHeight = tileWidth
+
+    h = 0
+    while h < imgHeight:
+        w = 0
+        while w < imgWidth:
+            outputFileName = "%s-%d-%d" % (outputFile, w, h)
+            cmd_ipad = "gm convert -crop %dx%d+%d+%d %s %s-ipad.png" % (tileWidth, tileHeight, w, (imgHeight-tileHeight)-h, inputFile+"-ipad.png", outputFileName)
+            cmd_ipadhd = "gm convert -crop %dx%d+%d+%d %s %s-ipadhd.png" % (tileWidth*2, tileHeight*2, w*2, ((imgHeight-tileHeight)-h)*2, inputFile+"-ipadhd.png", outputFileName)
+            print cmd_ipad
+            subprocess.call([cmd_ipad], shell=True)
+            print cmd_ipadhd
+            subprocess.call([cmd_ipadhd], shell=True)
+            if install:
+                products.append(outputFileName+"-ipad.png")
+                products.append(outputFileName+"-ipadhd.png")
+            w += 1024
+        h += 1024
+    
+def CropImage(inputFileTemplate, outputFileTemplate, x1, y1, x2, y2, install=False):
+    resolutions = ( ( "-ipad", 1 ),
+                    ( "-ipadhd", 2 ) )
+
+    for res in resolutions:
+        inputFileName = "{0}{1}.png".format(inputFileTemplate, res[0])
+        outputFileName = "{0}{1}.png".format(outputFileTemplate, res[0])
+        CropRawImage(inputFileName, outputFileName, x1*res[1], y1*res[1], x2*res[1], y2*res[1])
+        if install:
+            products.append(outputFileName)
+
+def CropImageAdj(inputFileTemplate, outputFileTemplate, x, y, w, h, install=False):
+    CropImage(inputFileTemplate, outputFileTemplate, x-1, y-1, x+w+2, y+h+2, install)
+
+    
+
+def CropRawImage(inputFile, outputFile, x1, y1, x2, y2):
+    cmd = "gm convert -crop %dx%d+%d+%d %s %s" % (x2-x1, y2-y1, x1, y1, inputFile, outputFile)
+    print cmd
+    subprocess.call([cmd], shell=True)
+
+def ScaleImagePct(inputFile, outputFile, pct):
+    cmd = "gm convert -scale %f%%x%f%% %s %s" % (pct, pct, inputFile, outputFile)
+    print cmd
+    subprocess.call([cmd], shell=True)
+
+
+def SoloLayer(inputFile, outputFile, layerName):
+    soloCmd = "./sololayer %s %s > %s" % (inputFile, layerName, outputFile)
+    subprocess.call(soloCmd, shell=True)
+
+
+def DeleteFile(filename):
+    subprocess.call("/bin/rm " + filename, shell=True)
+
+
+def CreateSpriteSheet(outputFile, inputFiles, install=False):
+    
+    for ext in ("-ipad", "-ipadhd"):
+        imgproduct = "exported/%s%s.png" % (outputFile, ext)
+        plistproduct = "exported/%s%s.plist" % (outputFile, ext)
+        if install:
+            products.append(imgproduct)
+            products.append(plistproduct)
+
+        cmd = "/usr/local/bin/TexturePacker"
+        cmd += " --sheet " + imgproduct
+        cmd += " --data " + plistproduct
+        cmd += " --format cocos2d"
+        cmd += " --algorithm Basic"
+        cmd += " --basic-sort-by best"
+        cmd += " --basic-order ascending"
+        if ext == "-ipadhd":
+            cmd += " --max-width 4096 --max-height 4096"
+        else:
+            cmd += " --max-width 2048 --max-height 2048"
+        cmd += " --border-padding 2"
+        cmd += " --shape-padding 10"
+        cmd += " --enable-rotation"
+        cmd += " --opt RGBA8888"
+        cmd += " --no-trim"
+        cmd += " --quiet"
+
+        for img in inputFiles:
+            tmpFile = "/tmp/%s.png" % (img,)
+            exportedFile = "exported/%s%s.png" % (img, ext)
+            subprocess.call("cp %s %s" % (exportedFile, tmpFile), shell=True)
+            cmd += " " + tmpFile
+
+        print "Creating spritesheet %s%s" % (outputFile,ext)
+        if debug:
+            print cmd
+
+        subprocess.call(cmd, stdout=file("/dev/null"), stderr=subprocess.STDOUT, shell=True)
+        subprocess.call(cmd, shell=True)
+
+
+def ExportAnimationFrames(inputFile, outputFile, y1, y2, xcoords):
+    i = 1
+    frames = []
+    for xcoord in xcoords:
+        outputFileName = outputFile+"_{0}".format(i)
+        CropImageAdj(inputFile, outputFileName, xcoord[0], y1, xcoord[1], y2-y1, False)
+        frames.append(outputFileName)
+        i += 1
+
+    return frames
+
+
+
+
+def ExportImages():
+    global characterScale
+    if isExported("FieldObjects"):
+        print
+        print "Drums"
+        print
+        CropImage("exported/FieldObjects", "exported/Drum", 50, 50, 154, 94)
+        CropImage("exported/FieldObjects", "exported/Drum2x", 50, 190, 154, 234)
+
+
+        print
+        print "Blowers"
+        print
+        CropImage("exported/FieldObjects", "exported/Blower", 50, 300, 96, 386)
+        CropImage("exported/FieldObjects", "exported/Blower2x", 250, 300, 296, 386)
+
+
+        print
+        print "Planks"
+        print
+        CropImage("exported/FieldObjects", "exported/Plank", 200, 80, 354, 144)
+
+        print
+        print "Slides"
+        print
+        CropImage("exported/FieldObjects", "exported/Slide", 200, 155, 354, 213)
+
+        print 
+        print "Launcher"
+        print
+        CropImageAdj("exported/FieldObjects", "exported/Launcher", 355, 282, 95, 95)
+        
+        print
+        print "Accelerators"
+        print
+        CropImageAdj("exported/FieldObjects", "exported/Accelerator2x", 154, 357, 64, 64)
+        CropImageAdj("exported/FieldObjects", "exported/AcceleratorHalfX", 154, 280, 64, 64)
+        CropImageAdj("exported/FieldObjects", "exported/AntiGravity", 154, 432, 64, 64)
+        CropImageAdj("exported/FieldObjects", "exported/Aligner", 369, 411, 64, 64)
+        
+
+        print
+        print "Balloons"
+        print
+        CropImageAdj("exported/Balloons", "exported/RedBalloon", 69.116, 51.579, 40, 56)
+        CropImageAdj("exported/Balloons", "exported/YellowBalloon", 128.175, 51.579, 40, 56)
+        CropImageAdj("exported/Balloons", "exported/BlueBalloon", 186.605, 51.579, 40, 56)
+        CropImageAdj("exported/Balloons", "exported/Poof01", 66.616, 142.407, 45, 45)
+        CropImageAdj("exported/Balloons", "exported/Poof02", 133.971, 144.407, 39, 41)
+        CropImageAdj("exported/Balloons", "exported/Poof03", 204.222, 152.907, 32, 24)
+        CropImageAdj("exported/Balloons", "exported/Poof04", 111.979, 225.407, 32, 19)
+        CropImageAdj("exported/Balloons", "exported/Poof05", 175.972, 226.407, 19, 17)
+
+
+    if isExported("Obstacles"):
+        CropImageAdj("exported/Obstacles", "exported/Bird1", 40, 40, 47.251, 26.293)
+        CropImageAdj("exported/Obstacles", "exported/Bird2", 100, 40, 47.251, 26.293)
+        CropImageAdj("exported/Obstacles", "exported/Boulder", 33, 121, 83.4, 84.16)
+        CreateSpriteSheet("ObstacleSheet", [ "Bird1", "Bird2", "Boulder" ], True)
+
+
+    if isExported("Characters"):
+        print
+        print "Characters"
+        print
+
+        moods = { "Happy":30, "":180, "Sad":340, "Whoa":500, "Downward":660, "Cringe":820, "Upward":980 }
+
+        characters = { 
+                "Steve":{ "x":20,  "width":53.883, "height":113.791 },
+                "Bruce":{ "x":130, "width":47.751, "height":131.256 },
+                "Toby": { "x":230, "width":51.953, "height":105.347 },
+                "Angie":{ "x":330, "width":44.882, "height":107.257 },
+                "Emily":{ "x":420, "width":44.882, "height":97.722 } }
+                                 
+        for character in characters.keys():
+            for mood in moods.keys():
+                characterMoodFile = "exported/{0}{1}".format(character, mood)
+                smallMoodFile = "exported/Small{0}{1}".format(character, mood)
+                CropImageAdj("exported/CharacterMoods", characterMoodFile, 
+                             characters[character]["x"], moods[mood], 
+                             characters[character]["width"], characters[character]["height"])
+                ScaleImagePct(characterMoodFile+"-ipad.png", smallMoodFile+"-ipad.png", 70)
+                ScaleImagePct(characterMoodFile+"-ipadhd.png", smallMoodFile+"-ipadhd.png", 70)
+
+
+    #f isExported("Animations"):
+    #   print
+    #   print "Animations"
+    #   print
+    #   frames = []
+
+    #   steve = [(564,34), (615,39.3), (666,44.2), (728,39), (789.9,31.2),
+    #              (844,30.6), (895,30.6), (943,31.9), (993,36.1), (1042,39.9), 
+    #              (1099,34.1), (1153.5,30.6), (1206,30.6)]
+
+    #   bruce = [(564,26.1), (617,33.4), (665,39.7), (715.6,45.2), (778.5,36.4), 
+    #            (835.7,27.6), (885.9,23.5), (935.7,27.7), (980.3,37.7), (1036.6,43.3),
+    #            (1102.2,32), (1159.7,24.1), (1208, 23.5)]
+
+    #   toby = [(564.2,27.3), (615.9, 28.4), (661.1,34.5), (711.2,38.5), (766.6,32.2),
+    #           (821.9,27.3), (872.9,27.3), (925.2,31.1), (972.5,35.5), (1030.6,29),
+    #           (1080.1,27.3)]
+
+    #   angie = [(564.2,33.3), (619.5,38), (673.8,41), (730,43.2), (790.3,36), 
+    #            (842.4,30.7), (893.9,34.9), (943.7,39), (992.9,41.9), (1050.1,37.9),
+    #            (1107.6,32.9)]
+
+    #   emily = [(564.2,20.6), (612,27.1), (657.6,34.6), (712.5,28.4), (763.6,20.6),
+    #            (810.3,24.5), (853.1,32.9), (903.9,26.4), (949.3,21.1)]
+
+    #   frames += ExportAnimationFrames("exported/Animations", "exported/SteveFrame", 39, 110, steve)
+    #   frames += ExportAnimationFrames("exported/Animations", "exported/BruceFrame", 238.9, 320, bruce)
+    #   frames += ExportAnimationFrames("exported/Animations", "exported/TobyFrame", 456.9, 522, toby)
+    #   frames += ExportAnimationFrames("exported/Animations", "exported/AngieFrame", 666.0, 732, angie)
+    #   frames += ExportAnimationFrames("exported/Animations", "exported/EmilyFrame", 854.8, 914.8, emily)
+
+    #   frames = [x[len("exported/"):] for x in frames]
+    #   CreateSpriteSheet("LaunchAnimations", frames, True)
+
+    if isExported("CloudLibrary"):
+        print 
+        print "Cloud Library"
+        print
+        CropImageAdj("exported/Clouds", "exported/Cloud1", 99, 92, 210.1, 125.5)
+        CropImageAdj("exported/Clouds", "exported/Cloud2", 528, 64, 310, 153.5)
+        CropImageAdj("exported/Clouds", "exported/Cloud3", 998.4, 92.4, 169.8, 125.9)
+        CropImageAdj("exported/Clouds", "exported/Cloud4", 1352.1, 63, 215.9, 154.9)
+        CropImageAdj("exported/Clouds", "exported/Cloud5", 1684.2, 65.9, 234.9, 151.7)
+        CropImageAdj("exported/Clouds", "exported/Cloud6", 69.3, 514.8, 340.4, 213.5)
+        CropImageAdj("exported/Clouds", "exported/Cloud7", 499.7, 514.8, 340.4, 213.5)
+        CropImageAdj("exported/Clouds", "exported/Cloud8", 923.3, 419.3, 449, 309)
+        CropImageAdj("exported/Clouds", "exported/Cloud9", 1513.6, 449.5, 461.5, 278.8)
+        CropImageAdj("exported/Clouds", "exported/Cloud10", 227, 951.3, 348.2, 250.8)
+        CropImageAdj("exported/Clouds", "exported/Cloud11", 1317.8, 899.5, 387.6, 302.6)
+        CropImageAdj("exported/Clouds", "exported/Cloud12", 148.7, 1401.7, 653.1, 361.7)
+        CropImageAdj("exported/Clouds", "exported/Cloud13", 1231.6, 1470.4, 600.7, 293)
+        CropImageAdj("exported/Clouds", "exported/Cloud14", 69.3, 1951.6, 972.4, 472.7)
+        CropImageAdj("exported/Clouds", "exported/Cloud15", 1239.7, 2003.1, 746.4, 421.1)
+        sprites = ["Cloud%d" % (i,) for i in range(1,16)]
+        CreateSpriteSheet( "CloudLibrary", sprites, True )
+       
+        
+        
+    if isExported("GeneralMenu"):
+        print
+        print "General Menu"
+        print
+        CropImageAdj("exported/MainMenuButtons", "exported/Go", 680, 200, 49, 57)
+        CropImageAdj("exported/MainMenuButtons", "exported/Back", 675, 113, 66, 45)
+        CropImageAdj("exported/MainMenuButtons", "exported/Reset", 780, 200, 47, 47)
+        CropImageAdj("exported/MainMenuButtons", "exported/ResetGo", 780, 270, 47, 47)
+        CropImageAdj("exported/MainMenuButtons", "exported/ClearAll", 780, 110, 84.523, 68.775)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stats", 885, 110, 60, 40)
+        CropImageAdj("exported/MainMenuButtons", "exported/ToggleMenu", 976, 112, 33, 40)
+        CropImageAdj("exported/MainMenuButtons", "exported/Pause", 885, 200, 41, 43)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stop", 975, 200, 40, 40)
+        CropImageAdj("exported/MainMenuButtons", "exported/TrackPlayerOn", 680, 280, 42, 42)
+        CropImageAdj("exported/MainMenuButtons", "exported/TrackPlayerOff", 580, 350, 42, 42)
+        CropImageAdj("exported/MainMenuButtons", "exported/SoundOn", 885, 270, 53, 50.032)
+        CropImageAdj("exported/MainMenuButtons", "exported/SoundOff", 975, 270, 53, 50.032)
+        CropImageAdj("exported/MainMenuButtons", "exported/Target", 600, 450, 148.578, 16.27)
+        CropImageAdj("exported/MainMenuButtons", "exported/OffScreenPointer", 498, 298, 55, 48)
+
+        CropImage("exported/MainMenuButtons", "exported/DialogBack", 550, 635, 1028, 911)
+        CropImageAdj("exported/MainMenuButtons", "exported/YesButton", 100, 800, 141, 65)
+        CropImageAdj("exported/MainMenuButtons", "exported/NoButton", 270, 800, 141, 65)
+
+        CropImageAdj("exported/Drawers", "exported/CharacterDrawer", 21, 20, 730, 207, True)
+        CropImageAdj("exported/Drawers", "exported/ObjectDrawer", 21, 239, 885, 210, True)
+
+        CropImageAdj("exported/ObjectDial", "exported/ObjectDialReg", 59.1, 54.16, 360.68, 372.04)
+        CropImageAdj("exported/ObjectDial", "exported/ObjectDialExt", 450, 54.16, 466.58, 372.04)
+
+        CropImageAdj("exported/Tutorial", "exported/TutorialBack1", 60, 60, 248, 151 )
+        CropImageAdj("exported/Tutorial", "exported/TutorialBack2", 350, 60, 276, 151 )
+        CropImageAdj("exported/Tutorial", "exported/TutorialArrow", 750, 50, 58.4, 140 )
+
+        CropImageAdj("exported/MainMenuButtons", "exported/OrangeStar", 490,160, 32, 31)
+
+        CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Empty", 100, 940, 42, 42)
+        CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Filled", 100, 875, 51.402, 55.081)
+
+
+    if isExported("LevelMenu"):
+        print
+        print "Level Menu"
+        print
+        products.append("exported/LevelMenu-ipadhd.png")
+        products.append("exported/LevelMenu-ipad.png")
+        products.append("exported/IntroLayer-ipad.png")
+        products.append("exported/IntroLayer-ipadhd.png")
+
+        CropImageAdj("exported/MainMenuButtons", "exported/Stars1", 85, 119, 17, 17)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stars2", 65, 139, 37, 17)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stars3", 45, 159, 57, 17)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stars4", 25, 179, 77, 17)
+        CropImageAdj("exported/MainMenuButtons", "exported/Stars5",  5, 199, 97, 17)
+        
+
+        x = xhd = 0
+        for i in (1,2,3,4,5,6,7,8,9,10):
+            output = "exported/Level{0}Button-ipad.png".format(i)
+            outputhd = "exported/Level{0}Button-ipadhd.png".format(i)
+            CropRawImage("exported/MainMenuButtons-ipad.png", output, x, 0, x + 110, 65)
+            CropRawImage("exported/MainMenuButtons-ipadhd.png", outputhd, xhd, 0, xhd + 220, 130)
+            x += 110
+            xhd += 220
+
+        CropImageAdj("exported/MainMenuButtons", "exported/TouchFlash", 150, 100, 200, 200)
+        CropImageAdj("exported/MainMenuButtons", "exported/Numbers", 22, 500, 338, 38, True)
+
+
+        
+                    
+
+    if isExported("RecapMenu"):
+        print 
+        print "RecapMenu"
+        print
+        sprites = []
+        CropImageAdj("exported/RecapMenu", "exported/RecapBackground", 33, 264, 732, 420)
+        sprites.append("RecapBackground")
+        CreateSpriteSheet( "RecapBoard", sprites, True )
+        
+    if isExported("Misc") or isExported("misc"):
+        print 
+        print "Miscellaneous"
+        print
+        products.append("exported/StaticBlueSky-ipad.png")
+        products.append("exported/StaticBlueSky-ipadhd.png")
+
+
+    if isExported("Level1"):
+        print
+        print "Level 1"
+        print
+        ExportBackgroundPanels2( "exported/L1-Bkg", "exported/L1-Bkg", 2048, 1024, 1024, 1024, True )
+
+
+    if isExported("Level2"):
+        print
+        print "Level 2"
+        print 
+        ExportBackgroundPanels2( "exported/L2-Bkg", "exported/L2-Bkg", 2048, 1536, 1024, 1024, True )
+
+    if isExported("Level3"):
+        print 
+        print "Level 3"
+        print
+        ExportBackgroundPanels2( "exported/L3-Bkg", "exported/L3-Bkg", 3072, 2048, 1024, 1024, True )
+
+    if isExported("Level4"):
+        print
+        print "Level 4"
+        print
+        ExportBackgroundPanels2( "exported/L4-Bkg", "exported/L4-Bkg", 3072, 2048, 1024, 1024, True )
+        products.append("exported/L4-Cave-ipad.png")
+        products.append("exported/L4-Cave-ipadhd.png")
+        products.append("exported/L4-Tunnel-ipad.png")
+        products.append("exported/L4-Tunnel-ipadhd.png")
+
+    if isExported("Level5"):
+        print
+        print "Level 5"
+        print
+        ExportBackgroundPanels2( "exported/L5-Bkg", "exported/L5-Bkg", 4096, 2048, 1024, 1024, True )
+        
+    if isExported("Level6"):
+        print
+        print "Level 6"
+        print
+        ExportBackgroundPanels2( "exported/L6-Bkg", "exported/L6-Bkg", 1536, 4096, 1024, 1024, True )
+        products.append("exported/L6-Water-ipad.png")
+        products.append("exported/L6-Water-ipadhd.png")
+
+    if isExported("Level7"):
+        print 
+        print "Level 7"
+        print
+        ExportBackgroundPanels2( "exported/L7-Bkg", "exported/L7-Bkg", 4096, 2048, 1024, 1024, True)
+        
+        CropImage("exported/L7-Cave", "exported/L7-Cave1", 0, 774, 470, 1548, True)
+        CropImage("exported/L7-Cave", "exported/L7-Cave2", 0, 0,   470, 774, True)
+
+        CropImage("exported/L7-River", "exported/L7-River1", 0,     0, 1024,    88.422, True)
+        CropImage("exported/L7-River", "exported/L7-River2", 1024,  0, 2048,    88.422, True)
+        CropImage("exported/L7-River", "exported/L7-River3", 2048,  0, 3072,    88.422, True)
+        CropImage("exported/L7-River", "exported/L7-River4", 3072,  0, 3519.377, 88.422, True)
+
+        products.append("exported/L7-Spray-ipad.png")
+        products.append("exported/L7-Spray-ipadhd.png")
+
+    if isExported("Level8"):
+        print
+        print "Level 8"
+        print
+        ExportBackgroundPanels2( "exported/L8-Bkg", "exported/L8-Bkg", 4096, 2048, 1024, 1024, True)
+
+
+    if isExported("Level9"):
+        print
+        print "Level 9"
+        print
+        ExportBackgroundPanels2( "exported/L9-Bkg", "exported/L9-Bkg", 4096, 3072, 1024, 1024, True)
+        products.append("exported/L9-BldgCover-ipad.png")
+        products.append("exported/L9-BldgCover-ipadhd.png")
+        products.append("exported/L9-BldgHole-ipad.png")
+        products.append("exported/L9-BldgHole-ipadhd.png")
+        products.append("exported/L9-BldgTunnel-ipad.png")
+        products.append("exported/L9-BldgTunnel-ipadhd.png")
+        products.append("exported/L9-HutHole-ipad.png")
+        products.append("exported/L9-HutHole-ipadhd.png")
+        products.append("exported/L9-HutTunnel-ipad.png")
+        products.append("exported/L9-HutTunnel-ipadhd.png")
+
+    if isExported("Level10"):
+        print
+        print "Level 10"
+        print
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud1", 157.797, 133.5, 340.377, 213.473 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud2", 1555.461, 510.487, 169.718, 125.87 ) 
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud3", 2450.541, 278.576, 216.811, 154.874 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud4", 3588.128, 938.698, 340.377, 213.473 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud5", 2872.323, 1347.885, 210.062, 125.469 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud6", 1721.473, 1681.605, 653.055, 361.633 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud7", 1555.461, 1285.238, 348.198, 250.762 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud8", 385.817,  1536.375, 309.876, 153.109 )
+        CropImageAdj( "exported/L10-Clouds", "exported/L10-Cloud9", 240.439,  2387.327, 600.631, 292.941 )
+        CreateSpriteSheet("L10-CloudSheet1", ["L10-Cloud{0}".format(i) for i in range(1,5)], True)
+        CreateSpriteSheet("L10-CloudSheet2", ["L10-Cloud{0}".format(i) for i in range(5,10)], True)
+
+
+    if isExported("Audio") or isExported("audio"):
+        print
+        print "Audio"
+        print
+        products.append("Audio/Pop1.mp3")
+        products.append("Audio/Pop2.mp3")
+        products.append("Audio/SlideClang.mp3")
+        products.append("Audio/WoodThud.mp3")
+        products.append("Audio/DrumDonk.mp3")
+        products.append("Audio/Tic.mp3")
+        products.append("Audio/BackMusic.m4a")
+
+
+    if isExported("about"):
+        print
+        print "About"
+        print
+        products.append("exported/AboutScreen-ipad.png")     #TODO: These need to be localized
+        products.append("exported/AboutScreen-ipadhd.png")
+
+
+def SpriteSheets():
+    CreateSpriteSheet("Tools", [
+        "Blower", "Blower2x", "Drum", "Drum2x", "Plank", "Slide", "Launcher",
+        "Accelerator2X", "AcceleratorHalfX", "AntiGravity", "Aligner",
+        "RedBalloon", "YellowBalloon", "BlueBalloon",
+        "Poof01", "Poof02", "Poof03", "Poof04", "Poof05",
+        "Target"], True)
+
+    CreateSpriteSheet("ObjectDials", [ "ObjectDialReg", "ObjectDialExt" ], True)
+
+
+    CreateSpriteSheet("Menu", [
+        "Back", "Go",  "Reset", "ResetGo", "ClearAll", "Stats", "ToggleMenu", "Pause", "Stop", "OffScreenPointer", "OrangeStar",
+        "TrackPlayerOn", "TrackPlayerOff", "DialogBack", "YesButton", "NoButton",
+        "TutorialBack1", "TutorialBack2", "TutorialArrow",
+        "3Dashes", "SoundOn", "SoundOff", "Checkbox_Empty", "Checkbox_Filled"], True)
+
+    sprites = []
+    for name in ( "Steve", "Bruce", "Toby", "Angie", "Emily" ):
+        for mood in ( "", "Happy", "Sad", "Whoa", "Downward", "Cringe", "Upward" ):
+            sprites.append(name+mood)
+    CreateSpriteSheet( "Characters", sprites, True )
+
+    sprites = []
+    for name in ( "SmallSteve", "SmallBruce", "SmallToby", "SmallAngie", "SmallEmily" ):
+        for mood in ( "", "Happy", "Sad", "Whoa", "Downward", "Cringe", "Upward" ): 
+            sprites.append(name+mood)
+    CreateSpriteSheet( "SmallCharacters", sprites, True )
+
+    # Level Menu
+    sprites = []
+    for level in range(1,11):
+        sprites.append( "Level%dButton" % (level,) )
+
+    for stars in (1,2,3,4,5):
+        sprites.append( "Stars" + str(stars) )
+
+    sprites.append( "TouchFlash" )
+
+    CreateSpriteSheet( "LevelMenuItems", sprites, True )
+
+    
+def Tilemaps():
+    #products.append( "exported/Day*" )
+    pass
+
+
+def SplashScreen():
+    CropRawImage("exported/SplashScreen_Portrait-ipad.png", "exported/Default-568h@2x.png", 64, 0, 704, 1136)
+    copyProducts.append(("exported/Default-568h@2x.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+
+    CropRawImage("exported/SplashScreen_Portrait-ipad.png", "exported/Default-Portrait~ipad.png", 0, 56, 768, 1080)
+    copyProducts.append(("exported/Default-Portrait~ipad.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+    CropRawImage("exported/SplashScreen_Portrait-ipadhd.png", "exported/Default-Portrait@2x~ipad.png", 0, 112, 1536, 2160)
+    copyProducts.append(("exported/Default-Portrait@2x~ipad.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+
+    CropRawImage("exported/SplashScreen_Portrait-ipad.png", "exported/Default@2x.png", 64, 88, 704, 1048)
+    copyProducts.append(("exported/Default@2x.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+    ScaleImagePct("exported/Default@2x.png", "exported/Default.png", 50)
+    copyProducts.append(("exported/Default.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+
+    CropRawImage("exported/SplashScreen-ipad.png", "exported/Default-Landscape~ipad.png", 56, 0, 1080, 768)
+    copyProducts.append(("exported/Default-Landscape~ipad.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+    CropRawImage("exported/SplashScreen-ipadhd.png", "exported/Default-Landscape@2x~ipad.png", 112, 0, 2160, 1536)
+    copyProducts.append(("exported/Default-Landscape@2x~ipad.png", "../TD Launch/Images.xcassets/LaunchImage.launchimage/"))
+
+
+
+def Icons():
+    filesSizes = (  ("Icon-29.png", 29),
+                    ("Icon-29@2x.png", 58),
+                    ("Icon-40.png", 40),
+                    ("Icon-40@2x.png", 80),
+                    ("Icon-57.png", 57),
+                    ("Icon-57@2x.png", 114),
+                    ("Icon-50.png", 50),
+                    ("Icon-60@2x.png", 120),
+                    ("Icon-50@2x.png", 100),
+                    ("Icon-72.png", 72),
+                    ("Icon-72@2x.png", 144),
+                    ("Icon-76.png", 76),
+                    ("Icon-76@2x.png", 152))
+                    
+    CropRawImage("exported/iTunesArtwork.png", "exported/iTunesArtwork512.png", 0, 0, 512, 512)
+
+    for icon in filesSizes:
+        cmd = "gm convert -resize {1}x{1} exported/iTunesArtwork512.png exported/{0}".format(icon[0], icon[1])
+        print cmd
+        subprocess.call([cmd], shell=True)
+        copyProducts.append(("exported/" + icon[0], "../TD Launch/Images.xcassets/AppIcon.appiconset/"))
+    
+    
+
+    cmd = "cp exported/iTunesArtwork512.png exported/iTunesArtwork"
+    subprocess.call([cmd],shell=True)
+    products.append("exported/iTunesArtwork")
+
+
+
+
+def Spaces():
+    print 
+    print "Spaces to Plists"
+    print
+    if not os.path.exists("exported/Levels"):
+        os.makedirs("exported/Levels")
+
+    for level in ["Level"+str(n) for n in range(0,11)]:
+        if not os.path.exists(level+".json"):
+            continue
+
+        srcModTime = max(os.path.getmtime(level+".idraw"), os.path.getmtime(level+".json"))
+        dstFile = "exported/Levels/{0}".format(level)
+        dstModTime = 0
+        if os.path.exists(dstFile+".m"):
+            dstModTime = os.path.getmtime(dstFile+".m")
+
+        if srcModTime > dstModTime:
+            print "%s.idraw --> %s.m,h" % (level, level)
+            subprocess.call("./idraw_to_gamelevel header "+level+".idraw > exported/Levels/"+level+".h", shell=True)
+            subprocess.call("./idraw_to_gamelevel code "+level+".idraw > exported/Levels/"+level+".m", shell=True)
+            products.append(dstFile+".m")
+            products.append(dstFile+".h")
+            
+
+def Clean():
+    subprocess.call("/bin/rm exported/*.png exported/*.plist exported/Levels/*.plist", shell=True)
+
+if __name__ == "__main__":
+    exported = sys.argv[1:]
+
+    debug = ("debug" in exported)
+
+    if "Clean" in sys.argv[1:]:
+        Clean()
+
+    ExportImages()
+
+    if isExported("spritesheets"):
+        SpriteSheets()
+
+    if isExported("tilemaps"):
+        Tilemaps()
+
+    if isExported("spaces"):
+        Spaces()
+
+    if isExported("icons"):
+        Icons()
+
+    if isExported("splash"):
+        SplashScreen()
+
+    if isExported("install"):
+        if len(products) > 0:
+            for product in products:
+                if "/Levels/" in product:
+                    print "Installing %s to ../TD Launch/Levels" % (product,)
+                    subprocess.call("cp " + product + " ../TD\\ Launch/Levels", shell=True)
+                else:
+                    print "Installing %s to ../TD Launch/Resources" % (product,)
+                    subprocess.call("cp " + product + " ../TD\\ Launch/Resources", shell=True)
+
+        if len(copyProducts) > 0:
+            for source, target in copyProducts:
+                print 'Copying "' + source + '" to "' + target + '"'
+                subprocess.call('cp "' + source + '" "' + target + '"', shell=True)
+

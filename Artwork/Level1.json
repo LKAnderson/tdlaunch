@@ -1,0 +1,15 @@
+{
+    "LevelData": {
+        "ID": 1,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "AvailableFieldObjects":[
+          { "Type": "Plank", "Count":2 },
+          { "Type": "Trampoline", "Count":2},
+          { "Type": "AirBlower", "Count":2}
+        ]
+    }
+}
+

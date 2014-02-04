@@ -1,0 +1,39 @@
+{
+    "LevelData": {
+        "ID": 6,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "AvailableFieldObjects":[
+          { "Type": "Plank", "Count":5 },
+          { "Type": "Slide", "Count":5 },
+          { "Type": "Trampoline", "Count":5},
+          { "Type": "Trampoline2x", "Count": 5}, 
+          { "Type": "Trampoline3x", "Count":5},
+          { "Type": "AirBlower", "Count":5},
+          { "Type": "AirBlower2x", "Count": 5 },
+          { "Type": "AirBlower3x", "Count": 5 }
+        ],
+        "Foreground":[
+          { "Name":"L6-Water.png", "X":0, "Y":-5 }
+        ]
+    },
+    
+    
+    "ProjectileSources":[
+                         {
+                         "position":{"x":768, "y":4100},
+                         "rotationAngle":0,
+                         "rate":0.033,
+                         "initialDelay":60,
+                         "initialVelocity":{"x":0,"y":0},
+                         "impulseCount":1,
+                         "impulseTimer":15,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"AntiGravity",
+                         "maxCurrent":1
+                         }
+                         ]
+}
+

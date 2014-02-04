@@ -1,0 +1,866 @@
+#!/usr/bin/python
+
+import json
+import subprocess 
+import sys
+import zipfile
+import os.path
+import plistlib
+import math
+
+
+class Wall:
+    def __init__(self):
+        self.obstacleType = "Wall"
+        self.friction = 0
+        self.elasticity = 0
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+        self.isSensor = False
+        self.properties = {}
+
+
+
+
+class LaunchPad:
+    def __init__(self):
+        self.left = 0
+        self.right = 0
+        self.height = 0
+        self.forceX = 0
+        self.forceY = 0
+
+
+
+class Target:
+    def __init__(self):
+        self.x1 = 0
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+
+
+
+class AvailableFieldObject:
+    def __init__(self):
+        self.defintion = None
+        self.count = 0
+
+
+class Gem:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.type = "Square"
+
+
+
+
+class FieldObjectObstacle:
+    def __init__(self):
+        self.obstacleType = "FieldObject"
+        self.fotype = None
+        self.x = 0
+        self.y = 0
+        self.angle = 0
+        self.animations = []
+
+
+
+class OscillationAnimation:
+    def __init__(self):
+        self.animationType = "Oscillation"
+        self.direction = "Horizontal"
+        self.frequency = 1
+        self.rangeBegin = 0
+        self.rangeEnd = 0
+
+
+
+class RotationAnimation:
+    def __init__(self):
+        self.animationType = "Rotation"
+        self.frequency = 1
+        self.direction = "Clockwise"
+
+        
+class FollowPathAnimation:
+    def __init__(self):
+        self.animationType = "FollowPath"
+        self.frequency = 1   #Ignored for this type
+        self.duration = 1
+        self.loop = False
+        self.pathName = None
+
+
+class Point:
+    def __init__(self, x=None, y=None):
+        self.x = x
+        self.y = y
+
+class PathSegment:
+    def __init__(self, fromPoint=None, toPoint=None):
+        self.fr = fromPoint
+        self.to = toPoint
+
+    def length(self):
+        dy = self.fr.y - self.to.y
+        dx = self.fr.x - self.to.x
+        return math.sqrt( (dy*dy) + (dx*dx) )
+
+class AreaSensor:
+    def __init__(self):
+        self.vertices = []
+        self.position = (0,0)
+        self.properties = {}
+
+
+
+class ProjectileSource:
+    def __init__(self, jsonObj):
+        self.position = jsonObj["position"]
+        self.rotationAngle = jsonObj["rotationAngle"]
+        self.rate = jsonObj["rate"]
+        self.initialDelay = jsonObj["initialDelay"] if "initialDelay" in jsonObj else 0
+        self.initialVelocity = jsonObj["initialVelocity"]
+        self.impulseCount = jsonObj["impulseCount"]
+        self.impulseTimer = jsonObj["impulseTimer"]
+        self.impulse = jsonObj["impulse"]
+        self.objectType = jsonObj["objectType"]
+        self.maxCurrent = jsonObj["maxCurrent"] if "maxCurrent" in jsonObj else 0
+        self.endAnimation = jsonObj["endAnimation"] if "endAnimation" in jsonObj else None
+        
+        
+        
+class SceneryImage:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.z = 10001      # foreground only
+        self.image = "None"
+        self.visible = True
+        self.flipY = False
+        
+class StaticBackground:
+    def __init__(self):
+        self.name = None
+        self.anchor = None      # point
+        self.position = None    # point
+
+
+class Resource:
+    def __init__(self):
+        self.type = None
+        self.file = None
+
+
+
+
+class SpaceDefinition:
+    def __init__(self):
+        self.ID = 0
+        self.debug = False
+        self.width = 0
+        self.height = 0
+        self.gravityX = 0
+        self.gravityY = 0
+        self.damping = 0
+        self.ceiling = None 
+        self.rightWall = None
+        self.leftWall = None
+        self.ground = None
+        self.launchpad = None
+        self.targets = []
+        self.availableFieldObjects = []
+        self.gems = []
+        self.obstacles = []
+        self.staticBackgrounds = []
+        self.backgroundImages = []
+        self.foregroundImages = []
+        self.resources = []
+        self.namedPaths = {}
+        self.projectileSources = []
+        self.areaSensors = []
+
+
+    def generate(self):
+        header = '// AUTO-GENERATED: LEVEL %d\n' % (self.ID,)
+        header += '#import "GameLevel.h"\n'
+        header += '@interface GameLevel_%d : GameLevel\n' % (self.ID,)
+        header += '@end\n'
+        
+        code = '// AUTO-GENERATED: LEVEL %d\n' % (self.ID,)
+        code += '#import "Level%d.h"\n' % (self.ID,)
+        code += '#import "Character.h"\n'
+        code += '#import "FieldObject.h"\n'
+        code += '#import "CollisionTypes.h"\n'
+        code += '#import "Screen.h"\n'
+        code += '#import "Animation.h"\n'
+        
+        code += '\n'
+        code += '#define POSSIBLY_UNUSED(A) if (A)\n'
+        code += '\n'
+        
+        code += '@implementation GameLevel_%d\n' % (self.ID,)
+        code += ''
+        code += '- (bool) debug { return %s; }\n\n' % (("YES" if self.debug else "NO"),)
+        code += '- (id) init {\n'
+        code += '  if ((self = [super init])){\n'
+        code += '    self.ID = %d;\n' % (self.ID,)
+        code += '    self.gameSize = CGSizeMake(SCRNX(%d),SCRNY(%d));\n' % (self.width, self.height)
+        
+        #code += '    //AvailableFieldObjects\n'
+        #code += '    AvailableFieldObject *afo;                         POSSIBLY_UNUSED(afo);\n'
+        #for afo in self.availableFieldObjects:
+        #    code += '    afo = [[AvailableFieldObject alloc] init];\n'
+        #    code += '    afo.definition = [FieldObjectFactory fieldObjectForName:@"%s"];\n' % (afo.definition,)
+        #    code += '    afo.count = %d;\n' % (afo.count,)
+        #    code += '    [self.availableFieldObjects addObject:afo];\n'
+        
+        code += '    //Gems/Balloons\n'
+        for gem in self.gems:
+            gemType = 0
+            if gem.type in ("Diamond", "Yellow"):
+                gemType = 1
+            elif gem.type in ("Circle", "Blue"):
+                gemType = 2
+            code += '    [self.gems addObject:[GemDefinition gem:%d at:ccp(SCRNX(%f),SCRNY(%f))]];\n' % (gemType, gem.x, gem.y)
+    
+        code += '\n'
+        code += '  }\n'
+        code += '  return self;\n'
+        code += '}\n'
+        code += '\n'
+        
+        code += '- (ChipmunkSpace*) createSpace {\n'
+        code += '  ChipmunkSpace *space = [[ChipmunkSpace alloc] init];\n'
+        code += '  space.gravity = cpv(%f,%f);\n' % (self.gravityX, self.gravityY)
+        code += '  space.damping = %f;\n' % (self.damping,)
+        
+        code += '  ChipmunkSegmentShape *wall;                      POSSIBLY_UNUSED(wall);\n'
+        
+        for wall in (self.ceiling, self.ground, self.leftWall, self.rightWall):
+            if wall is None:
+                continue
+                
+            radius = 0
+            if "Radius" in wall.properties:
+                radius = float(wall.properties["Radius"])
+
+            code += '  wall = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:%f];\n' % (
+                        wall.x1, wall.y1, wall.x2, wall.y2, radius)
+            code += '  wall.elasticity = %f;\n' % (wall.elasticity,)
+            code += '  wall.friction = %f;\n' % (wall.friction,)
+            code += '  [space addStaticShape:wall];\n'
+
+        
+        if self.launchpad:
+            code += '  //LaunchPad\n'
+            code += '  self.launchPad = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:0];\n' % (
+                            self.launchpad.left, self.launchpad.height, self.launchpad.right, self.launchpad.height)
+            code += '  self.launchPad.elasticity = 0;\n'
+            code += '  self.launchPad.friction = 0;\n'
+            code += '  self.launchForce = cpv(SCRNX(%f),SCRNY(%f));\n' % (float(self.launchpad.forceX), float(self.launchpad.forceY))
+            code += '  self.launchPad.collisionType = CT_LaunchPadSegment;\n'
+            code += '  [space add:self.launchPad];\n'
+            code += '  self.launchSensor = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:0];\n' % (
+                            self.launchpad.left, self.launchpad.height, self.launchpad.right, self.launchpad.height)
+            code += '  self.launchSensor.sensor = YES;\n'
+            code += '  self.launchSensor.collisionType = CT_LaunchPad;\n'
+            code += '  [space add:self.launchSensor];\n'
+        
+        code += '  //Target(s)\n'
+        for target in self.targets:
+            code += '  self.target = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:2];\n' % (
+                    target.x1, target.y1, target.x2, target.y2)
+            code += '  self.target.elasticity = 0;\n'
+            code += '  self.target.friction = 2.5;\n'
+            code += '  self.target.collisionType = CT_Target;\n'
+            code += '  [space add:self.target];\n'
+        
+        code += '  //Obstacles\n'
+        
+        code += '  Sensor *sensor;                                  POSSIBLY_UNUSED(sensor);\n'
+        code += '  ActiveFieldObject *afo;                          POSSIBLY_UNUSED(afo);\n'
+        code += '  RotationAnimation *rotation;                     POSSIBLY_UNUSED(rotation);\n'
+        code += '  OscillationAnimation *oscillation;               POSSIBLY_UNUSED(oscillation);\n'
+        code += '  FollowPathAnimation *followPath;                 POSSIBLY_UNUSED(followPath);\n'
+        
+        
+        for obstacle in self.obstacles:
+            obType = obstacle.obstacleType
+            radius = 4
+            if obType == "Wall":
+                if "Type" in obstacle.properties:
+                    obType = obstacle.properties["Type"]
+                if "Radius" in obstacle.properties:
+                    radius = float(obstacle.properties["Radius"])
+
+            if obType in ("Wall", "ApplyForce", "ToggleSprite", "TogglePhysics"):
+                if obstacle.isSensor:
+                    radius = 1.0
+                    
+                code += '  wall = [[ChipmunkSegmentShape alloc] initWithBody:[space staticBody] from:cpv(SCRNX(%f),SCRNY(%f)) to:cpv(SCRNX(%f),SCRNY(%f)) radius:%f];\n' % (
+                            float(obstacle.x1), float(obstacle.y1), float(obstacle.x2), float(obstacle.y2), float(radius))
+                code += '  [wall setPrevNeighbor:cpv(SCRNX(%f),SCRNY(%f)) nextNeighbor:cpv(SCRNX(%f),SCRNY(%f))];\n' % (
+                            float(obstacle.x1), float(obstacle.y1), float(obstacle.x2), float(obstacle.y2))
+                code += '  wall.elasticity = %f;\n' % (obstacle.elasticity,)
+                code += '  wall.friction = %f;\n' % (obstacle.friction,)
+                if "Name" in obstacle.properties:
+                    code += '  wall.collisionType = CT_NamedWall;\n'
+                    code += '  wall.data = @"%s";\n' % (obstacle.properties["Name"],)
+                
+                if "BottomCollision" in obstacle.properties and obstacle.properties["BottomCollision"] == False:
+                    code += '  wall.collisionType = CT_NoBottomCollision;\n'
+                
+                if obstacle.isSensor:
+                    code += '  wall.sensor = YES;\n'
+                    code += '  wall.collisionType = CT_Sensor;\n'
+                    code += '  sensor = [[Sensor alloc] init];\n'
+                    
+                    if obType == "ApplyForce":
+                        code += '  sensor.type = ApplyForce_Sensor;\n'
+                        code += '  sensor.forceX = %f;\n' % (float(obstacle.properties["ForceX"]),)
+                        code += '  sensor.forceY = %f;\n' % (float(obstacle.properties["ForceY"]),)
+                    
+                    elif obType == "ToggleSprite":
+                        code += '  sensor.type = ToggleSprite_Sensor;\n'
+                        if "Sprite" in obstacle.properties:
+                            code += '  sensor.spriteNames = @[ @"%s" ];\n' % (obstacle.properties["Sprite"],)
+                        elif "Sprites" in obstacle.properties:
+                            code += '  sensor.spriteNames = @[ %s ];\n' % (",".join(["@\""+sp+"\"" for sp in obstacle.properties["Sprites"]]),)
+                        code += '  sensor.leftBegin = Toggle_%s;\n' % ((obstacle.properties["LeftBegin"] if "LeftBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.leftEnd = Toggle_%s;\n' % ((obstacle.properties["LeftEnd"] if "LeftEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.rightBegin = Toggle_%s;\n' % ((obstacle.properties["RightBegin"] if "RightBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.rightEnd = Toggle_%s;\n' % ((obstacle.properties["RightEnd"] if "RightEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.topBegin = Toggle_%s;\n' % ((obstacle.properties["TopBegin"] if "TopBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.topEnd = Toggle_%s;\n' % ((obstacle.properties["TopEnd"] if "TopEnd" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.bottomBegin = Toggle_%s;\n' % ((obstacle.properties["BottomBegin"] if "BottomBegin" in obstacle.properties else "Undefined"),)
+                        code += '  sensor.bottomEnd = Toggle_%s;\n' % ((obstacle.properties["BottomEnd"] if "BottomEnd" in obstacle.properties else "Undefined"),)
+
+                    elif obType == "TogglePhysics":
+                        code += '  sensor.type = TogglePhysics_Sensor;\n'
+                        code += '  sensor.physicsName = @"%s";\n' % (obstacle.properties["Name"],)
+                        code += '  sensor.indicatorName = @"%s";\n' % (obstacle.properties["Indicator"],)
+                    
+                    code += '  wall.data = sensor;\n'
+                    code += '  [self.sensors addObject:sensor];\n'
+
+                code += '  [space add:wall];\n'
+                    
+            elif obType in ("FieldObject"):
+                code += '  afo = [[ActiveFieldObject alloc] init];\n'
+                code += '  afo.definition = [FieldObjectFactory fieldObjectForName:@"%s"];\n' % (obstacle.fotype,)
+                code += '  afo.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (obstacle.x, obstacle.y)
+                code += '  afo.settings.rotation = %f;\n' % (obstacle.angle,)
+                for anim in obstacle.animations:
+                    if anim.animationType == "Rotation":
+                        code += '  rotation = [[RotationAnimation alloc] init];\n'
+                        code += '  rotation.frequency = %f;\n' % (anim.frequency,)
+                        code += '  rotation.isClockwise = %s;\n' % (("YES" if anim.direction == "Clockwise" else "NO"),)
+                        code += '  [afo addAnimation:rotation];\n'
+                    
+                    elif anim.animationType == "Oscillation":
+                        code += '  oscillation = [[OscillationAnimation alloc] init];\n'
+                        code += '  oscillation.homePosition = afo.position;\n'
+                        code += '  oscillation.frequency = %f;\n' % (anim.frequency,)
+                        code += '  oscillation.rangeBegin = %f;\n' % (anim.rangeBegin,)
+                        code += '  oscillation.rangeEnd = %f;\n' % (anim.rangeEnd,)
+                        code += '  oscillation.isHorizontal = %s;\n' % (("YES" if anim.direction == "Horizontal" else "NO"),)
+                        code += '  [afo addAnimation:oscillation];\n'
+
+                    elif anim.animationType == "FollowPath":
+                        segments = self.namedPaths[anim.pathName]
+                        totalLength = sum([s.length() for s in self.namedPaths[anim.pathName]])
+                        code += '  followPath = [[FollowPathAnimation alloc] init];\n'
+                        code += '  followPath.loop = %s;\n' % ("YES" if anim.loop else "NO",)
+                        code += '  [afo addAnimation:followPath];\n'
+                        for ps in self.namedPaths[anim.pathName]:
+                            pctLen = ps.length() / totalLength
+                            duration = anim.duration * pctLen
+                            code += '  [followPath.segments addObject:[AnimatedPathSegment createSegmentFrom:'
+                            code += '  ccp(SCALE(%f),SCALE(%f)) ' % (ps.fr.x, self.height - ps.fr.y)
+                            code += '  to:ccp(SCALE(%f),SCALE(%f)) ' % (ps.to.x, self.height - ps.to.y)
+                            code += '  duration:%f]];\n' % (duration,)
+                        
+                        
+                code += '  [self.staticFieldObjects addObject:afo];\n'
+                    
+        if len(self.areaSensors) > 0:
+            code += '  ChipmunkBody* areaSensorBody;\n'
+            code += '  ChipmunkShape* areaSensorShape;\n'
+            
+            index = 0
+            for areaSensor in self.areaSensors:
+                index += 1
+                code += '  cpVect polyPoints%d_[%d] = {' % (index, len(areaSensor.vertices))
+                code += ",".join([" cpv(SCRNX({0}),SCRNY(-1*{1}))".format(point[0], point[1]) for point in areaSensor.vertices])
+                code += ' };\n'
+                code += '  CP_CONVEX_HULL({0}, polyPoints{1}_, vertCount{1}, polyPoints{1});\n'.format(len(areaSensor.vertices), index)
+                code += '  areaSensorBody = [ChipmunkBody staticBody];\n'
+                code += '  areaSensorBody.pos = cpv(SCRNX(%f), SCRNY(self.gameSize.height - %f));\n' % (areaSensor.position[0], areaSensor.position[1])
+                code += '  areaSensorShape = [ChipmunkPolyShape polyWithBody:areaSensorBody count:vertCount{0} verts:polyPoints{0} offset:cpvzero];\n'.format(index)
+                code += '  areaSensorShape.sensor = YES;\n'
+                code += '  areaSensorShape.collisionType = CT_AreaSensor;\n'
+                code += '  [space add:areaSensorShape];\n'
+                
+                code += '  sensor = [[Sensor alloc] init];\n'
+            
+                if areaSensor.properties["Type"] == "ApplyForce":
+                    code += '  sensor.type = ApplyForce_Sensor;\n'
+                    code += '  sensor.forceX = %f;\n' % (float(areaSensor.properties["ForceX"]),)
+                    code += '  sensor.forceY = %f;\n' % (float(areaSensor.properties["ForceY"]),)
+            
+                elif areaSensor.properties["Type"] == "ToggleSprite":
+                    code += '  sensor.type = ToggleSprite_Sensor;\n'
+                    if "Sprite" in areaSensor.properties:
+                        code += '  sensor.spriteNames = @[ @"%s" ];\n' % (areaSensor.properties["Sprite"],)
+                    elif "Sprites" in areaSensor.properties:
+                        code += '  sensor.spriteNames = @[ %s ];\n' % (",".join(["@\""+sp+"\"" for sp in areaSensor.properties["Sprites"]]),)
+                    
+
+                elif areaSensor.properties["Type"] == "TogglePhysics":
+                    code += '  sensor.type = TogglePhysics_Sensor;\n'
+                    code += '  sensor.physicsName = @"%s";\n' % (areaSensor.properties["Name"],)
+            
+                code += '  sensor.inArea = Toggle_{0};\n'.format(areaSensor.properties["InArea"])
+                code += '  areaSensorShape.data = sensor;\n'
+                code += '  [self.sensors addObject:sensor];\n'
+                        
+        code += '  //Gems\n'
+        code += '  for (GemDefinition* gem in self.gems){\n'
+        code += '    ChipmunkBody *body = [ChipmunkBody staticBody];\n'
+        code += '    body.pos = gem.position;\n'
+        code += '    ChipmunkShape *shape;\n'
+        code += '    int size = 40 - (5 * gem.type);\n'
+        code += '    shape = [ChipmunkPolyShape boxWithBody:body width:SCRNX(size) height:SCRNY(size)];\n'
+        code += '    shape.sensor = YES;\n'
+        code += '    shape.collisionType = CT_Gem;\n'
+        code += '    gem.shape = shape;\n'
+        code += '    [space add:shape];\n'
+        code += '  }\n'
+        
+        code += '  //ActiveFieldObjects\n'
+        code += '  for (ActiveFieldObject *obj in self.gameConfig.activeFieldObjects){\n'
+        code += '    obj.body = [obj.definition createInSpace:space position:obj.position angle:obj.settings.rotation rogue:NO];\n'
+        code += '  }\n'
+
+        if len(self.projectileSources) > 0:
+            code += '  ProjectileSource* ps;\n'
+            for ps in self.projectileSources:
+                if ps.maxCurrent == 0:
+                    code += '  ps = [[ProjectileSource alloc] init:@"%s"];\n' % (ps.objectType,)
+                else:
+                    code += '  ps = [[ProjectileSource alloc] initWithCapacity:%d type:@"%s"];\n' % (ps.maxCurrent,ps.objectType)
+                code += '  ps.position = ccp(SCALE(%d),SCALE(%d));\n' % (ps.position["x"], ps.position["y"])
+                code += '  ps.rotationAngle = %f;\n' % (ps.rotationAngle,)
+                code += '  ps.rate = %f;\n' % (ps.rate,)
+                code += '  ps.initialDelay = %f;\n' % (ps.initialDelay,)
+                code += '  ps.initialVelocity = cpv(SCALE(%f),SCALE(%f));\n' % (ps.initialVelocity["x"], ps.initialVelocity["y"])
+                code += '  ps.impulseCount = %d;\n' % (ps.impulseCount,)
+                code += '  ps.impulseTimer = %f;\n' % (ps.impulseTimer,)
+                code += '  ps.impulse = cpv(SCALE(%f),SCALE(%f));\n' % (ps.impulse["x"], ps.impulse["y"])
+                if ps.endAnimation is not None:
+                    code += '  ps.endAnimation = @"%s";\n' % (ps.endAnimation,)
+                code += '  [self.projectileSources addObject:ps];\n'
+                code += '\n'
+        
+        code += '  return space;\n'
+        code += '} // end of createSpace()\n'
+        
+        code += '\n'
+        code += '- (void) addSceneryToNode:(CCNode*)node staticNode:(CCNode*)staticNode {\n'
+        code += '  CCSprite *image;                                       POSSIBLY_UNUSED(image);\n'
+        if len(self.staticBackgrounds) > 0:
+            code += '  CGSize screen = [[CCDirector sharedDirector] winSize];\n'
+            
+        for img in self.staticBackgrounds:
+            code += '  image = [self loadImage:@"%s"];\n' % (img.name,)
+            code += '  image.anchorPoint = ccp(%f,%f);\n' % (img.anchor.x, img.anchor.y)
+            code += '  image.position = ccp(screen.width * %f,screen.height * %f);\n' % (img.position.x, img.position.y)
+            code += '  [staticNode addChild:image];\n'
+            
+        for img in self.backgroundImages:
+            code += '  image = [self loadImage:@"%s"];\n' % (img.image,)
+            code += '  image.anchorPoint = ccp(0,0);\n'
+            if img.flipY:
+                code += '  image.position = ccp(SCRNX(%f), SCRNY(%f)-image.contentSize.height);\n' % (float(img.x), float(self.height-img.y))
+            else:
+                code += '  image.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (float(img.x), float(img.y))
+            code += '  [node addChild:image z:-999999];\n'
+            
+        for img in self.foregroundImages:
+            code += '  image = [self loadImage:@"%s"];\n' % (img.image,)
+            code += '  image.anchorPoint = ccp(0,0);\n'
+            if img.flipY:
+                code += '  image.position = ccp(SCRNX(%f), SCRNY(%f)-image.contentSize.height);\n' % (float(img.x), float(self.height-img.y))
+            else:
+                code += '  image.position = ccp(SCRNX(%f),SCRNY(%f));\n' % (float(img.x), float(img.y))
+
+            if not img.visible:
+                code += '  image.opacity = 0;\n'
+            code += '  [node addChild:image z:%d];\n' % (img.z,)
+            code += '  [self.namedSprites setObject:image forKey:@"%s"];\n' % (img.image,)
+        code += '}\n'
+
+        if len(self.resources) > 0:
+            code += '- (void) loadResources:(CCNode*)node{\n'
+            for resource in self.resources:
+                if resource.type == "Spritesheet":
+                    code += '  [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"{0}.plist"];\n'.format(resource.file)
+                    code += '  [node addChild:[CCSpriteBatchNode batchNodeWithFile:@"{0}.png"]];\n'.format(resource.file)
+            code += '}\n\n'
+
+            code += '- (void) unloadResources:(CCNode*)node{\n'
+            for resource in self.resources:
+                if resource.type == "Spritesheet":
+                    code += '  [[CCSpriteFrameCache sharedSpriteFrameCache] removeSpriteFramesFromFile:@"{0}.plist"];\n'.format(resource.file)
+            code += '}\n\n'
+
+        
+        code += "@end\n"
+        
+        return header, code
+        
+    
+def idrawToJson(idrawFileName):
+    idraw = zipfile.ZipFile(idrawFileName, "r")
+    plist = idraw.open("data.xml")
+    plutil = subprocess.Popen(["/usr/bin/plutil", "-convert", "xml1", "-o", "-", "-"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    plistStr, err = plutil.communicate(input=plist.read())
+    plist.close()
+    idraw.close()
+    idrawData = plistlib.readPlistFromString(plistStr)
+
+    # Load metadata file, if exists
+    metaData = None
+    mdFile = idrawFileName.replace(".idraw", ".json")
+    if os.path.exists(mdFile):
+        metaData = json.loads(file(mdFile,"r").read())
+
+    return idrawData, metaData
+    
+
+def getProperties(text, spaceLayer, metaData):
+    parts = text.split()
+    if len(parts) <= 1:
+        return {}
+    
+    if parts[1].startswith("{"):
+        return json.loads(" ".join(parts[1:]))
+    
+    if parts[1] == "ref":
+        refName = parts[2]
+        if metaData is not None:
+            if refName in metaData:
+                return metaData[refName]
+    
+        for shape in spaceLayer["Shapes"]:
+            if "Text" in shape and shape["Text"].startswith(refName):
+                return json.loads(shape["Text"][len(refName):])
+                
+    return {}
+    
+
+
+
+def pathToLineSegments( pathShape ):
+
+    posX, posY = parseNumberList(pathShape["Position"])
+    
+    # note: iDraw 2.3 changed the path format to a string of Mx,y Cx,y,x,y,x,y Lx,y
+    points = []
+    closePath = False
+    pathElements = pathShape["Path"]
+    if type(pathElements) == str:
+        cmds = []
+        for cmd in pathElements.split(" "):
+            cmdType, point = cmd[0], cmd[1:]
+            if cmdType == "M":
+                cmds.append({"ElementType":"MoveTo", "Point1":"["+point+"]"})
+            elif cmdType == "L":
+                cmds.append({"ElementType":"LineTo", "Point1":"["+point+"]"})
+            elif cmdType == "C":
+                nums = parseNumberList("["+point+"]")
+                cmds.append({"ElementType":"CubicCurveTo", "Point1":"[{0},{1}]".format(nums[2], nums[3])})
+            elif cmdType == "Z":
+                cmds.append({"ElementType":"Close"})
+            else:
+                print >> sys.stderr, "Unknown path type:", cmdType
+
+        pathElements = cmds
+    else:
+        pathElements = pathElements["PathElements"]
+
+    for cmd in pathElements:
+        if cmd["ElementType"] in ("MoveTo", "LineTo", "CubicCurveTo"):
+            if cmd["ElementType"] == "MoveTo":
+                points.append("break")
+                
+            dx,dy = parseNumberList(cmd["Point1"])
+            points.append((posX+dx, posY+dy))
+
+        elif cmd["ElementType"] == "Close":
+            closePath = True
+        else:
+            print >> sys.stderr, "Unknown path element:", cmd["ElementType"]
+
+
+    if closePath:
+        points.append(points[0])
+
+    segments = []
+    for i in range(1, len(points)):
+        if points[i] == "break" or points[i-1] == "break":
+            continue
+        segments.append( (points[i-1], points[i]) )
+
+    return segments
+
+
+
+def processSpaceLayer(layer, space, levelMetadata):
+    
+    for shape in layer["Shapes"]:
+        if shape["ShapeType"] == "PathShape" and "Label" in shape and "LaunchPad" in shape["Label"]["Text"]:
+            properties = getProperties(shape["Label"]["Text"], layer, levelMetadata)
+            lines = pathToLineSegments(shape)
+            space.launchpad = LaunchPad()
+            space.launchpad.left = min(lines[0][0][0], lines[0][1][0])
+            space.launchpad.right = max(lines[0][0][0], lines[0][1][0])
+            space.launchpad.height = space.height - lines[0][0][1]
+            space.launchpad.forceX = properties["ForceX"] if "ForceX" in properties else 0
+            space.launchpad.forceY = properties["ForceY"] if "ForceY" in properties else 0
+            
+        elif shape["ShapeType"] == "PathShape" and "Label" in shape and "Target" in shape["Label"]["Text"]:
+            lines = pathToLineSegments(shape)
+            target = Target()
+            target.x1, target.y1 = lines[0][0]
+            target.x2, target.y2 = lines[0][1]
+            target.y1 = space.height - target.y1
+            target.y2 = space.height - target.y2
+            space.targets.append(target)
+
+        elif "Label" in shape and shape["Label"]["Text"].split()[0] in ("Gem", "Balloon"):
+            gem = Gem()
+            gem.x, gem.y = parseNumberList(shape["Position"])
+            gem.y = space.height - gem.y
+            color = [[0,0],[0,0]]
+            if "FillColor" in shape:
+                color = parseNumberList(shape["FillColor"])
+            elif "Appearance" in shape:
+                color = parseNumberList(shape["Appearance"][0]["FillColor"])
+
+            if color[0][0] == 1:
+                if color[0][1] == 1:
+                    gem.type = "Yellow"
+                else:
+                    gem.type = "Red"
+            elif color[1][0] == 1:
+                gem.type = "Blue"
+            
+            if "group" in shape["Label"]["Text"]:
+                gem.group = shape["Label"]["Text"].split()[-1]
+            
+            space.gems.append(gem)
+            
+        elif "Label" in shape and shape["Label"]["Text"].startswith("FieldObject"):
+            properties = getProperties(shape["Label"]["Text"], layer, levelMetadata)
+            fo = FieldObjectObstacle()
+            fo.x, fo.y = parseNumberList(shape["Position"])
+            fo.y = space.height - fo.y
+            
+            fo.fotype = properties["Type"] if "Type" in properties else None
+            fo.angle = properties["Angle"] if "Angle" in properties else 0
+            if "Animations" in properties:
+                for a in properties["Animations"]:
+                    if a["Type"] == "Oscillation":
+                        anim = OscillationAnimation()
+                        anim.direction = a["Direction"]
+                        anim.frequency = a["Frequency"]
+                        anim.rangeBegin = a["RangeBegin"]
+                        anim.rangeEnd = a["RangeEnd"]
+                        fo.animations.append(anim)
+                    
+                    elif a["Type"] == "Rotation":
+                        anim = RotationAnimation()
+                        anim.frequency = a["Frequency"]
+                        anim.direction = a["Direction"]
+                        fo.animations.append(anim)
+
+                    elif a["Type"] == "FollowPath":
+                        anim = FollowPathAnimation()
+                        anim.duration = a["Duration"]
+                        anim.loop = a["Loop"]
+                        anim.pathName = a["Path"]
+                        fo.animations.append(anim)
+                        
+            space.obstacles.append(fo)
+
+        elif shape["ShapeType"] == "PathShape" and "Label" in shape and shape["Label"]["Text"].startswith("AnimatedPath"):
+            # Get Path Segments and store them, since this is just the path.  FieldObject animations will reference it.
+            pathName = shape["Label"]["Text"].split()[1]
+            segments = []
+            for line in pathToLineSegments( shape ):
+                segment = PathSegment( fromPoint=Point(line[0][0], line[0][1]), toPoint=Point(line[1][0], line[1][1]) )
+                segments.append(segment)
+            space.namedPaths[pathName] = segments
+
+        elif shape["ShapeType"] == "PathShape" and "Label" in shape and shape["Label"]["Text"].startswith("AreaSensor"):
+            # AreaSensor will become a polygon physics shape.  It must be convex.
+            sensor = AreaSensor()
+            sensor.position = parseNumberList(shape["Position"])
+            sensor.properties = getProperties(shape["Label"]["Text"], layer, levelMetadata)
+            for point in [x[1:] for x in shape["Path"].split()]:
+                if point != "":
+                    sensor.vertices.append(point.split(","))
+            space.areaSensors.append(sensor)
+        
+
+        elif shape["ShapeType"] == "PathShape":
+            # Must be a wall
+            for line in pathToLineSegments(shape):
+                wall = Wall()
+                wall.x1, wall.y1 = line[0][0], space.height - line[0][1]
+                wall.x2, wall.y2 = line[1][0], space.height - line[1][1]
+                props = getProperties(shape["Label"]["Text"], layer, levelMetadata) if "Label" in shape else {}
+                wall.friction = props["Friction"] if "Friction" in props else 1.0
+                wall.elasticity = props["Elasticity"] if "Elasticity" in props else 0
+                wall.isSensor = True if "Class" in props and props["Class"] == "Sensor" else False
+                if wall.isSensor:
+                    if "Left" in props:
+                        props["LeftEnd"] = props["Left"]
+                    if "Right" in props:
+                        props["RightEnd"] = props["Right"]
+                    if "Top" in props:
+                        props["TopEnd"] = props["Top"]
+                    if "Bottom" in props:
+                        props["BottomEnd"] = props["Bottom"]
+
+
+                wall.properties = props
+                space.obstacles.append(wall)
+                
+
+
+def parseNumberList(listStr):
+    return json.loads(listStr.replace("{", "[").replace("}", "]"))
+    
+
+def processSpace(module, idrawData, levelMetaData):
+
+    space = SpaceDefinition()
+
+    space.width, space.height = parseNumberList(idrawData["Dimensions"])
+    
+    # Find a TextShape in the Space that has "ID:" in it
+    spaceProps = None
+    if levelMetaData is not None:
+        spaceProps = levelMetaData["LevelData"]
+
+    else:
+        if spaceProps is None:
+            for layer in idrawData["Layers"]:
+                for shape in layer["Shapes"]:
+                    if shape["ShapeType"] == "TextShape" and shape["Text"].startswith("LevelData"):
+                        spaceProps = json.loads(shape["Text"][len("LevelData"):])
+                        break
+
+    if spaceProps is None:
+        print >> sys.stderr, "Error no properties for space"
+        return
+    
+    space.ID = spaceProps["ID"]
+    space.debug = spaceProps["Debug"]
+    space.gravityX = spaceProps["GravityX"]
+    space.gravityY = spaceProps["GravityY"]
+    space.damping = spaceProps["Damping"]
+    
+    # Auto-calc the background image tiles
+    bg = [layer for layer in idrawData["Layers"] if layer["Label"].startswith("Background")]
+    if len(bg) > 0:
+        height = 0
+        while height < space.height:
+            width = 0
+            while width < space.width:
+                si = SceneryImage()
+                si.image = "L%d-Bkg-%d-%d.png" % (space.ID, width, height)
+                si.x, si.y = width, height
+                space.backgroundImages.append(si)
+                width += 1024
+            height += 1024
+            
+    if "Background" in spaceProps:
+        for bg in spaceProps["Background"]:
+            si = SceneryImage()
+            si.image, si.x, si.y = bg["Name"], bg["X"], bg["Y"]
+            if "FlipY" in bg:
+                si.flipY = bg["FlipY"]
+            space.backgroundImages.append(si)
+            
+    if "StaticBackground" in spaceProps:
+        for sbg in spaceProps["StaticBackground"]:
+            bkg = StaticBackground()
+            bkg.name = sbg["Name"]
+            bkg.anchor = Point(sbg["Anchor"]["X"], sbg["Anchor"]["Y"])
+            bkg.position = Point(sbg["X"], sbg["Y"])
+            space.staticBackgrounds.append(bkg)
+        
+    if "Foreground" in spaceProps:
+        for fg in spaceProps["Foreground"]:
+            si = SceneryImage()
+            si.image, si.x, si.y = fg["Name"], fg["X"], fg["Y"]
+            if "FlipY" in fg:
+                si.flipY = fg["FlipY"]
+                
+            if "Z" in fg:
+                si.z = fg["Z"]
+                
+            if "Visible" in fg:
+                si.visible = fg["Visible"]
+                
+            space.foregroundImages.append(si)
+
+    if "LoadResources" in spaceProps:
+        for resource in spaceProps["LoadResources"]:
+            res = Resource()
+            res.type = resource["Type"]
+            res.file = resource["File"]
+            space.resources.append(res)
+
+    for layer in idrawData["Layers"]:
+        if layer["Label"] == "Space":
+            processSpaceLayer(layer, space, levelMetadata)
+
+    if "ProjectileSources" in levelMetaData:
+        for ps in levelMetaData["ProjectileSources"]:
+            space.projectileSources.append(ProjectileSource(ps))
+            
+
+    header, code = space.generate()
+    if module == "header":
+        print header
+    else:
+        print code
+
+
+
+if __name__ == "__main__":
+    for arg in sys.argv[2:]:
+        idrawData, levelMetadata = idrawToJson(arg)
+        processSpace(sys.argv[1], idrawData, levelMetadata)
+
+
+            
+                    
+            
+                    
+
+                
+
+
+
+
+

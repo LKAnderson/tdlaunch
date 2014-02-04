@@ -1,0 +1,37 @@
+{
+    "LevelData": {
+        "ID": 4,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9,
+        "AvailableFieldObjects":[
+            { "Type": "Plank", "Count":5 },
+            { "Type": "Slide", "Count":5 },
+            { "Type": "Trampoline", "Count":5},
+            { "Type": "Trampoline2x", "Count": 5}, 
+            { "Type": "Trampoline3x", "Count":5},
+            { "Type": "AirBlower", "Count":5},
+            { "Type": "AirBlower2x", "Count": 5 },
+            { "Type": "AirBlower3x", "Count": 5 }
+        ],
+        "Foreground":[
+            { "Name":"L4-Tunnel.png", "X":1237.996, "Y":0, "Z":500, "Visible":false },
+            { "Name":"L4-Cave.png",   "X":1368.115, "Y":148.047, "Z":500, "Visible":false}
+        ]
+    },
+
+    "TunnelSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "InArea": "On",
+        "Sprites":["L4-Tunnel.png"]
+    },
+
+    "CaveSensor": {
+        "Class":"AreaSensor",
+        "Type":"ToggleSprite",
+        "InArea":"On",
+        "Sprites":["L4-Cave.png", "L4-Tunnel.png"]
+    }
+}

@@ -1,0 +1,72 @@
+{
+    "LevelData": {
+        "ID": 8,
+        "Debug": false,
+        "GravityX":0,
+        "GravityY":-400,
+        "Damping":0.9
+    },
+    
+    "ProjectileSources":[
+                         {
+                         "position":{"x":200, "y":2200},
+                         "rotationAngle":0,
+                         "rate":0.5,
+                         "initialVelocity":{"x":0,"y":-100},
+                         "impulseCount":1,
+                         "impulseTimer":12,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"Boulder",
+                         "maxCurrent":10,
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "position":{"x":3846, "y":2200},
+                         "rotationAngle":0,
+                         "rate":0.5,
+                         "initialDelay":1,
+                         "initialVelocity":{"x":0,"y":-100},
+                         "impulseCount":1,
+                         "impulseTimer":15,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"Boulder",
+                         "maxCurrent":10,
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.20,
+                         "initialVelocity":{"x":-900,"y":50},
+                         "impulseCount":4,
+                         "impulseTimer":2,
+                         "impulse":{"x":0, "y":400},
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "initialDelay":3,
+                         "position":{"x":4100, "y":2000},
+                         "rotationAngle":0,
+                         "rate":0.17,
+                         "initialVelocity":{"x":-1150,"y":260},
+                         "impulseCount":3,
+                         "impulseTimer":2.5,
+                         "impulse":{"x":0, "y":300},
+                         "objectType":"Bird",
+                         "endAnimation":"poof"
+                         },
+                         {
+                         "position":{"x":768, "y":4100},
+                         "rotationAngle":0,
+                         "rate":0.033,
+                         "initialDelay":60,
+                         "initialVelocity":{"x":0,"y":0},
+                         "impulseCount":1,
+                         "impulseTimer":15,
+                         "impulse":{"x":0, "y":0},
+                         "objectType":"AntiGravity",
+                         "maxCurrent":1
+                         }
+                         ]
+}
