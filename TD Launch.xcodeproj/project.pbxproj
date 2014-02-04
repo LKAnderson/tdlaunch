@@ -234,10 +234,6 @@
 		2499E31B171C325D0018F8CD /* L7-Bkg-3072-0-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2499E30B171C325D0018F8CD /* L7-Bkg-3072-0-ipadhd.png */; };
 		2499E31C171C325D0018F8CD /* L7-Bkg-3072-1024-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2499E30C171C325D0018F8CD /* L7-Bkg-3072-1024-ipad.png */; };
 		2499E31D171C325D0018F8CD /* L7-Bkg-3072-1024-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2499E30D171C325D0018F8CD /* L7-Bkg-3072-1024-ipadhd.png */; };
-		249B0B4C17EB3B7D00AEF1B8 /* FieldTutorial-ipad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 249B0B4817EB3B7D00AEF1B8 /* FieldTutorial-ipad.plist */; };
-		249B0B4D17EB3B7D00AEF1B8 /* FieldTutorial-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 249B0B4917EB3B7D00AEF1B8 /* FieldTutorial-ipad.png */; };
-		249B0B4E17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 249B0B4A17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.plist */; };
-		249B0B4F17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 249B0B4B17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.png */; };
 		249B0B5217EBD08600AEF1B8 /* TutorialDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 249B0B5117EBD08600AEF1B8 /* TutorialDialog.m */; };
 		249B0B8F17F4663700AEF1B8 /* EventManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 249B0B8E17F4663700AEF1B8 /* EventManager.m */; };
 		249B0B9417F74DCE00AEF1B8 /* RecapBoard-ipad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 249B0B9017F74DCE00AEF1B8 /* RecapBoard-ipad.plist */; };
@@ -940,10 +936,6 @@
 		2499E30B171C325D0018F8CD /* L7-Bkg-3072-0-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L7-Bkg-3072-0-ipadhd.png"; path = "Resources/L7-Bkg-3072-0-ipadhd.png"; sourceTree = "<group>"; };
 		2499E30C171C325D0018F8CD /* L7-Bkg-3072-1024-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L7-Bkg-3072-1024-ipad.png"; path = "Resources/L7-Bkg-3072-1024-ipad.png"; sourceTree = "<group>"; };
 		2499E30D171C325D0018F8CD /* L7-Bkg-3072-1024-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L7-Bkg-3072-1024-ipadhd.png"; path = "Resources/L7-Bkg-3072-1024-ipadhd.png"; sourceTree = "<group>"; };
-		249B0B4817EB3B7D00AEF1B8 /* FieldTutorial-ipad.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "FieldTutorial-ipad.plist"; path = "Resources/FieldTutorial-ipad.plist"; sourceTree = "<group>"; };
-		249B0B4917EB3B7D00AEF1B8 /* FieldTutorial-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FieldTutorial-ipad.png"; path = "Resources/FieldTutorial-ipad.png"; sourceTree = "<group>"; };
-		249B0B4A17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "FieldTutorial-ipadhd.plist"; path = "Resources/FieldTutorial-ipadhd.plist"; sourceTree = "<group>"; };
-		249B0B4B17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FieldTutorial-ipadhd.png"; path = "Resources/FieldTutorial-ipadhd.png"; sourceTree = "<group>"; };
 		249B0B5017EBD08600AEF1B8 /* TutorialDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialDialog.h; sourceTree = "<group>"; };
 		249B0B5117EBD08600AEF1B8 /* TutorialDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialDialog.m; sourceTree = "<group>"; };
 		249B0B8D17F4663700AEF1B8 /* EventManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventManager.h; sourceTree = "<group>"; };
@@ -1539,10 +1531,6 @@
 			children = (
 				24E84019186F7DA800A88CDE /* IntroLayer-ipad.png */,
 				24E8401A186F7DA800A88CDE /* IntroLayer-ipadhd.png */,
-				249B0B4817EB3B7D00AEF1B8 /* FieldTutorial-ipad.plist */,
-				249B0B4917EB3B7D00AEF1B8 /* FieldTutorial-ipad.png */,
-				249B0B4A17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.plist */,
-				249B0B4B17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.png */,
 				242D8464160B52D500582634 /* LevelMenu-ipad.png */,
 				2467004F16108FF900BDDD64 /* LevelMenu-ipadhd.png */,
 				247B20391627A50C00E57247 /* LevelMenuItems-ipad.plist */,
@@ -2135,7 +2123,6 @@
 				24D3D447166A472F003C62EE /* L2-Bkg-1024-1024-ipadhd.png in Resources */,
 				2452310E166F796500131AE9 /* L1-Bkg-0-0-ipad.png in Resources */,
 				2452310F166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png in Resources */,
-				249B0B4F17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.png in Resources */,
 				24523110166F796500131AE9 /* L1-Bkg-1024-0-ipad.png in Resources */,
 				24523111166F796500131AE9 /* L1-Bkg-1024-0-ipadhd.png in Resources */,
 				246187CE167A11C300B6C719 /* L3-Bkg-0-0-ipad.png in Resources */,
@@ -2194,7 +2181,6 @@
 				24DB611618608DAC0054F17A /* ChipmunkPro-iPhone in Resources */,
 				2484C672171A15D200CC9A6B /* L6-Water-ipad.png in Resources */,
 				243634DF1833BC780088D248 /* CloudLibrary-ipad.png in Resources */,
-				249B0B4C17EB3B7D00AEF1B8 /* FieldTutorial-ipad.plist in Resources */,
 				24DC0C551888158C00A9BF7D /* TDFontYellow96-ipadhd.fnt in Resources */,
 				2484C673171A15D200CC9A6B /* L6-Water-ipadhd.png in Resources */,
 				2499E30E171C325D0018F8CD /* L7-Bkg-0-0-ipad.png in Resources */,
@@ -2290,10 +2276,8 @@
 				249070CD17830D4F005972EA /* ObjectDrawer-ipadhd.png in Resources */,
 				24D3D67017903A9600468839 /* ObjectDials-ipad.plist in Resources */,
 				24D3D67117903A9600468839 /* ObjectDials-ipad.png in Resources */,
-				249B0B4E17EB3B7D00AEF1B8 /* FieldTutorial-ipadhd.plist in Resources */,
 				24D3D67217903A9600468839 /* ObjectDials-ipadhd.plist in Resources */,
 				24D3D67317903A9600468839 /* ObjectDials-ipadhd.png in Resources */,
-				249B0B4D17EB3B7D00AEF1B8 /* FieldTutorial-ipad.png in Resources */,
 				2422311A17C79F85003CB027 /* L4-Bkg-0-0-ipad.png in Resources */,
 				2422311B17C79F85003CB027 /* L4-Bkg-0-0-ipadhd.png in Resources */,
 				24DC0C451885725200A9BF7D /* TDFont120-ipadhd.png in Resources */,

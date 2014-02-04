@@ -586,7 +586,7 @@ def SpriteSheets():
         "Back", "Go",  "Reset", "ResetGo", "ClearAll", "Stats", "ToggleMenu", "Pause", "Stop", "OffScreenPointer", "OrangeStar",
         "TrackPlayerOn", "TrackPlayerOff", "DialogBack", "YesButton", "NoButton",
         "TutorialBack1", "TutorialBack2", "TutorialArrow",
-        "3Dashes", "SoundOn", "SoundOff", "Checkbox_Empty", "Checkbox_Filled"], True)
+        "SoundOn", "SoundOff", "Checkbox_Empty", "Checkbox_Filled"], True)
 
     sprites = []
     for name in ( "Steve", "Bruce", "Toby", "Angie", "Emily" ):

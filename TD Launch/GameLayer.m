@@ -296,8 +296,6 @@ if (accelHalfXTimer > 0) a *= 0.5
         [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"ObjectDials.plist"];
         [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"RecapBoard.plist"];
         [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"ObstacleSheet.plist"];
-        if ([Settings globalSettings].showTutorial)
-            [[CCSpriteFrameCache sharedSpriteFrameCache] addSpriteFramesWithFile:@"FieldTutorial.plist"];
     }
 
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"Tools.png"]];
@@ -308,8 +306,6 @@ if (accelHalfXTimer > 0) a *= 0.5
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"ObjectDials.png"]];
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"RecapBoard.png"]];
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"ObstacleSheet.png"]];
-    if ([Settings globalSettings].showTutorial)
-        [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"FieldTutorial.png"]];
     
     
     [gameLevel loadResources:self];
