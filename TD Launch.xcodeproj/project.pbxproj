@@ -54,18 +54,18 @@
 		243634DF1833BC780088D248 /* CloudLibrary-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 243634DB1833BC780088D248 /* CloudLibrary-ipad.png */; };
 		243634E01833BC780088D248 /* CloudLibrary-ipadhd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 243634DC1833BC780088D248 /* CloudLibrary-ipadhd.plist */; };
 		243634E11833BC780088D248 /* CloudLibrary-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 243634DD1833BC780088D248 /* CloudLibrary-ipadhd.png */; };
+		243BD61E18A08AD3006CBDBB /* Level1.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD60B18A08AD3006CBDBB /* Level1.m */; };
+		243BD61F18A08AD3006CBDBB /* Level2.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD60D18A08AD3006CBDBB /* Level2.m */; };
+		243BD62018A08AD3006CBDBB /* Level3.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD60F18A08AD3006CBDBB /* Level3.m */; };
+		243BD62118A08AD3006CBDBB /* Level4.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61118A08AD3006CBDBB /* Level4.m */; };
+		243BD62218A08AD3006CBDBB /* Level5.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61318A08AD3006CBDBB /* Level5.m */; };
+		243BD62318A08AD3006CBDBB /* Level6.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61518A08AD3006CBDBB /* Level6.m */; };
+		243BD62418A08AD3006CBDBB /* Level7.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61718A08AD3006CBDBB /* Level7.m */; };
+		243BD62518A08AD3006CBDBB /* Level8.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61918A08AD3006CBDBB /* Level8.m */; };
+		243BD62618A08AD3006CBDBB /* Level9.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61B18A08AD3006CBDBB /* Level9.m */; };
+		243BD62718A08AD3006CBDBB /* Level10.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61D18A08AD3006CBDBB /* Level10.m */; };
 		243BF75F1791EAF70064A2B4 /* YesNoDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF75E1791EAF70064A2B4 /* YesNoDialog.m */; };
 		243BF7991791FCE20064A2B4 /* LauncherObjectSettingsDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF7981791FCE10064A2B4 /* LauncherObjectSettingsDialog.m */; };
-		243D416517027760000C1478 /* Level1.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415A17027760000C1478 /* Level1.m */; };
-		243D416617027760000C1478 /* Level2.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415B17027760000C1478 /* Level2.m */; };
-		243D416717027760000C1478 /* Level3.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415C17027760000C1478 /* Level3.m */; };
-		243D416817027760000C1478 /* Level4.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415D17027760000C1478 /* Level4.m */; };
-		243D416917027760000C1478 /* Level5.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415E17027760000C1478 /* Level5.m */; };
-		243D416A17027760000C1478 /* Level6.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D415F17027760000C1478 /* Level6.m */; };
-		243D416B17027760000C1478 /* Level7.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D416017027760000C1478 /* Level7.m */; };
-		243D416C17027760000C1478 /* Level8.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D416117027760000C1478 /* Level8.m */; };
-		243D416D17027760000C1478 /* Level9.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D416217027760000C1478 /* Level9.m */; };
-		243D416E17027760000C1478 /* Level10.m in Sources */ = {isa = PBXBuildFile; fileRef = 243D416317027760000C1478 /* Level10.m */; };
 		2445569B1625AA8A00025470 /* Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445569A1625AA8900025470 /* Animation.m */; };
 		244C1B1B18635FB100A39C77 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1A18635FB100A39C77 /* Images.xcassets */; };
 		244C1B211863972800A39C77 /* AboutScreen-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */; };
@@ -735,30 +735,30 @@
 		243634DB1833BC780088D248 /* CloudLibrary-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CloudLibrary-ipad.png"; path = "Resources/CloudLibrary-ipad.png"; sourceTree = "<group>"; };
 		243634DC1833BC780088D248 /* CloudLibrary-ipadhd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "CloudLibrary-ipadhd.plist"; path = "Resources/CloudLibrary-ipadhd.plist"; sourceTree = "<group>"; };
 		243634DD1833BC780088D248 /* CloudLibrary-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "CloudLibrary-ipadhd.png"; path = "Resources/CloudLibrary-ipadhd.png"; sourceTree = "<group>"; };
+		243BD60A18A08AD3006CBDBB /* Level1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level1.h; sourceTree = "<group>"; };
+		243BD60B18A08AD3006CBDBB /* Level1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level1.m; sourceTree = "<group>"; };
+		243BD60C18A08AD3006CBDBB /* Level2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level2.h; sourceTree = "<group>"; };
+		243BD60D18A08AD3006CBDBB /* Level2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level2.m; sourceTree = "<group>"; };
+		243BD60E18A08AD3006CBDBB /* Level3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level3.h; sourceTree = "<group>"; };
+		243BD60F18A08AD3006CBDBB /* Level3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level3.m; sourceTree = "<group>"; };
+		243BD61018A08AD3006CBDBB /* Level4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level4.h; sourceTree = "<group>"; };
+		243BD61118A08AD3006CBDBB /* Level4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level4.m; sourceTree = "<group>"; };
+		243BD61218A08AD3006CBDBB /* Level5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level5.h; sourceTree = "<group>"; };
+		243BD61318A08AD3006CBDBB /* Level5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level5.m; sourceTree = "<group>"; };
+		243BD61418A08AD3006CBDBB /* Level6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level6.h; sourceTree = "<group>"; };
+		243BD61518A08AD3006CBDBB /* Level6.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level6.m; sourceTree = "<group>"; };
+		243BD61618A08AD3006CBDBB /* Level7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level7.h; sourceTree = "<group>"; };
+		243BD61718A08AD3006CBDBB /* Level7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level7.m; sourceTree = "<group>"; };
+		243BD61818A08AD3006CBDBB /* Level8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level8.h; sourceTree = "<group>"; };
+		243BD61918A08AD3006CBDBB /* Level8.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level8.m; sourceTree = "<group>"; };
+		243BD61A18A08AD3006CBDBB /* Level9.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level9.h; sourceTree = "<group>"; };
+		243BD61B18A08AD3006CBDBB /* Level9.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level9.m; sourceTree = "<group>"; };
+		243BD61C18A08AD3006CBDBB /* Level10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level10.h; sourceTree = "<group>"; };
+		243BD61D18A08AD3006CBDBB /* Level10.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level10.m; sourceTree = "<group>"; };
 		243BF75D1791EAF70064A2B4 /* YesNoDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YesNoDialog.h; sourceTree = "<group>"; };
 		243BF75E1791EAF70064A2B4 /* YesNoDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YesNoDialog.m; sourceTree = "<group>"; };
 		243BF7971791FCE10064A2B4 /* LauncherObjectSettingsDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LauncherObjectSettingsDialog.h; sourceTree = "<group>"; };
 		243BF7981791FCE10064A2B4 /* LauncherObjectSettingsDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LauncherObjectSettingsDialog.m; sourceTree = "<group>"; };
-		243D413B17027428000C1478 /* Level1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level1.h; sourceTree = "<group>"; };
-		243D413D17027428000C1478 /* Level2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level2.h; sourceTree = "<group>"; };
-		243D413F17027428000C1478 /* Level3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level3.h; sourceTree = "<group>"; };
-		243D414117027428000C1478 /* Level4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level4.h; sourceTree = "<group>"; };
-		243D414317027428000C1478 /* Level5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level5.h; sourceTree = "<group>"; };
-		243D414517027428000C1478 /* Level6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level6.h; sourceTree = "<group>"; };
-		243D414717027428000C1478 /* Level7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level7.h; sourceTree = "<group>"; };
-		243D414917027428000C1478 /* Level8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level8.h; sourceTree = "<group>"; };
-		243D414B17027428000C1478 /* Level9.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level9.h; sourceTree = "<group>"; };
-		243D414D17027428000C1478 /* Level10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level10.h; sourceTree = "<group>"; };
-		243D415A17027760000C1478 /* Level1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level1.m; sourceTree = "<group>"; };
-		243D415B17027760000C1478 /* Level2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level2.m; sourceTree = "<group>"; };
-		243D415C17027760000C1478 /* Level3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level3.m; sourceTree = "<group>"; };
-		243D415D17027760000C1478 /* Level4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level4.m; sourceTree = "<group>"; };
-		243D415E17027760000C1478 /* Level5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level5.m; sourceTree = "<group>"; };
-		243D415F17027760000C1478 /* Level6.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level6.m; sourceTree = "<group>"; };
-		243D416017027760000C1478 /* Level7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level7.m; sourceTree = "<group>"; };
-		243D416117027760000C1478 /* Level8.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level8.m; sourceTree = "<group>"; };
-		243D416217027760000C1478 /* Level9.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level9.m; sourceTree = "<group>"; };
-		243D416317027760000C1478 /* Level10.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level10.m; sourceTree = "<group>"; };
 		244556991625AA8900025470 /* Animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
 		2445569A1625AA8900025470 /* Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Animation.m; sourceTree = "<group>"; };
 		244C1B1A18635FB100A39C77 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -1261,26 +1261,26 @@
 		243D40DF170273C4000C1478 /* Levels */ = {
 			isa = PBXGroup;
 			children = (
-				243D413B17027428000C1478 /* Level1.h */,
-				243D415A17027760000C1478 /* Level1.m */,
-				243D414D17027428000C1478 /* Level10.h */,
-				243D416317027760000C1478 /* Level10.m */,
-				243D413D17027428000C1478 /* Level2.h */,
-				243D415B17027760000C1478 /* Level2.m */,
-				243D413F17027428000C1478 /* Level3.h */,
-				243D415C17027760000C1478 /* Level3.m */,
-				243D414117027428000C1478 /* Level4.h */,
-				243D415D17027760000C1478 /* Level4.m */,
-				243D414317027428000C1478 /* Level5.h */,
-				243D415E17027760000C1478 /* Level5.m */,
-				243D414517027428000C1478 /* Level6.h */,
-				243D415F17027760000C1478 /* Level6.m */,
-				243D414717027428000C1478 /* Level7.h */,
-				243D416017027760000C1478 /* Level7.m */,
-				243D414917027428000C1478 /* Level8.h */,
-				243D416117027760000C1478 /* Level8.m */,
-				243D414B17027428000C1478 /* Level9.h */,
-				243D416217027760000C1478 /* Level9.m */,
+				243BD60A18A08AD3006CBDBB /* Level1.h */,
+				243BD60B18A08AD3006CBDBB /* Level1.m */,
+				243BD60C18A08AD3006CBDBB /* Level2.h */,
+				243BD60D18A08AD3006CBDBB /* Level2.m */,
+				243BD60E18A08AD3006CBDBB /* Level3.h */,
+				243BD60F18A08AD3006CBDBB /* Level3.m */,
+				243BD61018A08AD3006CBDBB /* Level4.h */,
+				243BD61118A08AD3006CBDBB /* Level4.m */,
+				243BD61218A08AD3006CBDBB /* Level5.h */,
+				243BD61318A08AD3006CBDBB /* Level5.m */,
+				243BD61418A08AD3006CBDBB /* Level6.h */,
+				243BD61518A08AD3006CBDBB /* Level6.m */,
+				243BD61618A08AD3006CBDBB /* Level7.h */,
+				243BD61718A08AD3006CBDBB /* Level7.m */,
+				243BD61818A08AD3006CBDBB /* Level8.h */,
+				243BD61918A08AD3006CBDBB /* Level8.m */,
+				243BD61A18A08AD3006CBDBB /* Level9.h */,
+				243BD61B18A08AD3006CBDBB /* Level9.m */,
+				243BD61C18A08AD3006CBDBB /* Level10.h */,
+				243BD61D18A08AD3006CBDBB /* Level10.m */,
 			);
 			path = Levels;
 			sourceTree = "<group>";
@@ -2327,33 +2327,33 @@
 				24E598A115E3AD4F00D836F7 /* MainMenu.m in Sources */,
 				246A9C4C17E73EA0001F61E9 /* Settings.m in Sources */,
 				24DEA6EF15E5016B007A0BBF /* LevelMenu.m in Sources */,
+				243BD62418A08AD3006CBDBB /* Level7.m in Sources */,
+				243BD62718A08AD3006CBDBB /* Level10.m in Sources */,
+				243BD62518A08AD3006CBDBB /* Level8.m in Sources */,
 				24C00AC615E670E20091865E /* ColoredNode.m in Sources */,
 				249B4A0C15E907DB007176A2 /* ScrollView.m in Sources */,
+				243BD62118A08AD3006CBDBB /* Level4.m in Sources */,
+				243BD62018A08AD3006CBDBB /* Level3.m in Sources */,
 				249B4A1015E91CCA007176A2 /* RulerNode.m in Sources */,
 				249B4A1315E98E59007176A2 /* GameLayer.m in Sources */,
+				243BD61E18A08AD3006CBDBB /* Level1.m in Sources */,
 				24A37AB515ECF9BB00D1DBEB /* Drawer.m in Sources */,
 				24BCB65D15F4DC5700528C57 /* GameLevel.m in Sources */,
 				249B0B8F17F4663700AEF1B8 /* EventManager.m in Sources */,
+				243BD62618A08AD3006CBDBB /* Level9.m in Sources */,
 				24BCB66315F50CD200528C57 /* GestureRecognizerWithBlock.m in Sources */,
 				249B0B5217EBD08600AEF1B8 /* TutorialDialog.m in Sources */,
+				243BD61F18A08AD3006CBDBB /* Level2.m in Sources */,
 				24BCB66C15F5219400528C57 /* Character.m in Sources */,
 				24BCB66F15F52D8000528C57 /* GameData.m in Sources */,
 				24BCB67215F5335A00528C57 /* FieldObject.m in Sources */,
+				243BD62218A08AD3006CBDBB /* Level5.m in Sources */,
+				243BD62318A08AD3006CBDBB /* Level6.m in Sources */,
 				246CD8B715F8422800478EAB /* SaneMenu.m in Sources */,
 				246A904715FBC25D00618AA8 /* CollisionTypes.m in Sources */,
 				2445569B1625AA8A00025470 /* Animation.m in Sources */,
-				243D416517027760000C1478 /* Level1.m in Sources */,
-				243D416617027760000C1478 /* Level2.m in Sources */,
-				243D416717027760000C1478 /* Level3.m in Sources */,
-				243D416817027760000C1478 /* Level4.m in Sources */,
-				243D416917027760000C1478 /* Level5.m in Sources */,
 				245B783F17F9B09200D87AF9 /* Achievements.m in Sources */,
 				245464DD187C450B00DFBFC2 /* AppSettingsDialog.m in Sources */,
-				243D416A17027760000C1478 /* Level6.m in Sources */,
-				243D416B17027760000C1478 /* Level7.m in Sources */,
-				243D416C17027760000C1478 /* Level8.m in Sources */,
-				243D416D17027760000C1478 /* Level9.m in Sources */,
-				243D416E17027760000C1478 /* Level10.m in Sources */,
 				2480BDAF1874C76A00C41D06 /* GameCenter.m in Sources */,
 				2472679D176CD31700144368 /* Screen.m in Sources */,
 				24D3D6AE1791A59A00468839 /* Dialog.m in Sources */,

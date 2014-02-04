@@ -16,7 +16,7 @@
 #import "SaneMenu.h"
 #import "Screen.h"
 
-#import "Level0.h"
+//#import "Level0.h"
 #import "Level1.h"
 #import "Level2.h"
 #import "Level3.h"
