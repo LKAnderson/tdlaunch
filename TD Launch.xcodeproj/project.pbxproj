@@ -64,6 +64,7 @@
 		243BD62518A08AD3006CBDBB /* Level8.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61918A08AD3006CBDBB /* Level8.m */; };
 		243BD62618A08AD3006CBDBB /* Level9.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61B18A08AD3006CBDBB /* Level9.m */; };
 		243BD62718A08AD3006CBDBB /* Level10.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BD61D18A08AD3006CBDBB /* Level10.m */; };
+		243BD62918A08CB0006CBDBB /* Roadmap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 243BD62818A08CB0006CBDBB /* Roadmap.txt */; };
 		243BF75F1791EAF70064A2B4 /* YesNoDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF75E1791EAF70064A2B4 /* YesNoDialog.m */; };
 		243BF7991791FCE20064A2B4 /* LauncherObjectSettingsDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF7981791FCE10064A2B4 /* LauncherObjectSettingsDialog.m */; };
 		2445569B1625AA8A00025470 /* Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445569A1625AA8900025470 /* Animation.m */; };
@@ -755,6 +756,7 @@
 		243BD61B18A08AD3006CBDBB /* Level9.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level9.m; sourceTree = "<group>"; };
 		243BD61C18A08AD3006CBDBB /* Level10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Level10.h; sourceTree = "<group>"; };
 		243BD61D18A08AD3006CBDBB /* Level10.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Level10.m; sourceTree = "<group>"; };
+		243BD62818A08CB0006CBDBB /* Roadmap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Roadmap.txt; sourceTree = "<group>"; };
 		243BF75D1791EAF70064A2B4 /* YesNoDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YesNoDialog.h; sourceTree = "<group>"; };
 		243BF75E1791EAF70064A2B4 /* YesNoDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YesNoDialog.m; sourceTree = "<group>"; };
 		243BF7971791FCE10064A2B4 /* LauncherObjectSettingsDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LauncherObjectSettingsDialog.h; sourceTree = "<group>"; };
@@ -1041,6 +1043,7 @@
 		240560F115D1431B00CF2B9B = {
 			isa = PBXGroup;
 			children = (
+				243BD62818A08CB0006CBDBB /* Roadmap.txt */,
 				24856158184389BE0090F3AE /* Artwork */,
 				2405611215D1431B00CF2B9B /* TD Launch */,
 				240560FF15D1431B00CF2B9B /* Frameworks */,
@@ -2240,6 +2243,7 @@
 				248292D0175CCFC2005CCBED /* L9-Bkg-0-2048-ipadhd.png in Resources */,
 				248292D1175CCFC2005CCBED /* L9-Bkg-1024-2048-ipad.png in Resources */,
 				248292D2175CCFC2005CCBED /* L9-Bkg-1024-2048-ipadhd.png in Resources */,
+				243BD62918A08CB0006CBDBB /* Roadmap.txt in Resources */,
 				248292D3175CCFC2005CCBED /* L9-Bkg-2048-0-ipad.png in Resources */,
 				248292D4175CCFC2005CCBED /* L9-Bkg-2048-0-ipadhd.png in Resources */,
 				248292D5175CCFC2005CCBED /* L9-Bkg-2048-1024-ipad.png in Resources */,

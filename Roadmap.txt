@@ -1,0 +1,8 @@
+Roadmap
+-------
+
+
+Version 1.2
+-----------
+[ ] Help Screen + In-App purchases
+[ ] Like it/Rate it dialog
