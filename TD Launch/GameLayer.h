@@ -83,6 +83,7 @@
     void(^dialogGlassTouched) (id);
     id dialogGlassData;
     CCLabelBMFont* gameCenterButton;
+    CCLabelBMFont* nextLevelButton;
     
     CCNode* activeItem;
    

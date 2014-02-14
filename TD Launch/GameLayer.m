@@ -35,6 +35,10 @@
 
 #import <SimpleAudioEngine.h>
 
+// exported from LevelMenu
+GameLevel* getLevelForID(int ID);
+
+
 #define NUMBERS_ATLAS ([CCLabelAtlas labelWithString:@"9876543210" charMapFile:@"Numbers.png" \
                         itemWidth:SCRNX(26) itemHeight:SCRNY(38) startCharMap:'-'])
 
@@ -1301,6 +1305,42 @@ if (accelHalfXTimer > 0) a *= 0.5
 #undef ADD_AWARD
     }
 
+    nextLevelButton = nil;
+    if ([Achievements sharedAchievements].level > gameLevel.ID && showAchievements && gameLevel.ID < 10)
+    {
+        NSString* nextLevelStr = [NSString stringWithFormat:NSLocalizedString(@"GameLayer_Recap_NextLevel", @"Next Level")];
+        nextLevelButton = [CCLabelBMFont labelWithString:nextLevelStr fntFile:@"TDFontYellow96.fnt"];
+        nextLevelButton.alignment = kCCTextAlignmentCenter;
+        nextLevelButton.scale = 0.45;
+        nextLevelButton.anchorPoint = ccp(1,0.5);
+        nextLevelButton.position = ccp(BB_RIGHT(recapScreen.boundingBox) - SCRNX(60), BB_TOP(recapScreen.boundingBox));
+        
+        nextLevelButton.opacity = 0;
+        nextLevelButton.isTouchEnabled = YES;
+        
+        [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5
+                                                 position:ccp(BB_RIGHT(recapScreen.boundingBox) - SCRNX(60),
+                                                              recapScreen.boundingBox.origin.y + BB_TOP(title.boundingBox) - title.boundingBox.size.height*0.6)]];
+        [nextLevelButton runAction:[CCFadeIn actionWithDuration:0.75]];
+        
+        [nextLevelButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
+                                                {
+                                                    GameLevel* nextLevel = getLevelForID(gameLevel.ID+1);
+                                                    AUDIOTIC1;
+                                                    
+                                                    if (nextLevel == nil)
+                                                    {
+                                                        [[CCDirector sharedDirector] replaceScene: [LevelMenu scene]];
+                                                    }
+                                                    else
+                                                    {
+                                                        [[CCDirector sharedDirector] replaceScene: [GameLayer sceneWithLevel:nextLevel]];
+                                                    }
+                                                    
+                                                    [self removeAllChildrenWithCleanup:YES];;
+                                                }]];
+        
+    }
     
     recapScreen.visible = YES;
     [self addChild:recapScreen z:999999];
@@ -1330,6 +1370,13 @@ if (accelHalfXTimer > 0) a *= 0.5
             [weakSelf removeChild:weakSelf->gameCenterButton cleanup:YES];
             weakSelf->gameCenterButton = nil;
         }
+        
+        if (weakSelf->nextLevelButton != nil)
+        {
+            [weakSelf removeChild:weakSelf->nextLevelButton cleanup:YES];
+            weakSelf->nextLevelButton = nil;
+        }
+        
         [_recapScreen removeAllChildrenWithCleanup:YES];
         [weakSelf clearDialogGlass];
         [weakSelf enterConfigurationState];
@@ -1337,6 +1384,9 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     if (gameCenterButton != nil)
         [self addChild:gameCenterButton z:glass.zOrder+1];
+    
+    if (nextLevelButton != nil)
+        [self addChild:nextLevelButton z:glass.zOrder + 1];
 }
 
 

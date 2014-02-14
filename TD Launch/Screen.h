@@ -35,3 +35,10 @@ extern BOOL isRetinaScreen;
 // this isn't really the right place for this, but this file is included everywhere, so it's easy.
 #define AUDIOTIC1 [[SimpleAudioEngine sharedEngine] playEffect:@"Tic.mp3" pitch:1.5 pan:0 gain:1]
 #define AUDIOTIC2 [[SimpleAudioEngine sharedEngine] playEffect:@"Tic.mp3" pitch:2.0 pan:0 gain:1]
+
+
+// Bounding Box Helper, because I really hate how much typing it takes!
+#define BB_LEFT(bb)     (bb.origin.x)
+#define BB_RIGHT(bb)    (bb.origin.x + bb.size.width)
+#define BB_BOTTOM(bb)   (bb.origin.y)
+#define BB_TOP(bb)      (bb.origin.y + bb.size.height)
