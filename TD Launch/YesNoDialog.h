@@ -19,15 +19,18 @@
     
     void (^_onYes)(void);
     void (^_onNo)(void);
+    void (^_onEither)(void);
 }
 
 @property NSString* msgName;
 @property bool showCancel;
 
+- (YesNoDialog*) initWithMessage:(NSString *)msgName onYes:(void (^)())onYes onNo:(void (^)())onNo onEither:(void (^)())onEither;
 - (YesNoDialog*) initWithMessage:(NSString*)msgName onYes:(void(^)())onYes onNo:(void(^)())onNo;
 
 - (void) setYesHandler:(void (^)(void))handler;
 - (void) setNoHandler:(void (^)(void))handler;
+- (void) setEitherHandler:(void (^)(void))handler;
 
 
 @end

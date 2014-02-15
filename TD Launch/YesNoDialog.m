@@ -12,15 +12,21 @@
 
 @implementation YesNoDialog
 
-- (YesNoDialog*) initWithMessage:(NSString *)msgName onYes:(void (^)())onYes onNo:(void (^)())onNo
+- (YesNoDialog*) initWithMessage:(NSString *)msgName onYes:(void (^)())onYes onNo:(void (^)())onNo onEither:(void (^)())onEither
 {
     if (self = [super init])
     {
         _msgName = msgName;
         _onYes = onYes;
         _onNo = onNo;
+        _onEither = onEither;
     }
     return self;
+}
+
+- (YesNoDialog*) initWithMessage:(NSString *)msgName onYes:(void (^)())onYes onNo:(void (^)())onNo
+{
+    return [self initWithMessage:msgName onYes:onYes onNo:onNo onEither:nil];
 }
 
 - (void) onEnter
@@ -94,6 +100,9 @@
                                      {
                                          if (_onYes)
                                              _onYes();
+                                         if (_onEither)
+                                             _onEither();
+                                         
                                          [self closeDialog];
                                      }]];
     
@@ -101,6 +110,9 @@
                                     {
                                         if (_onNo)
                                             _onNo();
+                                        if (_onEither)
+                                            _onEither();
+                                        
                                         [self closeDialog];
                                     }]];
     
@@ -130,6 +142,11 @@
 - (void) setNoHandler:(void (^)(void))handler
 {
     _onNo = handler;
+}
+
+- (void) setEitherHandler:(void (^)(void))handler
+{
+    _onEither = handler;
 }
 
 @end
