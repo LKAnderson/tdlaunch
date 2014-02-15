@@ -1,8 +1,13 @@
 Roadmap
 -------
 
-
 Version 1.2
 -----------
+[X] Get to next level from the recap board
+[X] Moved object and character drawers to the bottom in preparation for iAd.
+
+Version 1.3
+-----------
 [ ] Help Screen + In-App purchases
+[ ] iAd integration
 [ ] Like it/Rate it dialog
