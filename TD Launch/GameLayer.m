@@ -506,7 +506,6 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     if ([Settings globalSettings].showCharacterTutorial)
     {
-        //TODO: Localize these
         characterTutPos.y = menuDrawer.contentSize.height;
         TutorialDialog* tut = [[TutorialDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Character",
                                                                                         @"Tap here to\nselect your\ncharacter")
@@ -616,23 +615,24 @@ if (accelHalfXTimer > 0) a *= 0.5
     objectDrawer = [Drawer node];
     objectDrawer.contentSize = drawerBack.contentSize;
     objectDrawer.anchorPoint = ccp(0.5, 0);
-    objectDrawer.closedPosition = ccp( screen.width/2, screen.height+10 );
-    objectDrawer.openPosition = ccp(objectDrawer.closedPosition.x, screen.height-objectDrawer.contentSize.height+7);
+    
+    objectDrawer.closedPosition = ccp( screen.width/2, SCRNY(-10) - drawerBack.contentSize.height );
+    objectDrawer.openPosition = ccp(objectDrawer.closedPosition.x, menuDrawer.contentSize.height);
     objectDrawer.position = objectDrawer.closedPosition;
     objectDrawer.isTouchEnabled = YES;
     objectDrawer.clipContents = YES;
 
-    [self addChild:objectDrawer z:99999];
+    [self addChild:objectDrawer z:menuDrawer.zOrder-1];
     
     drawerBack.anchorPoint = ccp(.5,.5);
     drawerBack.position = ccp(objectDrawer.contentSize.width/2, objectDrawer.contentSize.height/2);
     [objectDrawer addChild:drawerBack z:-999];
     
     
-    UISwipeGestureRecognizer* upSwipe = [[UISwipeGestureRecognizer alloc] init];
-    upSwipe.direction = UISwipeGestureRecognizerDirectionUp;
+    UISwipeGestureRecognizer* downSwipe = [[UISwipeGestureRecognizer alloc] init];
+    downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
     
-    [objectDrawer addGestureRecognizer:[GestureRecognizerWithBlock recognizer:upSwipe block:^(UIGestureRecognizer* recognizer, CCNode* item){
+    [objectDrawer addGestureRecognizer:[GestureRecognizerWithBlock recognizer:downSwipe block:^(UIGestureRecognizer* recognizer, CCNode* item){
             [objectDrawer close:0.15];
     }]];
     
@@ -716,21 +716,21 @@ if (accelHalfXTimer > 0) a *= 0.5
     characterDrawer = [Drawer node];
     characterDrawer.contentSize = CGSizeMake(screen.width * .65, screen.height * .25);
     characterDrawer.anchorPoint = ccp(0.5, 0);
-    characterDrawer.closedPosition = ccp( screen.width/2, screen.height + 10);
-    characterDrawer.openPosition = ccp(characterDrawer.closedPosition.x, screen.height - characterDrawer.contentSize.height);
+    characterDrawer.closedPosition = ccp( screen.width/2, SCRNY(-10) - characterDrawer.contentSize.height );
+    characterDrawer.openPosition = ccp(objectDrawer.closedPosition.x, menuDrawer.contentSize.height);
     characterDrawer.position = characterDrawer.closedPosition;
     characterDrawer.isTouchEnabled = YES;
-    [self addChild:characterDrawer z:99999];
+    [self addChild:characterDrawer z:menuDrawer.zOrder-1];
     
-    UISwipeGestureRecognizer* upSwipe = [[UISwipeGestureRecognizer alloc] init];
-    upSwipe.direction = UISwipeGestureRecognizerDirectionUp;
+    UISwipeGestureRecognizer* downSwipe = [[UISwipeGestureRecognizer alloc] init];
+    downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
     
     
-    [characterDrawer addGestureRecognizer:[GestureRecognizerWithBlock recognizer:upSwipe block:^(UIGestureRecognizer* recognizer, CCNode* item)
-                                            {
-                                                if (characterDrawer.isOpen)
-                                                    [characterDrawer close:0.25];
-                                            }]];
+    [characterDrawer addGestureRecognizer:[GestureRecognizerWithBlock recognizer:downSwipe block:^(UIGestureRecognizer* recognizer, CCNode* item)
+    {
+        if (characterDrawer.isOpen)
+            [characterDrawer close:0.25];
+    }]];
     
     CCSprite* drawerBack = [CCSprite spriteWithFile:@"CharacterDrawer.png"];;
     //drawerBack.contentSize = CGSizeMake(characterDrawer.contentSize.width-5, characterDrawer.contentSize.height-6);
@@ -943,61 +943,70 @@ if (accelHalfXTimer > 0) a *= 0.5
                                        }]];
     
     [characterButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
-                                       {
-                                           AUDIOTIC1;
-                                           if (characterDrawer.isOpen)
-                                           {
-                                               [characterDrawer close:0.15];
-                                           }
-                                           else
-                                           {
-                                               if (objectDrawer.isOpen)
-                                                   [objectDrawer close:0.15];
-                                               [characterDrawer open:.25];
-                                               if ([Settings globalSettings].showDrawerTutorial)
-                                               {
-                                                   //TODO: Localize this
-                                                   TutorialDialog* tut = [[TutorialDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe up to\nclose the\nmenu")
-                                                                                                              at:ccp(self.contentSize.width/2,
-                                                                                                                     self.contentSize.height*0.45)
-                                                                                                     anchorPoint:ccp(.5,.5)
-                                                                                                        scaledTo:nil
-                                                                                                         arrowTo:ccp(SCRNX(450), SCRNY(600))];
-                                                   [self addChild:tut z:9999999];
-                                                   [Settings globalSettings].showDrawerTutorial = NO;
-                                                   [[Settings globalSettings] save];
-                                               }
-                                           }
-                                       }]];
+    {
+       AUDIOTIC1;
+       if (characterDrawer.isOpen)
+       {
+           [characterDrawer close:0.15];
+       }
+       else
+       {
+           if (objectDrawer.isOpen)
+               [objectDrawer close:0.15];
+           [characterDrawer open:.25];
+           if ([Settings globalSettings].showDrawerTutorial)
+           {
+               CCCallBlock* showTut = [CCCallBlock actionWithBlock:^()
+               {
+                   TutorialDialog* tut = [[TutorialDialog alloc]
+                                          initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe down to\nclose the\nmenu")
+                                          at:ccp(self.contentSize.width/2,
+                                                 self.contentSize.height*0.65)
+                                          anchorPoint:ccp(.5,.5)
+                                          scaledTo:nil
+                                          arrowTo:ccp(BB_HORZ_PCT(characterDrawer.boundingBox, 0.40),
+                                                      BB_VERT_PCT(characterDrawer.boundingBox, 1.0)+SCRNY(5))];
+                   [self addChild:tut z:9999999];
+                   [Settings globalSettings].showDrawerTutorial = NO;
+                   [[Settings globalSettings] save];
+               }];
+               [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.30] two:showTut]];
+           }
+       }
+    }]];
     
     [objectButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
-                                       {
-                                           AUDIOTIC1;
-                                           if (objectDrawer.isOpen)
-                                           {
-                                               [objectDrawer close:0.15];
-                                           }
-                                           else
-                                           {
-                                               if (characterDrawer.isOpen)
-                                                   [characterDrawer close:0.15];
-                                               [objectDrawer open:.25];
-                                               if ([Settings globalSettings].showDrawerTutorial)
-                                               {
-                                                   //TODO: Localize this
-                                                   TutorialDialog* tut = [[TutorialDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe up to\nclose the\nmenu")
-                                                                                                              at:ccp(self.contentSize.width/2,
-                                                                                                                     self.contentSize.height*0.45)
-                                                                                                     anchorPoint:ccp(.5,.5)
-                                                                                                        scaledTo:nil
-                                                                                                         arrowTo:ccp(SCRNX(450), SCRNY(600))];
-                                                   [self addChild:tut z:9999999];
-                                                   [Settings globalSettings].showDrawerTutorial = NO;
-                                                   [[Settings globalSettings] save];
-                                               }
-
-                                           }
-                                       }]];
+    {
+       AUDIOTIC1;
+       if (objectDrawer.isOpen)
+       {
+           [objectDrawer close:0.15];
+       }
+       else
+       {
+           if (characterDrawer.isOpen)
+               [characterDrawer close:0.15];
+           [objectDrawer open:.25];
+           if ([Settings globalSettings].showDrawerTutorial)
+           {
+               CCCallBlock* showTut = [CCCallBlock actionWithBlock:^()
+               {
+                   TutorialDialog* tut = [[TutorialDialog alloc]
+                                          initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe down to\nclose the\nmenu")
+                                          at:ccp(self.contentSize.width/2,
+                                                 self.contentSize.height*0.65)
+                                          anchorPoint:ccp(.5,.5)
+                                          scaledTo:nil
+                                          arrowTo:ccp(BB_HORZ_PCT(objectDrawer.boundingBox, 0.40),
+                                                      BB_VERT_PCT(objectDrawer.boundingBox, 1.0)+SCRNY(5))];
+                   [self addChild:tut z:9999999];
+                   [Settings globalSettings].showDrawerTutorial = NO;
+                   [[Settings globalSettings] save];
+               }];
+               [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.30] two:showTut]];
+           }
+       }
+    }]];
     
     
     inPlayDrawer = [Drawer node];
@@ -2267,6 +2276,8 @@ if (accelHalfXTimer > 0) a *= 0.5
 {
     CGSize screen = [[CCDirector sharedDirector] winSize];
     CGPoint screenMid = ccp(screen.width/2, screen.height/2);
+    if (isSmallScreen)
+        screenMid = ccp(screen.width/2, screen.height * 0.65);
     
     // Make sure we haven't hit the max for this object
     AvailableFieldObject* availableObj = [self getAvailableObjectFromNode:item];
@@ -2297,7 +2308,6 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     if ([Settings globalSettings].showRotateTutorial)
     {
-        //TODO: Localize this
         CGPoint pos = ccp((screen.width/2) + item.contentSize.width/2 + SCRNX(10), screen.height*0.53);
         TutorialDialog* tut = [[TutorialDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Rotate",
                                                                                         @"Tap and hold\nto rotate the\nobject")

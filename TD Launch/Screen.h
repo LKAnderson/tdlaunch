@@ -42,3 +42,5 @@ extern BOOL isRetinaScreen;
 #define BB_RIGHT(bb)    (bb.origin.x + bb.size.width)
 #define BB_BOTTOM(bb)   (bb.origin.y)
 #define BB_TOP(bb)      (bb.origin.y + bb.size.height)
+#define BB_HORZ_PCT(bb,pct) (bb.origin.x + (bb.size.width*pct))
+#define BB_VERT_PCT(bb,pct) (bb.origin.y + (bb.size.height*pct))
