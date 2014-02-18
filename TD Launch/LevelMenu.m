@@ -375,6 +375,15 @@ GameLevel* getLevelForID(int ID)
         feedback.color = ccc3(0,0,0);
         [aboutScreen addChild:feedback];
         
+        NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
+        NSString *build = [NSString stringWithFormat:@"Version %@", infoDictionary[(NSString*)kCFBundleVersionKey]];
+        CCLabelBMFont* versionLabel = [CCLabelBMFont labelWithString:build fntFile:@"TDFontYellow96.fnt"];
+        versionLabel.scale = 0.4;
+        versionLabel.anchorPoint = ccp(0.5, 0);
+        versionLabel.position = ccp(aboutScreen.contentSize.width/2, SCRNY(30));
+        [aboutScreen addChild:versionLabel];
+    
+        
         [aboutScreen runAction:[CCSequence actions:[CCFadeIn actionWithDuration:.15], cleanup, nil]];
 
     }
