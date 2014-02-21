@@ -71,6 +71,7 @@
 		244C1B1B18635FB100A39C77 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1A18635FB100A39C77 /* Images.xcassets */; };
 		244C1B211863972800A39C77 /* AboutScreen-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */; };
 		244C1B221863972800A39C77 /* AboutScreen-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B201863972800A39C77 /* AboutScreen-ipadhd.png */; };
+		244C390F18B39E3D0097815D /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 244C390E18B39E3D0097815D /* iAd.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		2452310E166F796500131AE9 /* L1-Bkg-0-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310A166F796500131AE9 /* L1-Bkg-0-0-ipad.png */; };
 		2452310F166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310B166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png */; };
 		24523110166F796500131AE9 /* L1-Bkg-1024-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310C166F796500131AE9 /* L1-Bkg-1024-0-ipad.png */; };
@@ -766,6 +767,7 @@
 		244C1B1A18635FB100A39C77 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AboutScreen-ipad.png"; path = "Resources/AboutScreen-ipad.png"; sourceTree = "<group>"; };
 		244C1B201863972800A39C77 /* AboutScreen-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AboutScreen-ipadhd.png"; path = "Resources/AboutScreen-ipadhd.png"; sourceTree = "<group>"; };
+		244C390E18B39E3D0097815D /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		2452310A166F796500131AE9 /* L1-Bkg-0-0-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L1-Bkg-0-0-ipad.png"; path = "Resources/L1-Bkg-0-0-ipad.png"; sourceTree = "<group>"; };
 		2452310B166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L1-Bkg-0-0-ipadhd.png"; path = "Resources/L1-Bkg-0-0-ipadhd.png"; sourceTree = "<group>"; };
 		2452310C166F796500131AE9 /* L1-Bkg-1024-0-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L1-Bkg-1024-0-ipad.png"; path = "Resources/L1-Bkg-1024-0-ipad.png"; sourceTree = "<group>"; };
@@ -1020,6 +1022,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				244C390F18B39E3D0097815D /* iAd.framework in Frameworks */,
 				2480BBCE1874ACA300C41D06 /* GameKit.framework in Frameworks */,
 				24DB611818608EA00054F17A /* libChipmunkPro-iPhone.a in Frameworks */,
 				2468C28315D5EEFA007E14A8 /* ImageIO.framework in Frameworks */,
@@ -1064,6 +1067,7 @@
 		240560FF15D1431B00CF2B9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				244C390E18B39E3D0097815D /* iAd.framework */,
 				2480BBCD1874ACA300C41D06 /* GameKit.framework */,
 				24DB611718608EA00054F17A /* libChipmunkPro-iPhone.a */,
 				2468C28215D5EEFA007E14A8 /* ImageIO.framework */,

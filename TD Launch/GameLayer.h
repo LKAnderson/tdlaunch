@@ -22,11 +22,10 @@
     ChipmunkShape* character;
     PhysicsSprite* characterSprite;
 
-    CCSprite* scoreLabels;
-    CCLabelAtlas* scoreValue;
-    CCLabelAtlas* gemsValue;
-    CCLabelAtlas* distanceValue;
-    
+    CCLabelBMFont* mainScoreLabel;
+    CCLabelAtlas* mainScoreValue;
+    CCLabelBMFont* mainGemsLabel;
+    CCLabelAtlas* mainGemsValue;
     
     CCNode* gameLayer;
     ScrollView* scrollView;

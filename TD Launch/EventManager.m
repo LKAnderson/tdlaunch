@@ -13,6 +13,8 @@ NSString* APP_ACTIVATED = @"app_activated";
 NSString* APP_DEACTIVATED = @"app_deactivated";
 NSString* GAMECENTER_AVAILABLE = @"gamecenter_available";
 NSString* GAMECENTER_UNAVAILABLE = @"gamecenter_unavailable";
+NSString* ADBANNER_VISIBLE = @"adbanner_visible";
+NSString* ADBANNER_HIDDEN = @"adbanner_hidden";
 
 
 

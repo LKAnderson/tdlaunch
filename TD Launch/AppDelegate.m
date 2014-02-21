@@ -82,6 +82,7 @@ unsigned int getCurrentTime()
 		CCLOG(@"Retina Display Not supported");
     }
     
+    
     // this is defined in Screen.h
     CGSize s = [director_ winSize];
     isSmallScreen = !(s.width >= 1024 || s.height >= 1024);
@@ -180,5 +181,87 @@ unsigned int getCurrentTime()
 {
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
+
+
+// ADBannerViewDelegate Methods
+
+
+- (void) setAdsEnabled:(BOOL)enabled
+{
+    if (enabled)
+    {
+        if (_iAdView == nil)
+        {
+            _iAdView = [[ADBannerView alloc] initWithFrame:CGRectZero];
+            _iAdView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+            _iAdView.delegate = self;
+            _iAdView.hidden = YES;
+            _iAdView.frame = CGRectOffset(_iAdView.frame, 0, -_iAdView.frame.size.height);
+            [director_.view addSubview:_iAdView];
+        }
+    }
+    else
+    {
+        if (_iAdView != nil)
+        {
+            [_iAdView removeFromSuperview];
+            _iAdView = nil;
+        }
+    }
+}
+
+
+
+- (void) adBannerAnimationDidStop:(NSString*)animationId finsihed:(NSNumber*)finished context:(void*)context
+{
+    _iAdView.hidden = (animationId == ADBANNER_HIDDEN);
+    [[EventManager sharedManager] publish:animationId data:_iAdView];
+}
+
+- (void) showAdBanner
+{
+    [UIView beginAnimations:ADBANNER_VISIBLE context:nil];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(adBannerAnimationDidStop:finsihed:context:)];
+    _iAdView.frame = CGRectOffset(_iAdView.frame, 0, _iAdView.frame.size.height); // UIView is top-left oriented.
+    [UIView commitAnimations];
+}
+
+- (void) hideAdBanner
+{
+    [UIView beginAnimations:ADBANNER_HIDDEN context:nil];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(adBannerAnimationDidStop:finsihed:context:)];
+    _iAdView.frame = CGRectOffset(_iAdView.frame, 0, _iAdView.frame.size.height); // UIView is top-left oriented.
+    [UIView commitAnimations];
+}
+
+
+- (void) bannerViewWillLoadAd:(ADBannerView *)banner
+{
+    NSLog(@"bannerViewWillLoadAd");
+    [self showAdBanner];
+}
+
+- (void) bannerViewDidLoadAd:(ADBannerView *)banner
+{
+    NSLog(@"bannerViewDidLoadAd");
+}
+
+- (void) bannerViewActionDidFinish:(ADBannerView *)banner
+{
+    NSLog(@"bannerViewActionDidFinish");
+}
+
+- (void) bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    NSLog(@"bannerView:didFailToReceiveAdWithError: %@", error);
+    [self hideAdBanner];
+}
+
+
+
 
 @end

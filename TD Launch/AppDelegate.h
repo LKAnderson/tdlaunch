@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <iAd/iAd.h>
 #import "cocos2d.h"
 
-@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate>
+
+#define APPCONTROLLER ((AppController*)[[UIApplication sharedApplication] delegate])
+
+
+@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate, ADBannerViewDelegate >
 {
 	UIWindow *window_;
 	UINavigationController *navController_;
@@ -20,5 +25,8 @@
 @property (nonatomic, retain) UIWindow *window;
 @property (readonly) UINavigationController *navController;
 @property (readonly) CCDirectorIOS *director;
+@property (readonly) ADBannerView* iAdView;
+
+- (void) setAdsEnabled:(BOOL)enabled;
 
 @end

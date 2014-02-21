@@ -13,6 +13,8 @@ extern NSString* APP_ACTIVATED;
 extern NSString* APP_DEACTIVATED;
 extern NSString* GAMECENTER_AVAILABLE;
 extern NSString* GAMECENTER_UNAVAILABLE;
+extern NSString* ADBANNER_VISIBLE;
+extern NSString* ADBANNER_HIDDEN;
 
 
 @protocol EventListener <NSObject>

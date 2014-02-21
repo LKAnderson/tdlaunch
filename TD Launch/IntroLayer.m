@@ -11,6 +11,7 @@
 #import "IntroLayer.h"
 #import "MainMenu.h"
 #import "LevelMenu.h"
+#import "AppDelegate.h"
 
 
 
@@ -39,6 +40,7 @@
 -(void) onEnter
 {
 	[super onEnter];
+    APPCONTROLLER.adsEnabled = NO;
 
 	// ask director for the window size
 	CGSize size = [[CCDirector sharedDirector] winSize];
