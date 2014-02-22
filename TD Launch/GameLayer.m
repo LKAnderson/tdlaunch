@@ -6,7 +6,7 @@
 //
 //
 
-
+#import <iAd/iAd.h>
 #import "AppDelegate.h"
 
 #import "GameLayer.h"
@@ -241,11 +241,40 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         [gameLevel saveTempFile];
     }
+    else if (event == ADBANNER_VISIBLE)
+    {
+        ADBannerView* adView = (ADBannerView*)data;
+        float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
+        [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+        [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+        [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+        [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+
+        CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height - dy);
+        self.contentSize = newSize;
+        scrollView.contentSize = newSize;
+
+        //scrollView.position = ccp(scrollView.position.x, scrollView.position.y - dy);
+    }
+    else if (event == ADBANNER_HIDDEN)
+    {
+        ADBannerView* adView = (ADBannerView*)data;
+        float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
+        [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        
+        CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height + dy);
+        self.contentSize = newSize;
+        scrollView.contentSize = newSize;
+    }
+    
     return YES;
 }
 
 
-- (void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+- (void) leaderboardViewControllerDidFinish:(GKGameCenterViewController *)viewController
 {
     return;
 }
@@ -262,9 +291,10 @@ if (accelHalfXTimer > 0) a *= 0.5
     [self removeAllChildrenWithCleanup:YES];
     gameLayer = nil;
     
-    scoreValue = nil;
-    distanceValue = nil;
-    gemsValue = nil;
+    mainScoreLabel = nil;
+    mainScoreValue = nil;
+    mainGemsLabel = nil;
+    mainGemsValue = nil;
     
     for (CCGestureRecognizer* gr in [self gestureRecognizers])
     {
@@ -283,6 +313,8 @@ if (accelHalfXTimer > 0) a *= 0.5
     [[SimpleAudioEngine sharedEngine] unloadEffect:@"Tic.mp3"];
 
     [[EventManager sharedManager] unsubscribe:APP_DEACTIVATED listener:self];
+    [[EventManager sharedManager] unsubscribe:ADBANNER_HIDDEN listener:self];
+    [[EventManager sharedManager] unsubscribe:ADBANNER_VISIBLE listener:self];
 }
 
 - (void) onEnter
@@ -378,47 +410,36 @@ if (accelHalfXTimer > 0) a *= 0.5
     scrollView = [ScrollView viewWithContent:gameLayer];
     scrollView.friction = 0.05;
     scrollView.contentSize = screen;
-    scrollView.anchorPoint = ccp(.5, .5);
-    scrollView.position = ccp(screen.width/2,screen.height/2);
+    scrollView.anchorPoint = ccp(0, 0);
+    scrollView.position = ccp(0,0); //ccp(screen.width/2,screen.height/2);
     [self addChild:scrollView];
     
     
     CGPoint valueRef = ccp(screen.width-SCRNX(27), screen.height-SCRNY(35.2));
     
-//    scoreLabels = [CCSprite spriteWithSpriteFrameName:@"ScoreLabels.png"];
-//    scoreLabels.anchorPoint = ccp(0, 1);
-//    scoreLabels.position = ccp(screen.width-SCRNX(230), screen.height-SCRNY(12));
-//    [self addChild:scoreLabels];
+    mainScoreValue = NUMBERS_ATLAS;
+    mainScoreValue.scale = 0.5;
+    mainScoreValue.anchorPoint = ccp(1,0);
+    mainScoreValue.position = valueRef;
+    [self addChild:mainScoreValue];
     
-    scoreValue = NUMBERS_ATLAS;
-    scoreValue.scale = 0.5;
-    scoreValue.anchorPoint = ccp(1,0);
-    scoreValue.position = valueRef;
-    [self addChild:scoreValue];
+    mainScoreLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ScoreLabel", @"Score") fntFile:@"TDFontYellow96.fnt"];
+    TDFONT_MEDIUM(mainScoreLabel);
+    mainScoreLabel.anchorPoint = ccp(1,0);
+    mainScoreLabel.position = ccp(mainScoreValue.boundingBox.origin.x - SCRNX(3), mainScoreValue.position.y+SCRNY(3));
+    [self addChild:mainScoreLabel];
     
-    CCLabelBMFont* scoreLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ScoreLabel", @"Score") fntFile:@"TDFontYellow96.fnt"];
-    TDFONT_MEDIUM(scoreLabel);
-    scoreLabel.anchorPoint = ccp(1,0);
-    scoreLabel.position = ccp(scoreValue.boundingBox.origin.x - SCRNX(3), scoreValue.position.y+SCRNY(3));
-    [self addChild:scoreLabel];
-    
-//    distanceValue = NUMBERS_ATLAS;
-//    distanceValue.scale = 0.5;
-//    distanceValue.anchorPoint = ccp(1,0);
-//    distanceValue.position = ccp(valueRef.x, scoreValue.position.y - SCRNY(31.5));
-//    [self addChild:distanceValue];
-    
-    gemsValue = NUMBERS_ATLAS;
-    gemsValue.scale = 0.5;
-    gemsValue.anchorPoint = ccp(1,0);
-    gemsValue.position = ccp(valueRef.x, scoreValue.position.y - SCRNY(31.5));
-    [self addChild:gemsValue];
+    mainGemsValue = NUMBERS_ATLAS;
+    mainGemsValue.scale = 0.5;
+    mainGemsValue.anchorPoint = ccp(1,0);
+    mainGemsValue.position = ccp(valueRef.x, mainScoreValue.position.y - SCRNY(31.5));
+    [self addChild:mainGemsValue];
 
-    CCLabelBMFont* gemsLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_BalloonsLabel", @"Balloons") fntFile:@"TDFontYellow96.fnt"];
-    TDFONT_MEDIUM(gemsLabel);
-    gemsLabel.anchorPoint = ccp(0,0);
-    gemsLabel.position = ccp(scoreLabel.boundingBox.origin.x, gemsValue.position.y + (SCRNY(3)));
-    [self addChild:gemsLabel];
+    mainGemsLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_BalloonsLabel", @"Balloons") fntFile:@"TDFontYellow96.fnt"];
+    TDFONT_MEDIUM(mainGemsLabel);
+    mainGemsLabel.anchorPoint = ccp(0,0);
+    mainGemsLabel.position = ccp(mainScoreLabel.boundingBox.origin.x, mainGemsValue.position.y + (SCRNY(3)));
+    [self addChild:mainGemsLabel];
     
     [self updateScores];
 
@@ -533,6 +554,8 @@ if (accelHalfXTimer > 0) a *= 0.5
     }
     
     [[EventManager sharedManager] subscribe:APP_DEACTIVATED listener:self];
+    [[EventManager sharedManager] subscribe:ADBANNER_HIDDEN listener:self];
+    [[EventManager sharedManager] subscribe:ADBANNER_VISIBLE listener:self];
 }
 
 
@@ -1471,11 +1494,15 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         afo.sprite.zOrder = AFO_CONFIG_Z;
     }
+    
+    APPCONTROLLER.adsEnabled = YES;
 }
 
 
 - (void) enterSimulationState
 {
+    APPCONTROLLER.adsEnabled = NO;
+    
     isPaused = NO;
     [self removeRecapScreen];
     
@@ -1520,8 +1547,8 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     //dumpSpace(space.space);
     
-    scoreValue.visible = YES;
-    gemsValue.visible = YES;
+    mainScoreValue.visible = YES;
+    mainGemsValue.visible = YES;
     
     [self updateScores];
     [self scheduleUpdate];
@@ -1664,9 +1691,8 @@ if (accelHalfXTimer > 0) a *= 0.5
 
 - (void) updateScores
 {
-    scoreValue.string = [NSString stringWithFormat:@"%d", score];
-    gemsValue.string = [NSString stringWithFormat:@"%d", gems];
-    //distanceValue.string = [NSString stringWithFormat:@"%d", distance];
+    mainScoreValue.string = [NSString stringWithFormat:@"%d", score];
+    mainGemsValue.string = [NSString stringWithFormat:@"%d", gems];
 }
 
 

@@ -50,7 +50,7 @@ unsigned int getCurrentTime()
 
 	// Multiple Touches enabled
 	[glView setMultipleTouchEnabled:YES];
-
+   
 	director_ = (CCDirectorIOS*) [CCDirector sharedDirector];
     
 	director_.wantsFullScreenLayout = YES;
@@ -113,7 +113,6 @@ unsigned int getCurrentTime()
 	navController_.navigationBarHidden = YES;
 	
 	// set the Navigation Controller as the root view controller
-//	[window_ addSubview:navController_.view];	// Generates flicker.
 	[window_ setRootViewController:navController_];
     
     [[GameCenter sharedInstance] authenticateLocalPlayer];
@@ -127,10 +126,10 @@ unsigned int getCurrentTime()
 }
 
 // Supported orientations: Landscape. Customize it for your own needs
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-}
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+//}
 
 
 // getting a call, pause the game
@@ -148,6 +147,8 @@ unsigned int getCurrentTime()
 {
 	if( [navController_ visibleViewController] == director_ )
 		[director_ startAnimation];
+    
+    [[EventManager sharedManager] publish:APP_ACTIVATED data:nil];
 }
 
 -(void) applicationDidEnterBackground:(UIApplication*)application
@@ -180,5 +181,98 @@ unsigned int getCurrentTime()
 {
 	[[CCDirector sharedDirector] setNextDeltaTimeZero:YES];
 }
+
+
+// ADBannerViewDelegate Methods
+
+
+- (void) setAdsEnabled:(BOOL)enabled
+{
+    _adsEnabled = enabled;
+    if (_adsEnabled == YES)
+    {
+        if (_iAdView == nil)
+        {
+            _iAdView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
+            _iAdView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+            _iAdView.delegate = self;
+            _iAdView.hidden = YES;
+            CGRect bannerFrame = _iAdView.frame;
+            bannerFrame.size = [_iAdView sizeThatFits:director_.view.frame.size];
+            _iAdView.frame = CGRectOffset(bannerFrame, 0, -_iAdView.frame.size.height);
+            [director_.view addSubview:_iAdView];
+        }
+    }
+    else
+    {
+        [self hideAdBanner];
+    }
+}
+
+
+
+
+- (void) showAdBanner
+{
+    if (_adsEnabled && _iAdView.hidden == YES)
+    {
+        _iAdView.hidden = NO;
+        
+        [UIView animateWithDuration:0.5
+         
+                         animations:^(void){
+                             _iAdView.frame = CGRectOffset(_iAdView.frame, 0, _iAdView.frame.size.height * (isSmallScreen ? 1.5 : 1));
+                         }
+         
+                         completion:^(BOOL finished){
+                             [[EventManager sharedManager] publish:ADBANNER_VISIBLE data:_iAdView];
+                         }];
+    }
+}
+
+- (void) hideAdBanner
+{
+    if (_iAdView != nil && _iAdView.hidden == NO)
+    {
+        [[EventManager sharedManager] publish:ADBANNER_HIDDEN data:_iAdView];
+        
+        [UIView animateWithDuration:0.5
+         
+                         animations:^(void){
+                             _iAdView.frame = CGRectOffset(_iAdView.frame, 0, -_iAdView.frame.size.height * (isSmallScreen ? 1.5 : 1));
+                         }
+         
+                         completion:^(BOOL finished){
+                             _iAdView.hidden = YES;
+                             if (_adsEnabled == NO)
+                             {
+                                 [_iAdView removeFromSuperview];
+                                 _iAdView = nil;
+                             }
+                         }];
+    }
+}
+
+
+- (void) bannerViewWillLoadAd:(ADBannerView *)banner
+{
+}
+
+- (void) bannerViewDidLoadAd:(ADBannerView *)banner
+{
+    [self showAdBanner];
+}
+
+- (void) bannerViewActionDidFinish:(ADBannerView *)banner
+{
+}
+
+- (void) bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
+{
+    [self hideAdBanner];
+}
+
+
+
 
 @end

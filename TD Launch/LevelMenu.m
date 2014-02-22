@@ -35,6 +35,8 @@
 #import "Achievements.h"
 #import "GameCenter.h"
 
+#import "AppDelegate.h"
+
 #import <SimpleAudioEngine.h>
 
 
@@ -83,6 +85,8 @@ GameLevel* getLevelForID(int ID)
 {
     [super onEnter];
     self.isTouchEnabled = YES;
+    
+    APPCONTROLLER.adsEnabled = NO;
 
     
     // Try to unload as many graphics as we can.
