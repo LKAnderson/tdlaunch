@@ -244,20 +244,30 @@ if (accelHalfXTimer > 0) a *= 0.5
     else if (event == ADBANNER_VISIBLE)
     {
         ADBannerView* adView = (ADBannerView*)data;
-        float dy = adView.frame.size.height;
+        float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
         [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
         [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
         [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
         [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+
+        CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height - dy);
+        self.contentSize = newSize;
+        scrollView.contentSize = newSize;
+
+        //scrollView.position = ccp(scrollView.position.x, scrollView.position.y - dy);
     }
     else if (event == ADBANNER_HIDDEN)
     {
         ADBannerView* adView = (ADBannerView*)data;
-        float dy = adView.frame.size.height;
+        float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
         [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
         [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
         [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
         [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        
+        CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height + dy);
+        self.contentSize = newSize;
+        scrollView.contentSize = newSize;
     }
     
     return YES;
@@ -400,8 +410,8 @@ if (accelHalfXTimer > 0) a *= 0.5
     scrollView = [ScrollView viewWithContent:gameLayer];
     scrollView.friction = 0.05;
     scrollView.contentSize = screen;
-    scrollView.anchorPoint = ccp(.5, .5);
-    scrollView.position = ccp(screen.width/2,screen.height/2);
+    scrollView.anchorPoint = ccp(0, 0);
+    scrollView.position = ccp(0,0); //ccp(screen.width/2,screen.height/2);
     [self addChild:scrollView];
     
     

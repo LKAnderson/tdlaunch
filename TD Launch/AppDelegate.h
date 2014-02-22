@@ -20,6 +20,7 @@
 	UINavigationController *navController_;
 	
 	CCDirectorIOS	*director_;							// weak ref
+    BOOL _adsEnabled;
 }
 
 @property (nonatomic, retain) UIWindow *window;

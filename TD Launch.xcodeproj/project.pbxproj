@@ -71,7 +71,7 @@
 		244C1B1B18635FB100A39C77 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1A18635FB100A39C77 /* Images.xcassets */; };
 		244C1B211863972800A39C77 /* AboutScreen-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */; };
 		244C1B221863972800A39C77 /* AboutScreen-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B201863972800A39C77 /* AboutScreen-ipadhd.png */; };
-		244C390F18B39E3D0097815D /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 244C390E18B39E3D0097815D /* iAd.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		244C390F18B39E3D0097815D /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 244C390E18B39E3D0097815D /* iAd.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		2452310E166F796500131AE9 /* L1-Bkg-0-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310A166F796500131AE9 /* L1-Bkg-0-0-ipad.png */; };
 		2452310F166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310B166F796500131AE9 /* L1-Bkg-0-0-ipadhd.png */; };
 		24523110166F796500131AE9 /* L1-Bkg-1024-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2452310C166F796500131AE9 /* L1-Bkg-1024-0-ipad.png */; };
