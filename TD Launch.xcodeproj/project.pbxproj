@@ -262,6 +262,7 @@
 		24C00AC615E670E20091865E /* ColoredNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 24C00AC515E670E20091865E /* ColoredNode.m */; };
 		24C7F2A5177622DC008E2B7C /* Numbers-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24C7F2A3177622DC008E2B7C /* Numbers-ipad.png */; };
 		24C7F2A6177622DC008E2B7C /* Numbers-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24C7F2A4177622DC008E2B7C /* Numbers-ipadhd.png */; };
+		24C854AA18B974A000BD5580 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24C854A918B974A000BD5580 /* StoreKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		24CD6CB0181E962A0054B7A7 /* ObstacleSheet-ipad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAC181E962A0054B7A7 /* ObstacleSheet-ipad.plist */; };
 		24CD6CB1181E962A0054B7A7 /* ObstacleSheet-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAD181E962A0054B7A7 /* ObstacleSheet-ipad.png */; };
 		24CD6CB2181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAE181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist */; };
@@ -978,6 +979,7 @@
 		24C00AC515E670E20091865E /* ColoredNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredNode.m; sourceTree = "<group>"; };
 		24C7F2A3177622DC008E2B7C /* Numbers-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Numbers-ipad.png"; path = "Resources/Numbers-ipad.png"; sourceTree = "<group>"; };
 		24C7F2A4177622DC008E2B7C /* Numbers-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Numbers-ipadhd.png"; path = "Resources/Numbers-ipadhd.png"; sourceTree = "<group>"; };
+		24C854A918B974A000BD5580 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		24CD6CAC181E962A0054B7A7 /* ObstacleSheet-ipad.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ObstacleSheet-ipad.plist"; path = "Resources/ObstacleSheet-ipad.plist"; sourceTree = "<group>"; };
 		24CD6CAD181E962A0054B7A7 /* ObstacleSheet-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ObstacleSheet-ipad.png"; path = "Resources/ObstacleSheet-ipad.png"; sourceTree = "<group>"; };
 		24CD6CAE181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ObstacleSheet-ipadhd.plist"; path = "Resources/ObstacleSheet-ipadhd.plist"; sourceTree = "<group>"; };
@@ -1025,6 +1027,7 @@
 				244C390F18B39E3D0097815D /* iAd.framework in Frameworks */,
 				2480BBCE1874ACA300C41D06 /* GameKit.framework in Frameworks */,
 				24DB611818608EA00054F17A /* libChipmunkPro-iPhone.a in Frameworks */,
+				24C854AA18B974A000BD5580 /* StoreKit.framework in Frameworks */,
 				2468C28315D5EEFA007E14A8 /* ImageIO.framework in Frameworks */,
 				246EAD3615D29413007B5C5B /* liblibpng.a in Frameworks */,
 				246EAD3515D293FC007B5C5B /* libCocosDenshion.a in Frameworks */,
@@ -1067,6 +1070,7 @@
 		240560FF15D1431B00CF2B9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				24C854A918B974A000BD5580 /* StoreKit.framework */,
 				244C390E18B39E3D0097815D /* iAd.framework */,
 				2480BBCD1874ACA300C41D06 /* GameKit.framework */,
 				24DB611718608EA00054F17A /* libChipmunkPro-iPhone.a */,
@@ -1663,6 +1667,9 @@
 						DevelopmentTeam = 48ERJG5CYX;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
 						};
