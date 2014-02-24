@@ -68,6 +68,9 @@
 		243BF75F1791EAF70064A2B4 /* YesNoDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF75E1791EAF70064A2B4 /* YesNoDialog.m */; };
 		243BF7991791FCE20064A2B4 /* LauncherObjectSettingsDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 243BF7981791FCE10064A2B4 /* LauncherObjectSettingsDialog.m */; };
 		2445569B1625AA8A00025470 /* Animation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445569A1625AA8900025470 /* Animation.m */; };
+		2448BB4518BB7A5100EF31C2 /* AppStore-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 2448BB4318BB7A5100EF31C2 /* AppStore-ipad.png */; };
+		2448BB4618BB7A5100EF31C2 /* AppStore-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2448BB4418BB7A5100EF31C2 /* AppStore-ipadhd.png */; };
+		2448BB4918BB7A8000EF31C2 /* AppStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 2448BB4818BB7A8000EF31C2 /* AppStore.m */; };
 		244C1B1B18635FB100A39C77 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1A18635FB100A39C77 /* Images.xcassets */; };
 		244C1B211863972800A39C77 /* AboutScreen-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */; };
 		244C1B221863972800A39C77 /* AboutScreen-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 244C1B201863972800A39C77 /* AboutScreen-ipadhd.png */; };
@@ -765,6 +768,10 @@
 		243BF7981791FCE10064A2B4 /* LauncherObjectSettingsDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LauncherObjectSettingsDialog.m; sourceTree = "<group>"; };
 		244556991625AA8900025470 /* Animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
 		2445569A1625AA8900025470 /* Animation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Animation.m; sourceTree = "<group>"; };
+		2448BB4318BB7A5100EF31C2 /* AppStore-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AppStore-ipad.png"; path = "Resources/AppStore-ipad.png"; sourceTree = "<group>"; };
+		2448BB4418BB7A5100EF31C2 /* AppStore-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AppStore-ipadhd.png"; path = "Resources/AppStore-ipadhd.png"; sourceTree = "<group>"; };
+		2448BB4718BB7A8000EF31C2 /* AppStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppStore.h; sourceTree = "<group>"; };
+		2448BB4818BB7A8000EF31C2 /* AppStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppStore.m; sourceTree = "<group>"; };
 		244C1B1A18635FB100A39C77 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		244C1B1F1863972800A39C77 /* AboutScreen-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AboutScreen-ipad.png"; path = "Resources/AboutScreen-ipad.png"; sourceTree = "<group>"; };
 		244C1B201863972800A39C77 /* AboutScreen-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AboutScreen-ipadhd.png"; path = "Resources/AboutScreen-ipadhd.png"; sourceTree = "<group>"; };
@@ -1098,6 +1105,8 @@
 				240562EA15D1431F00CF2B9B /* AppDelegate.m */,
 				245464DB187C450B00DFBFC2 /* AppSettingsDialog.h */,
 				245464DC187C450B00DFBFC2 /* AppSettingsDialog.m */,
+				2448BB4718BB7A8000EF31C2 /* AppStore.h */,
+				2448BB4818BB7A8000EF31C2 /* AppStore.m */,
 				24BCB66A15F5219400528C57 /* Character.h */,
 				24BCB66B15F5219400528C57 /* Character.m */,
 				246A904515FBC25C00618AA8 /* CollisionTypes.h */,
@@ -1116,7 +1125,6 @@
 				24BCB67115F5335900528C57 /* FieldObject.m */,
 				2480BDAD1874C76A00C41D06 /* GameCenter.h */,
 				2480BDAE1874C76A00C41D06 /* GameCenter.m */,
-				2462152A1890006500E36DB5 /* Localizable.strings */,
 				24BCB66D15F52D8000528C57 /* GameData.h */,
 				24BCB66E15F52D8000528C57 /* GameData.m */,
 				249B4A1115E98E59007176A2 /* GameLayer.h */,
@@ -1132,6 +1140,7 @@
 				24DEA6ED15E5016B007A0BBF /* LevelMenu.h */,
 				24DEA6EE15E5016B007A0BBF /* LevelMenu.m */,
 				243D40DF170273C4000C1478 /* Levels */,
+				2462152A1890006500E36DB5 /* Localizable.strings */,
 				24E5989F15E3AD4F00D836F7 /* MainMenu.h */,
 				24E598A015E3AD4F00D836F7 /* MainMenu.m */,
 				240562F215D1431F00CF2B9B /* PhysicsSprite.h */,
@@ -1161,6 +1170,7 @@
 		2405611315D1431B00CF2B9B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2448BB0B18BB7A2D00EF31C2 /* AppStore */,
 				24DC0BE6188566DD00A9BF7D /* Fonts */,
 				244C1B1A18635FB100A39C77 /* Images.xcassets */,
 				24B8D3C417D5254D00F9272D /* FPS */,
@@ -1294,6 +1304,15 @@
 				243BD61D18A08AD3006CBDBB /* Level10.m */,
 			);
 			path = Levels;
+			sourceTree = "<group>";
+		};
+		2448BB0B18BB7A2D00EF31C2 /* AppStore */ = {
+			isa = PBXGroup;
+			children = (
+				2448BB4318BB7A5100EF31C2 /* AppStore-ipad.png */,
+				2448BB4418BB7A5100EF31C2 /* AppStore-ipadhd.png */,
+			);
+			name = AppStore;
 			sourceTree = "<group>";
 		};
 		244C1B1C1863968400A39C77 /* About */ = {
@@ -2248,6 +2267,7 @@
 				246215321890B6D000E36DB5 /* TDFontRed72-ipad.fnt in Resources */,
 				248292CD175CCFC2005CCBED /* L9-Bkg-0-0-ipadhd.png in Resources */,
 				246215341890B6D000E36DB5 /* TDFontRed72-ipadhd.fnt in Resources */,
+				2448BB4618BB7A5100EF31C2 /* AppStore-ipadhd.png in Resources */,
 				2407B7BD18180C7800D6EB79 /* BackMusic.m4a in Resources */,
 				248292CE175CCFC2005CCBED /* L9-Bkg-0-1024-ipad.png in Resources */,
 				248292CF175CCFC2005CCBED /* L9-Bkg-0-2048-ipad.png in Resources */,
@@ -2314,6 +2334,7 @@
 				24DC0C421885725200A9BF7D /* TDFont120-ipad.fnt in Resources */,
 				2422312917C79F85003CB027 /* L4-Tunnel-ipadhd.png in Resources */,
 				246215331890B6D000E36DB5 /* TDFontRed72-ipad.png in Resources */,
+				2448BB4518BB7A5100EF31C2 /* AppStore-ipad.png in Resources */,
 				249228EA17D29E8900C7ADB2 /* L7-River1-ipad.png in Resources */,
 				249228EB17D29E8900C7ADB2 /* L7-River1-ipadhd.png in Resources */,
 				249228EC17D29E8900C7ADB2 /* L7-River2-ipad.png in Resources */,
@@ -2355,6 +2376,7 @@
 				24A37AB515ECF9BB00D1DBEB /* Drawer.m in Sources */,
 				24BCB65D15F4DC5700528C57 /* GameLevel.m in Sources */,
 				249B0B8F17F4663700AEF1B8 /* EventManager.m in Sources */,
+				2448BB4918BB7A8000EF31C2 /* AppStore.m in Sources */,
 				243BD62618A08AD3006CBDBB /* Level9.m in Sources */,
 				24BCB66315F50CD200528C57 /* GestureRecognizerWithBlock.m in Sources */,
 				249B0B5217EBD08600AEF1B8 /* TutorialDialog.m in Sources */,

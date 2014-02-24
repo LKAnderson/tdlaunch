@@ -400,6 +400,9 @@ def ExportImages():
         CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Empty", 100, 940, 42, 42)
         CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Filled", 100, 875, 51.402, 55.081)
 
+        products.append("exported/AppStore-ipad.png")
+        products.append("exported/AppStore-ipadhd.png")
+
 
     if isExported("LevelMenu"):
         print

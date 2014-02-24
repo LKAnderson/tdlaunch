@@ -29,6 +29,7 @@
 #import "EventManager.h"
 #import "Achievements.h"
 #import "GameCenter.h"
+#import "AppStore.h"
 
 #import <sys/time.h>
 #import <stdlib.h>
@@ -702,8 +703,28 @@ if (accelHalfXTimer > 0) a *= 0.5
         lastObj = obj;
     }
     
+    x += SCRNX(20);
     
-    float width = x - (lastObj.menuItem.boundingBox.size.width-SCRNX(30));
+    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Store..." fntFile:@"TDFont120.fnt"];
+    storeSprite.scale = 0.5;
+    storeSprite.anchorPoint = ccp(0.5, 0.5);
+    storeSprite.position = ccp(x, (objectDrawer.contentSize.height-SCRNY(40))/2);
+    storeSprite.isTouchEnabled = YES;
+    [objHolder addChild:storeSprite];
+    
+    [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
+    {
+        [gameLevel saveTempFile];
+        [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
+    }]];
+    
+    [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UIPanGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
+    {
+        [objScrollView forwardPanEvent:r node:item];
+    }]];
+    
+    
+    float width = BB_RIGHT(storeSprite.boundingBox) + SCRNX(30);
     objHolder.contentSize = CGSizeMake(width, objectDrawer.contentSize.height-SCRNY(40));
     
     
