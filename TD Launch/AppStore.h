@@ -16,3 +16,11 @@
 
 + (CCScene*) scene;
 @end
+
+
+@interface ProductModel : NSObject
+@property CCNode* icon;
+@property NSString* title;
+@property NSString* description;
+@property NSString* price;
+@end
