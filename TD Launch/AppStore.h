@@ -8,13 +8,19 @@
 
 #import "cocos2d.h"
 #import "EventManager.h"
+#import <StoreKit/StoreKit.h>
 
-@interface AppStore : CCLayer <EventListener>
+@interface AppStore : CCLayer <EventListener, SKProductsRequestDelegate>
 {
-
+    NSArray* _storeKitProducts;
+    NSDictionary* _productInfo;
+    NSArray* _productNamesInOrder;
 }
 
 + (CCScene*) scene;
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response;
+
 @end
 
 
