@@ -16,6 +16,7 @@
 #import "Achievements.h"
 #import "LevelMenu.h"
 #import "ScrollView.h"
+#import "Achievements.h"
 
 #import <SimpleAudioEngine.h>
 
@@ -187,6 +188,9 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     
     for (NSString* productId in _productNamesInOrder)
     {
+        if ([productId isEqualToString:Product_Launcher] && [Achievements sharedAchievements].launcher > 0)
+            continue;
+        
         SKProduct* product = [self findProductById:productId];
         if (product == nil)
             continue;
