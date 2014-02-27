@@ -129,25 +129,31 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     CCSprite* goBackButton = [CCSprite spriteWithSpriteFrameName:@"TutorialArrow.png"];
     goBackButton.scale = 0.45;
     goBackButton.rotation = -90.0;
-    goBackButton.anchorPoint = ccp(0.5, 0.5);
-    goBackButton.position = ccp(ICON_COLUMN/3, SCRNY(70));
-    
     
     CCLabelBMFont* goBackLabel = [CCLabelBMFont labelWithString:@"Go Back" fntFile:@"TDFontYellow96.fnt"];
     goBackLabel.scale = 0.45;
-    goBackLabel.anchorPoint = ccp(0.5, 1.0);
-    goBackLabel.position = ccp(goBackButton.position.x, BB_BOTTOM(goBackButton.boundingBox) - SCRNY(10));
     
     
+    CCNode* goBackContainer = [CCNode node];
+    goBackContainer.contentSize = CGSizeMake(MAX(BB_WIDTH(goBackButton), BB_WIDTH(goBackLabel)),
+                                             BB_HEIGHT(goBackButton) + BB_HEIGHT(goBackLabel) - SCRNY(20));
+    goBackContainer.anchorPoint = ccp(0.5, 0.5);
+    goBackContainer.position = ccp(ICON_COLUMN/3, SCRNY(55));
     
-    goBackButton.isTouchEnabled = YES;
-    goBackLabel.isTouchEnabled = YES;
+    goBackButton.anchorPoint = ccp(0, 1);
+    goBackButton.position = ccp((goBackContainer.contentSize.width - BB_WIDTH(goBackButton))/2,
+                                goBackContainer.contentSize.height);
+    [goBackContainer addChild:goBackButton];
+    
+    goBackLabel.anchorPoint = ccp(0, 0);
+    goBackLabel.position = ccp((goBackContainer.contentSize.width - BB_WIDTH(goBackLabel))/2, 0);
+    [goBackContainer addChild:goBackLabel];
+    
+    [self addChild:goBackContainer z:3];
+    
+    goBackContainer.isTouchEnabled = YES;
 
-    [goBackButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
-        [[CCDirector sharedDirector] replaceScene:[LevelMenu scene]];
-    }]];
-    
-    [goBackLabel addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
+    [goBackContainer addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
         [[CCDirector sharedDirector] replaceScene:[LevelMenu scene]];
     }]];
 
@@ -158,8 +164,7 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     [request start];
     
     
-    [self addChild:goBackButton]; // Make sure these are on top
-    [self addChild:goBackLabel];
+    
 }
 
 
@@ -221,6 +226,7 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
         model.icon = toolSprite;
         model.title = product.localizedTitle;
         model.description = product.localizedDescription;
+        model.product = product;
         
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -259,7 +265,7 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
         [titleBox addChild:description];
         
         title.anchorPoint = ccp(0,0);
-        title.position = ccp(0, BB_TOP(description.boundingBox));
+        title.position = ccp(0, BB_TOP(description));
         [titleBox addChild:title];
         
         titleBox.anchorPoint = ccp(0, 0.5);
@@ -272,6 +278,13 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
         price.anchorPoint = ccp(0.5, 0.5);
         price.position = ccp(PRICE_COLUMN, y);
         [tableView addChild:price];
+        price.isTouchEnabled = YES;
+        [price addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
+            AUDIOTIC1;
+            SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:product.product];
+            payment.quantity = 1;
+            [[SKPaymentQueue defaultQueue] addPayment:payment];
+        }]];
         
         y -= tableSpacing;
     }
@@ -280,7 +293,7 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     scrollView.contentSize = CGSizeMake(screen.width, screen.height);
     scrollView.anchorPoint = ccp(0.5, 0);
     scrollView.position = ccp(screen.width/2, 0);
-    [self addChild:scrollView];
+    [self addChild:scrollView z:2];
     
     scrollView.clipContents = YES;
     scrollView.content.position = ccp(scrollView.content.position.x, scrollView.contentSize.height - scrollView.content.contentSize.height);

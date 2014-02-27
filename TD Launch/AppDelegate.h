@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <iAd/iAd.h>
+#import <StoreKit/StoreKit.h>
 #import "cocos2d.h"
 
 
 #define APPCONTROLLER ((AppController*)[[UIApplication sharedApplication] delegate])
 
 
-@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate, ADBannerViewDelegate >
+@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate, ADBannerViewDelegate, SKPaymentTransactionObserver >
 {
 	UIWindow *window_;
 	UINavigationController *navController_;

@@ -724,7 +724,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     }]];
     
     
-    float width = BB_RIGHT(storeSprite.boundingBox) + SCRNX(30);
+    float width = BB_RIGHT(storeSprite) + SCRNX(30);
     objHolder.contentSize = CGSizeMake(width, objectDrawer.contentSize.height-SCRNY(40));
     
     
@@ -1008,8 +1008,8 @@ if (accelHalfXTimer > 0) a *= 0.5
                                                  self.contentSize.height*0.65)
                                           anchorPoint:ccp(.5,.5)
                                           scaledTo:nil
-                                          arrowTo:ccp(BB_HORZ_PCT(characterDrawer.boundingBox, 0.40),
-                                                      BB_VERT_PCT(characterDrawer.boundingBox, 1.0)+SCRNY(5))];
+                                          arrowTo:ccp(BB_HORZ_PCT(characterDrawer, 0.40),
+                                                      BB_VERT_PCT(characterDrawer, 1.0)+SCRNY(5))];
                    [self addChild:tut z:9999999];
                    [Settings globalSettings].showDrawerTutorial = NO;
                    [[Settings globalSettings] save];
@@ -1041,8 +1041,8 @@ if (accelHalfXTimer > 0) a *= 0.5
                                                  self.contentSize.height*0.65)
                                           anchorPoint:ccp(.5,.5)
                                           scaledTo:nil
-                                          arrowTo:ccp(BB_HORZ_PCT(objectDrawer.boundingBox, 0.40),
-                                                      BB_VERT_PCT(objectDrawer.boundingBox, 1.0)+SCRNY(5))];
+                                          arrowTo:ccp(BB_HORZ_PCT(objectDrawer, 0.40),
+                                                      BB_VERT_PCT(objectDrawer, 1.0)+SCRNY(5))];
                    [self addChild:tut z:9999999];
                    [Settings globalSettings].showDrawerTutorial = NO;
                    [[Settings globalSettings] save];
@@ -1366,14 +1366,14 @@ if (accelHalfXTimer > 0) a *= 0.5
         nextLevelButton.alignment = kCCTextAlignmentCenter;
         nextLevelButton.scale = 0.45;
         nextLevelButton.anchorPoint = ccp(1,0.5);
-        nextLevelButton.position = ccp(BB_RIGHT(recapScreen.boundingBox) - SCRNX(60), BB_TOP(recapScreen.boundingBox));
+        nextLevelButton.position = ccp(BB_RIGHT(recapScreen) - SCRNX(60), BB_TOP(recapScreen));
         
         nextLevelButton.opacity = 0;
         nextLevelButton.isTouchEnabled = YES;
         
         [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5
-                                                 position:ccp(BB_RIGHT(recapScreen.boundingBox) - SCRNX(60),
-                                                              recapScreen.boundingBox.origin.y + BB_TOP(title.boundingBox) - title.boundingBox.size.height*0.6)]];
+                                                 position:ccp(BB_RIGHT(recapScreen) - SCRNX(60),
+                                                              recapScreen.boundingBox.origin.y + BB_TOP(title) - title.boundingBox.size.height*0.6)]];
         [nextLevelButton runAction:[CCFadeIn actionWithDuration:0.75]];
         
         [nextLevelButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)

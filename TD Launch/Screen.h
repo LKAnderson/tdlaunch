@@ -38,9 +38,11 @@ extern BOOL isRetinaScreen;
 
 
 // Bounding Box Helper, because I really hate how much typing it takes!
-#define BB_LEFT(bb)     (bb.origin.x)
-#define BB_RIGHT(bb)    (bb.origin.x + bb.size.width)
-#define BB_BOTTOM(bb)   (bb.origin.y)
-#define BB_TOP(bb)      (bb.origin.y + bb.size.height)
-#define BB_HORZ_PCT(bb,pct) (bb.origin.x + (bb.size.width*pct))
-#define BB_VERT_PCT(bb,pct) (bb.origin.y + (bb.size.height*pct))
+#define BB_LEFT(obj)     (obj.boundingBox.origin.x)
+#define BB_RIGHT(obj)    (obj.boundingBox.origin.x + obj.boundingBox.size.width)
+#define BB_BOTTOM(obj)   (obj.boundingBox.origin.y)
+#define BB_TOP(obj)      (obj.boundingBox.origin.y + obj.boundingBox.size.height)
+#define BB_HEIGHT(obj)   (obj.boundingBox.size.height)
+#define BB_WIDTH(obj)    (obj.boundingBox.size.width)
+#define BB_HORZ_PCT(obj,pct) (obj.boundingBox.origin.x + (obj.boundingBox.size.width*pct))
+#define BB_VERT_PCT(obj,pct) (obj.boundingBox.origin.y + (obj.boundingBox.size.height*pct))

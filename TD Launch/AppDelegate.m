@@ -122,6 +122,8 @@ unsigned int getCurrentTime()
 	
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"Tic.mp3"];
     
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    
 	// make main window visible
 	[window_ makeKeyAndVisible];
     
@@ -276,6 +278,32 @@ unsigned int getCurrentTime()
 }
 
 
+// SKPaymentTransactionObserver methods
 
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
+{
+    NSLog(@"updated transactions called");
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
+{
+    NSLog(@"removed transactions called");
+    
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
+{
+    NSLog(@"restoreCompletedTransactionsFailedWithError: %@", error);
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads
+{
+    NSLog(@"updated downloads called");
+}
+
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+    NSLog(@"restore completed transactions finished");
+}
 
 @end
