@@ -1359,68 +1359,75 @@ if (accelHalfXTimer > 0) a *= 0.5
     }
 
     nextLevelButton = nil;
+    
+    NSString* nextLevelStr = NSLocalizedString(@"GameLayer_Recap_NextLevel", @"Next Level");
+    nextLevelButton = [CCLabelBMFont labelWithString:nextLevelStr fntFile:@"TDFontYellow96.fnt"];
+    nextLevelButton.alignment = kCCTextAlignmentCenter;
+    nextLevelButton.scale = 0.45;
+    nextLevelButton.anchorPoint = ccp(1,0.5);
+    nextLevelButton.position = ccp(BB_RIGHT(recapScreen) - SCRNX(60), BB_TOP(recapScreen));
+    
+    nextLevelButton.opacity = 0;
+    nextLevelButton.isTouchEnabled = YES;
+
+    CGPoint nextLvlPos = ccp(BB_RIGHT(recapScreen) - SCRNX(60),
+                             recapScreen.boundingBox.origin.y + BB_TOP(title) - title.boundingBox.size.height*0.6);
+
     if ([Achievements sharedAchievements].level > gameLevel.ID && showAchievements && gameLevel.ID < 10)
     {
-        NSString* nextLevelStr = NSLocalizedString(@"GameLayer_Recap_NextLevel", @"Next Level");
-        nextLevelButton = [CCLabelBMFont labelWithString:nextLevelStr fntFile:@"TDFontYellow96.fnt"];
-        nextLevelButton.alignment = kCCTextAlignmentCenter;
-        nextLevelButton.scale = 0.45;
-        nextLevelButton.anchorPoint = ccp(1,0.5);
-        nextLevelButton.position = ccp(BB_RIGHT(recapScreen) - SCRNX(60), BB_TOP(recapScreen));
-        
-        nextLevelButton.opacity = 0;
-        nextLevelButton.isTouchEnabled = YES;
-        
-        [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5
-                                                 position:ccp(BB_RIGHT(recapScreen) - SCRNX(60),
-                                                              recapScreen.boundingBox.origin.y + BB_TOP(title) - title.boundingBox.size.height*0.6)]];
+        [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5 position:nextLvlPos]];
         [nextLevelButton runAction:[CCFadeIn actionWithDuration:0.75]];
-        
-        [nextLevelButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
+    }
+    else
+    {
+        nextLevelButton.position = nextLvlPos;
+        nextLevelButton.opacity = 255;
+    }
+
+    [nextLevelButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
+    {
+        GameLevel* nextLevel = getLevelForID(gameLevel.ID+1);
+        AUDIOTIC1;
+
+        CCCallBlock* loadLevel = [CCCallBlock actionWithBlock:^(void)
         {
-            GameLevel* nextLevel = getLevelForID(gameLevel.ID+1);
-            AUDIOTIC1;
-    
-            CCCallBlock* loadLevel = [CCCallBlock actionWithBlock:^(void)
+            if (nextLevel == nil)
             {
-                if (nextLevel == nil)
-                {
-                    [[CCDirector sharedDirector] replaceScene: [LevelMenu scene]];
-                }
-                else
-                {
-                    [[CCDirector sharedDirector] replaceScene: [GameLayer sceneWithLevel:nextLevel]];
-                }
-                [self removeAllChildrenWithCleanup:YES];
-            }];
-            
-            if (gameLevel.isChanged)
-            {
-                YesNoDialog* yesNo = [[YesNoDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_SaveChangesMsg", @"Save changes?")
-                        onYes:^()
-                        {
-                            AUDIOTIC2;
-                            [gameLevel saveConfig];
-                        }
-                        onNo:nil
-                        onEither:^()
-                        {
-                            AUDIOTIC2;
-                            nextLevelButton.string = NSLocalizedString(@"LevelMenu_LoadingMsg", "Loading...");
-                            [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.01] two:loadLevel]];
-                        }];
-                yesNo.showCancel = YES;
-                [self addChild:yesNo z:9999999];
+                [[CCDirector sharedDirector] replaceScene: [LevelMenu scene]];
             }
             else
             {
-                nextLevelButton.string = NSLocalizedString(@"LevelMenu_LoadingMsg", "Loading...");
-                [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.01] two:loadLevel]];
+                [[CCDirector sharedDirector] replaceScene: [GameLayer sceneWithLevel:nextLevel]];
             }
-            
-        }]];
+            [self removeAllChildrenWithCleanup:YES];
+        }];
         
-    }
+        if (gameLevel.isChanged)
+        {
+            YesNoDialog* yesNo = [[YesNoDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_SaveChangesMsg", @"Save changes?")
+                    onYes:^()
+                    {
+                        AUDIOTIC2;
+                        [gameLevel saveConfig];
+                    }
+                    onNo:nil
+                    onEither:^()
+                    {
+                        AUDIOTIC2;
+                        nextLevelButton.string = NSLocalizedString(@"LevelMenu_LoadingMsg", "Loading...");
+                        [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.01] two:loadLevel]];
+                    }];
+            yesNo.showCancel = YES;
+            [self addChild:yesNo z:9999999];
+        }
+        else
+        {
+            nextLevelButton.string = NSLocalizedString(@"LevelMenu_LoadingMsg", "Loading...");
+            [self runAction:[CCSequence actionOne:[CCDelayTime actionWithDuration:0.01] two:loadLevel]];
+        }
+        
+    }]];
+    
     
     recapScreen.visible = YES;
     [self addChild:recapScreen z:999999];

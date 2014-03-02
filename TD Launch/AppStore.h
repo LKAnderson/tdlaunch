@@ -10,11 +10,14 @@
 #import "EventManager.h"
 #import <StoreKit/StoreKit.h>
 
+
 @interface AppStore : CCLayer <EventListener, SKProductsRequestDelegate>
 {
     NSArray* _storeKitProducts;
     NSDictionary* _productInfo;
     NSArray* _productNamesInOrder;
+    
+    CCLabelBMFont* _loadingLabel;
 }
 
 + (CCScene*) scene;

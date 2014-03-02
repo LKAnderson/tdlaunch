@@ -270,6 +270,7 @@
 		24CD6CB1181E962A0054B7A7 /* ObstacleSheet-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAD181E962A0054B7A7 /* ObstacleSheet-ipad.png */; };
 		24CD6CB2181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAE181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist */; };
 		24CD6CB3181E962A0054B7A7 /* ObstacleSheet-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CD6CAF181E962A0054B7A7 /* ObstacleSheet-ipadhd.png */; };
+		24D21BFF18C0BEE300507595 /* ProductIds.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D21BFE18C0BEE300507595 /* ProductIds.m */; };
 		24D3D43C166A433C003C62EE /* L2-Bkg-0-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24D3D438166A433C003C62EE /* L2-Bkg-0-0-ipad.png */; };
 		24D3D43D166A433C003C62EE /* L2-Bkg-0-0-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24D3D439166A433C003C62EE /* L2-Bkg-0-0-ipadhd.png */; };
 		24D3D43E166A433C003C62EE /* L2-Bkg-1024-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24D3D43A166A433C003C62EE /* L2-Bkg-1024-0-ipad.png */; };
@@ -992,6 +993,8 @@
 		24CD6CAE181E962A0054B7A7 /* ObstacleSheet-ipadhd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ObstacleSheet-ipadhd.plist"; path = "Resources/ObstacleSheet-ipadhd.plist"; sourceTree = "<group>"; };
 		24CD6CAF181E962A0054B7A7 /* ObstacleSheet-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ObstacleSheet-ipadhd.png"; path = "Resources/ObstacleSheet-ipadhd.png"; sourceTree = "<group>"; };
 		24D095E31893192A007D24A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		24D21BFD18C0BEE300507595 /* ProductIds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductIds.h; sourceTree = "<group>"; };
+		24D21BFE18C0BEE300507595 /* ProductIds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductIds.m; sourceTree = "<group>"; };
 		24D3D438166A433C003C62EE /* L2-Bkg-0-0-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L2-Bkg-0-0-ipad.png"; path = "Resources/L2-Bkg-0-0-ipad.png"; sourceTree = "<group>"; };
 		24D3D439166A433C003C62EE /* L2-Bkg-0-0-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L2-Bkg-0-0-ipadhd.png"; path = "Resources/L2-Bkg-0-0-ipadhd.png"; sourceTree = "<group>"; };
 		24D3D43A166A433C003C62EE /* L2-Bkg-1024-0-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L2-Bkg-1024-0-ipad.png"; path = "Resources/L2-Bkg-1024-0-ipad.png"; sourceTree = "<group>"; };
@@ -1145,6 +1148,8 @@
 				24E598A015E3AD4F00D836F7 /* MainMenu.m */,
 				240562F215D1431F00CF2B9B /* PhysicsSprite.h */,
 				240562F315D1431F00CF2B9B /* PhysicsSprite.m */,
+				24D21BFD18C0BEE300507595 /* ProductIds.h */,
+				24D21BFE18C0BEE300507595 /* ProductIds.m */,
 				2405611315D1431B00CF2B9B /* Resources */,
 				24D3D6E61791B62900468839 /* RotationSettingsDialog.h */,
 				24D3D6E71791B62900468839 /* RotationSettingsDialog.m */,
@@ -2355,6 +2360,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24D21BFF18C0BEE300507595 /* ProductIds.m in Sources */,
 				240562E815D1431F00CF2B9B /* main.m in Sources */,
 				240562EB15D1431F00CF2B9B /* AppDelegate.m in Sources */,
 				240562F115D1431F00CF2B9B /* IntroLayer.m in Sources */,
@@ -2441,7 +2447,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2473,7 +2479,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;

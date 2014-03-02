@@ -54,16 +54,16 @@ GameLevel* getLevelForID(int ID)
     
     switch(ID)
     {
-        case 1: level = [[GameLevel_1 alloc] init]; break;
-        case 2: level = [[GameLevel_2 alloc] init]; break;
-        case 3: level = [[GameLevel_3 alloc] init]; break;
-        case 4: level = [[GameLevel_4 alloc] init]; break;
-        case 5: level = [[GameLevel_5 alloc] init]; break;
-        case 6: level = [[GameLevel_6 alloc] init]; break;
-        case 7: level = [[GameLevel_7 alloc] init]; break;
-        case 8: level = [[GameLevel_8 alloc] init]; break;
-        case 9: level = [[GameLevel_9 alloc] init]; break;
-        case 10: level = [[GameLevel_10 alloc] init]; break;
+        case 1: level = [[[GameLevel_1 alloc] init] load]; break;
+        case 2: level = [[[GameLevel_2 alloc] init] load]; break;
+        case 3: level = [[[GameLevel_3 alloc] init] load]; break;
+        case 4: level = [[[GameLevel_4 alloc] init] load]; break;
+        case 5: level = [[[GameLevel_5 alloc] init] load]; break;
+        case 6: level = [[[GameLevel_6 alloc] init] load]; break;
+        case 7: level = [[[GameLevel_7 alloc] init] load]; break;
+        case 8: level = [[[GameLevel_8 alloc] init] load]; break;
+        case 9: level = [[[GameLevel_9 alloc] init] load]; break;
+        case 10: level = [[[GameLevel_10 alloc] init] load]; break;
     }
     
     return level;

@@ -14,6 +14,7 @@
 #import "Settings.h"
 #import "EventManager.h"
 #import "GameCenter.h"
+#import "Achievements.h"
 
 #import <SimpleAudioEngine.h>
 #import <AVFoundation/AVFoundation.h>
@@ -154,6 +155,7 @@ unsigned int getCurrentTime()
 		[director_ startAnimation];
     
     [[EventManager sharedManager] publish:APP_ACTIVATED data:nil];
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
 -(void) applicationDidEnterBackground:(UIApplication*)application
@@ -282,13 +284,33 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
-    NSLog(@"updated transactions called");
+    for (SKPaymentTransaction* txn in transactions)
+    {
+        switch (txn.transactionState)
+        {
+            case SKPaymentTransactionStatePurchased:
+            {
+                NSLog(@"Purch: %@", txn.payment.productIdentifier);
+                break;
+                
+            }
+                
+            case SKPaymentTransactionStateRestored:
+            {
+                SKPaymentTransaction* origTxn = txn.originalTransaction;
+                NSLog(@"Restore: %@", origTxn.payment.productIdentifier);
+                break;
+            }
+                
+            case SKPaymentTransactionStateFailed:
+                NSLog(@"TXN Failed: %@", txn.error);
+                break;
+        }
+    }
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
 {
-    NSLog(@"removed transactions called");
-    
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
@@ -298,12 +320,12 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads
 {
-    NSLog(@"updated downloads called");
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
-    NSLog(@"restore completed transactions finished");
+    NSLog(@"Done restoring transactions");
 }
+
 
 @end

@@ -15,7 +15,7 @@
 #define APPCONTROLLER ((AppController*)[[UIApplication sharedApplication] delegate])
 
 
-@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate, ADBannerViewDelegate, SKPaymentTransactionObserver >
+@interface AppController : NSObject <UIApplicationDelegate, CCDirectorDelegate, ADBannerViewDelegate, SKPaymentTransactionObserver>
 {
 	UIWindow *window_;
 	UINavigationController *navController_;

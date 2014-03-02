@@ -21,22 +21,8 @@
 #import <SimpleAudioEngine.h>
 
 #import "AppDelegate.h"
+#import "ProductIds.h"
 
-NSString* Product_RemoveAds = @"com.kornerstoane.tdlaunch.RemoveAds";
-NSString* Product_Planks = @"com.kornerstoane.tdlaunch.Planks";
-NSString* Product_Slides = @"com.kornerstoane.tdlaunch.Slides";
-NSString* Product_Drums = @"com.kornerstoane.tdlaunch.Drums";
-NSString* Product_Drum2x = @"com.kornerstoane.tdlaunch.Drum2x";
-NSString* Product_Blowers = @"com.kornerstoane.tdlaunch.Blowers";
-NSString* Product_Blower2x = @"com.kornerstoane.tdlaunch.Blower2x";
-NSString* Product_Straightener = @"com.kornerstoane.tdlaunch.Straightener";
-NSString* Product_Reducer = @"com.kornerstoane.tdlaunch.Reducer";
-NSString* Product_Doubler = @"com.kornerstoane.tdlaunch.Doubler";
-NSString* Product_Launcher = @"com.kornerstoane.tdlaunch.Launcher";
-NSString* Product_GravityReverser = @"com.kornerstoane.tdlaunch.GravityReverser";
-NSString* Product_SuperStartPack = @"com.kornerstoane.tdlaunch.SuperStartPack";
-NSString* Product_PowerPack = @"com.kornerstoane.tdlaunch.PowerPack";
-NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
 
 
 #define ICON_COLUMN             (0.15 * [[CCDirector sharedDirector] winSize].width)
@@ -62,33 +48,14 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
 {
     if (self = [super init])
     {
-        _productNamesInOrder = [NSArray arrayWithObjects:Product_RemoveAds, Product_Planks, Product_Slides,
-                                Product_Drums, Product_Drum2x, Product_Blowers, Product_Blower2x, Product_Straightener,
-                                Product_Reducer, Product_Doubler, Product_Launcher, Product_GravityReverser,
-                                Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
+        _productNamesInOrder = [NSArray arrayWithObjects:Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
         
         NSMutableDictionary* products = [NSMutableDictionary dictionary];
 
-        [products setValue:@"LBL:Remove\nAds"       forKey:Product_RemoveAds];
         
-        [products setValue:@"Plank.png"             forKey:Product_Planks];
-        [products setValue:@"Slide.png"             forKey:Product_Slides];
-        [products setValue:@"Drum.png"              forKey:Product_Drums];
-        [products setValue:@"Drum2x.png"            forKey:Product_Drum2x];
-        
-        [products setValue:@"Blower.png"            forKey:Product_Blowers];
-        [products setValue:@"Blower2x.png"          forKey:Product_Blower2x];
-        
-        [products setValue:@"Aligner.png"           forKey:Product_Straightener];
-        [products setValue:@"AcceleratorHalfX.png"  forKey:Product_Reducer];
-        [products setValue:@"Accelerator2X.png"     forKey:Product_Doubler];
-        
-        [products setValue:@"Launcher.png"          forKey:Product_Launcher];
-        [products setValue:@"AntiGravity.png"       forKey:Product_GravityReverser];
-        
-        [products setValue:@"LBL:Bundle"            forKey:Product_SuperStartPack];
-        [products setValue:@"LBL:Bundle"            forKey:Product_PowerPack];
-        [products setValue:@"LBL:Bundle"            forKey:Product_DevPack];
+        [products setValue:@"LBL:Bundle" forKey:Product_SuperStartPack];
+        [products setValue:@"LBL:Bundle" forKey:Product_PowerPack];
+        [products setValue:@"LBL:Bundle" forKey:Product_DevPack];
         
         _productInfo = products;
     }
@@ -158,6 +125,11 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     }]];
 
     
+    _loadingLabel = [CCLabelBMFont labelWithString:@"Loading..." fntFile:@"TDFontYellow96.fnt"];
+    _loadingLabel.anchorPoint = ccp(0.5,0.5);
+    _loadingLabel.position = ccp(screen.width/2, screen.height/2);
+    [self addChild:_loadingLabel];
+    
     // Build the set of product ids and send it off to StoreKit.
     SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:[_productInfo allKeys]]];
     request.delegate = self;
@@ -183,6 +155,16 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
 
 - (void) loadProductTable
 {
+    CCCallBlock* cleanup = [CCCallBlock actionWithBlock:^(void){
+        [self removeChild:_loadingLabel cleanup:NO];
+        [self unscheduleUpdate];
+    }];
+    
+    [_loadingLabel runAction:[CCSequence actionOne:[CCFadeOut actionWithDuration:0.25] two:cleanup]];
+    [self scheduleUpdate];
+    
+    
+    
     // First, build the product listing table so we know how big to make the scrollview.
     
     CGSize screen = [[CCDirector sharedDirector] winSize];
@@ -193,8 +175,8 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
     
     for (NSString* productId in _productNamesInOrder)
     {
-        if ([productId isEqualToString:Product_Launcher] && [Achievements sharedAchievements].launcher > 0)
-            continue;
+//        if ([productId isEqualToString:Product_Launcher] && [Achievements sharedAchievements].launcher > 0)
+//            continue;
         
         SKProduct* product = [self findProductById:productId];
         if (product == nil)
@@ -208,10 +190,15 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
             label.alignment = kCCTextAlignmentCenter;
             label.scale = 0.5;
             toolSprite = label;
+            
+            //if ([productId isEqualToString:Product_RemoveAds] && [[Achievements sharedAchievements] hasProduct:Product_RemoveAds])
+            //    label.opacity = 128;
         }
         else
         {
             toolSprite = [CCSprite spriteWithSpriteFrameName:spriteName];
+            //f ([productId isEqualToString:Product_Launcher] && [[Achievements sharedAchievements] hasProduct:Product_Launcher])
+            //    ((CCSprite*)toolSprite).opacity = 128;
         }
         
         if ([spriteName isEqual:@"Slide.png"] || [spriteName isEqual:@"Plank.png"] || [spriteName isEqual:@"Drum.png"]
@@ -219,6 +206,7 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
         {
             toolSprite.rotation = -45.0;
         }
+        
         
         tableHeight += tableSpacing;
         
@@ -301,7 +289,6 @@ NSString* Product_DevPack = @"com.kornerstoane.tdlaunch.DevPack";
 
 - (BOOL) eventOccurred:(NSString*)event data:(id)data
 {
-    
     return YES;
 }
 
