@@ -25,9 +25,9 @@
 
 
 
-#define ICON_COLUMN             (0.15 * [[CCDirector sharedDirector] winSize].width)
-#define DESCRIPTION_COLUMN      (0.25 * [[CCDirector sharedDirector] winSize].width)
-#define PRICE_COLUMN            (0.90 * [[CCDirector sharedDirector] winSize].width)
+#define ICON_COLUMN             (0.20 * [[CCDirector sharedDirector] winSize].width)
+#define DESCRIPTION_COLUMN      (0.35 * [[CCDirector sharedDirector] winSize].width)
+#define PRICE_COLUMN            (0.85 * [[CCDirector sharedDirector] winSize].width)
 
 @implementation ProductModel
 @end
@@ -44,20 +44,21 @@
 }
 
 
+
 - (id) init
 {
     if (self = [super init])
     {
-        _productNamesInOrder = [NSArray arrayWithObjects:Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
+        _toolNamesInOrder = [NSArray arrayWithObjects:Tool_Plank,Tool_Slide,Tool_Drums,Tool_Blowers,
+                             Tool_Reducer,Tool_Doubler,Tool_Aligner,Tool_Launcher,Tool_GravityReverser, nil];
         
-        NSMutableDictionary* products = [NSMutableDictionary dictionary];
+        _productNamesInOrder = [NSArray arrayWithObjects:
+                                Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
+        
+//        [products setValue:@"LBL:Bundle" forKey:Product_SuperStartPack];
+//        [products setValue:@"LBL:Bundle" forKey:Product_PowerPack];
+//        [products setValue:@"LBL:Bundle" forKey:Product_DevPack];
 
-        
-        [products setValue:@"LBL:Bundle" forKey:Product_SuperStartPack];
-        [products setValue:@"LBL:Bundle" forKey:Product_PowerPack];
-        [products setValue:@"LBL:Bundle" forKey:Product_DevPack];
-        
-        _productInfo = products;
     }
     return self;
 }
@@ -125,15 +126,104 @@
     }]];
 
     
-    _loadingLabel = [CCLabelBMFont labelWithString:@"Loading..." fntFile:@"TDFontYellow96.fnt"];
-    _loadingLabel.anchorPoint = ccp(0.5,0.5);
-    _loadingLabel.position = ccp(screen.width/2, screen.height/2);
-    [self addChild:_loadingLabel];
+    NSMutableDictionary* products = [NSMutableDictionary dictionary];
+    
+    
+    ProductModel* model;
+    CCSprite *sprite1, *sprite2;
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Plank_Title", @"Plank");
+    model.description = NSLocalizedString(@"AppStore_Plank_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"Plank.png"];
+    model.icon.rotation = -45.0;
+    [products setObject:model forKey:Tool_Plank];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Slide_Title", "Slide");
+    model.description = NSLocalizedString(@"Appstore_Slide_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"Slide.png"];
+    model.icon.rotation = -45.0;
+    [products setObject:model forKey:Tool_Slide];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Drums_Title", @"Drums");
+    model.description = NSLocalizedString(@"AppStore_Drums_Description",  @"Description");
+    sprite1 = [CCSprite spriteWithSpriteFrameName:@"Drum.png"];
+    sprite1.rotation = -45.0;
+    sprite1.anchorPoint = ccp(0,0);
+    sprite1.position = ccp(0,0);
+    sprite2 = [CCSprite spriteWithSpriteFrameName:@"Drum2x.png"];
+    sprite2.rotation = -45.0;
+    sprite2.anchorPoint = ccp(0,0);
+    sprite2.position = ccp(BB_RIGHT(sprite1)*0.67, 0);
+    model.icon = [CCNode node];
+    model.icon.contentSize = CGSizeMake(BB_RIGHT(sprite2), BB_HEIGHT(sprite2));
+    [model.icon addChild:sprite1];
+    [model.icon addChild:sprite2];
+    [products setObject:model forKey:Tool_Drums];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Blowers_Title", @"Air Blowers");
+    model.description = NSLocalizedString(@"AppStore_Blowers_Description", @"Description");
+    sprite1 = [CCSprite spriteWithSpriteFrameName:@"Blower.png"];
+    sprite1.rotation = 45.0;
+    sprite1.anchorPoint = ccp(0,0);
+    sprite1.position = ccp(0,0);
+    sprite2 = [CCSprite spriteWithSpriteFrameName:@"Blower2x.png"];
+    sprite2.rotation = 45.0;
+    sprite2.anchorPoint = ccp(0,0);
+    sprite2.position = ccp(BB_RIGHT(sprite1)*0.45, 0);
+    model.icon = [CCNode node];
+    model.icon.contentSize = CGSizeMake(BB_RIGHT(sprite2), BB_HEIGHT(sprite2));
+    [model.icon addChild:sprite1];
+    [model.icon addChild:sprite2];
+    [products setObject:model forKey:Tool_Blowers];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Reducer_Title", @"Force Reducer");
+    model.description = NSLocalizedString(@"AppStore_Reducer_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"AcceleratorHalfX.png"];
+    [products setObject:model forKey:Tool_Reducer];
+
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Doubler_Title", "Force Doubler");
+    model.description = NSLocalizedString(@"AppStore_Doubler_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"Accelerator2X.png"];
+    [products setObject:model forKey:Tool_Doubler];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Aligner_Title", @"Aligner");
+    model.description = NSLocalizedString(@"AppStore_Aligner_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"Aligner.png"];
+    [products setObject:model forKey:Tool_Aligner];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_Launcher_Title", @"Launcher");
+    model.description = NSLocalizedString(@"AppStore_Launcher_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"Launcher.png"];
+    model.icon.rotation = 45.0;
+    [products setObject:model forKey:Tool_Launcher];
+    
+    model = [[ProductModel alloc] init];
+    model.title = NSLocalizedString(@"AppStore_GravityReverser_Title", @"Gravity Reverser");
+    model.description = NSLocalizedString(@"AppStore_GravityReverser_Description", @"Description");
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"AntiGravity.png"];
+    [products setObject:model forKey:Tool_GravityReverser];
+    
+    _productInfo = products;
+    
+    [self loadProductTable];
+    
+//    _loadingLabel = [CCLabelBMFont labelWithString:@"Loading..." fntFile:@"TDFontYellow96.fnt"];
+//    _loadingLabel.anchorPoint = ccp(0.5,0.5);
+//    _loadingLabel.position = ccp(screen.width/2, screen.height/2);
+//    [self addChild:_loadingLabel];
     
     // Build the set of product ids and send it off to StoreKit.
-    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:[_productInfo allKeys]]];
-    request.delegate = self;
-    [request start];
+//    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:[_productInfo allKeys]]];
+//    request.delegate = self;
+//    [request start];
     
     
     
@@ -155,13 +245,13 @@
 
 - (void) loadProductTable
 {
-    CCCallBlock* cleanup = [CCCallBlock actionWithBlock:^(void){
-        [self removeChild:_loadingLabel cleanup:NO];
-        [self unscheduleUpdate];
-    }];
-    
-    [_loadingLabel runAction:[CCSequence actionOne:[CCFadeOut actionWithDuration:0.25] two:cleanup]];
-    [self scheduleUpdate];
+//    CCCallBlock* cleanup = [CCCallBlock actionWithBlock:^(void){
+//        [self removeChild:_loadingLabel cleanup:NO];
+//        [self unscheduleUpdate];
+//    }];
+//    
+//    [_loadingLabel runAction:[CCSequence actionOne:[CCFadeOut actionWithDuration:0.25] two:cleanup]];
+//    [self scheduleUpdate];
     
     
     
@@ -173,56 +263,19 @@
     float tableHeight = 0;
     float tableSpacing = SCRNY(165);
     
-    for (NSString* productId in _productNamesInOrder)
+    for (NSString* toolId in _toolNamesInOrder)
     {
-//        if ([productId isEqualToString:Product_Launcher] && [Achievements sharedAchievements].launcher > 0)
-//            continue;
-        
-        SKProduct* product = [self findProductById:productId];
-        if (product == nil)
-            continue;
-        
-        CCNode* toolSprite;
-        NSString* spriteName = [_productInfo valueForKey:product.productIdentifier];
-        if ([spriteName hasPrefix:@"LBL:"])
-        {
-            CCLabelBMFont* label = [CCLabelBMFont labelWithString:[spriteName substringFromIndex:4]  fntFile:@"TDFont120.fnt"];
-            label.alignment = kCCTextAlignmentCenter;
-            label.scale = 0.5;
-            toolSprite = label;
-            
-            //if ([productId isEqualToString:Product_RemoveAds] && [[Achievements sharedAchievements] hasProduct:Product_RemoveAds])
-            //    label.opacity = 128;
-        }
-        else
-        {
-            toolSprite = [CCSprite spriteWithSpriteFrameName:spriteName];
-            //f ([productId isEqualToString:Product_Launcher] && [[Achievements sharedAchievements] hasProduct:Product_Launcher])
-            //    ((CCSprite*)toolSprite).opacity = 128;
-        }
-        
-        if ([spriteName isEqual:@"Slide.png"] || [spriteName isEqual:@"Plank.png"] || [spriteName isEqual:@"Drum.png"]
-            || [spriteName isEqual:@"Drum2x.png"] || [spriteName isEqual:@"Blower.png"] || [spriteName isEqual:@"Blower2x.png"])
-        {
-            toolSprite.rotation = -45.0;
-        }
-        
-        
+       
+        [productTable addObject:[_productInfo objectForKey:toolId]];
         tableHeight += tableSpacing;
         
-        ProductModel* model = [[ProductModel alloc] init];
-        model.icon = toolSprite;
-        model.title = product.localizedTitle;
-        model.description = product.localizedDescription;
-        model.product = product;
-        
-        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-        [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-        [numberFormatter setLocale:product.priceLocale];
-        model.price = [numberFormatter stringFromNumber:product.price];
-        
-        [productTable addObject:model];
+//        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//        [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+//        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+//        [numberFormatter setLocale:product.priceLocale];
+//        model.price = [numberFormatter stringFromNumber:product.price];
+//        
+//        [productTable addObject:model];
     }
     
     CCNode* tableView = [CCNode node];
@@ -237,8 +290,6 @@
         product.icon.anchorPoint = ccp(0.5, 0.5);
         product.icon.position = ccp(ICON_COLUMN, y);
         [tableView addChild:product.icon];
-        
-        
         
         CCLabelBMFont* title = [CCLabelBMFont labelWithString:product.title fntFile:@"TDFont120.fnt"];
         title.scale = 0.5;
@@ -261,18 +312,18 @@
         [tableView addChild:titleBox];
         
         
-        CCLabelBMFont* price = [CCLabelBMFont labelWithString:product.price fntFile:@"TDFontYellow96.fnt"];
-        price.scale = 0.7;
-        price.anchorPoint = ccp(0.5, 0.5);
-        price.position = ccp(PRICE_COLUMN, y);
-        [tableView addChild:price];
-        price.isTouchEnabled = YES;
-        [price addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
-            AUDIOTIC1;
-            SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:product.product];
-            payment.quantity = 1;
-            [[SKPaymentQueue defaultQueue] addPayment:payment];
-        }]];
+//        CCLabelBMFont* price = [CCLabelBMFont labelWithString:product.price fntFile:@"TDFontYellow96.fnt"];
+//        price.scale = 0.7;
+//        price.anchorPoint = ccp(0.5, 0.5);
+//        price.position = ccp(PRICE_COLUMN, y);
+//        [tableView addChild:price];
+//        price.isTouchEnabled = YES;
+//        [price addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
+//            AUDIOTIC1;
+//            SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:product.product];
+//            payment.quantity = 1;
+//            [[SKPaymentQueue defaultQueue] addPayment:payment];
+//        }]];
         
         y -= tableSpacing;
     }

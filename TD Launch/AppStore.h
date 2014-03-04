@@ -15,6 +15,8 @@
 {
     NSArray* _storeKitProducts;
     NSDictionary* _productInfo;
+    
+    NSArray* _toolNamesInOrder;
     NSArray* _productNamesInOrder;
     
     CCLabelBMFont* _loadingLabel;
