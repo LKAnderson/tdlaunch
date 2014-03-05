@@ -155,7 +155,12 @@ unsigned int getCurrentTime()
 		[director_ startAnimation];
     
     [[EventManager sharedManager] publish:APP_ACTIVATED data:nil];
-    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    
+    if ([Achievements sharedAchievements].purchasedProducts.count == 0)
+    {
+        // This must be a fresh install, so ask the App Store what they've purchased.
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    }
 }
 
 -(void) applicationDidEnterBackground:(UIApplication*)application
@@ -195,6 +200,14 @@ unsigned int getCurrentTime()
 
 - (void) setAdsEnabled:(BOOL)enabled
 {
+#ifndef DEBUG
+    if ([Achievements sharedAchievements].purchasedProducts.count > 0)
+    {
+        _adsEnabled = NO;
+        return;
+    }
+#endif
+    
     _adsEnabled = enabled;
     if (_adsEnabled == YES)
     {
@@ -291,6 +304,7 @@ unsigned int getCurrentTime()
             case SKPaymentTransactionStatePurchased:
             {
                 NSLog(@"Purch: %@", txn.payment.productIdentifier);
+                [[Achievements sharedAchievements] addPurchasedProduct:txn.payment.productIdentifier];
                 break;
                 
             }
@@ -299,6 +313,7 @@ unsigned int getCurrentTime()
             {
                 SKPaymentTransaction* origTxn = txn.originalTransaction;
                 NSLog(@"Restore: %@", origTxn.payment.productIdentifier);
+                [[Achievements sharedAchievements] addPurchasedProduct:origTxn.payment.productIdentifier];
                 break;
             }
                 

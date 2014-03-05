@@ -33,6 +33,9 @@ struct AchievementResult
 
 
 @interface Achievements : NSObject <NSCoding>
+{
+    NSMutableSet* _purchasedProducts;
+}
 
 @property int level;
 @property int trampoline;
@@ -52,9 +55,10 @@ struct AchievementResult
 @property BOOL hasToby;
 @property BOOL hasAngie;
 @property (readonly) BOOL isTampered;
+@property (readonly) NSSet* purchasedProducts;
 
 
 + (Achievements*) sharedAchievements;
 - (struct AchievementResult) applyLevelData:(GameLevel*)gameLevel;
-
+- (void) addPurchasedProduct:(NSString*)productIdentifier;
 @end

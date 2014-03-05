@@ -8,6 +8,7 @@
 
 #import "Achievements.h"
 #import "GameLevel.h"
+#import "ProductIds.h"
 #import <CommonCrypto/CommonDigest.h>
 
 static Achievements* _sharedAchievements;
@@ -35,6 +36,7 @@ static Achievements* _sharedAchievements;
 #define BRUCE @"brc"
 #define TOBY @"tby"
 #define ANGIE @"ang"
+#define PURCHASED_PRODUCTS @"pp"
 
 
 @implementation Achievements
@@ -61,6 +63,7 @@ static Achievements* _sharedAchievements;
         _hasToby = NO;
         _hasAngie = NO;
         _isTampered = NO;
+        _purchasedProducts = [NSMutableSet set];
     }
     return self;
 }
@@ -101,6 +104,28 @@ static Achievements* _sharedAchievements;
 }
 
 
+- (NSString*) getHashForVersion3
+{
+    int numIntValues = 13;
+    int intValues[] = { 2, _level, _trampoline, _trampoline2x, _blower, _blower2x, _plank, _slide, _launcher, _accel2X, _accelHalfX, _antiGravity,          _aligner };
+    
+    int numBoolValues = 5;
+    BOOL boolValues[] = { _hasSteve, _hasEmily, _hasBruce, _hasToby, _hasAngie };
+    
+    NSMutableString* inputData = [NSMutableString string];
+    for (int i=0; i < numIntValues; i++)
+        [inputData appendFormat:@"%d", -intValues[i]];
+    
+    for (int i=0; i < numBoolValues; i++)
+        [inputData appendString:(boolValues[i] == YES ? @"A" : @"B")];
+    
+    for (NSString* productId in _purchasedProducts)
+    {
+        [inputData appendString:productId];
+    }
+    
+    return [self getHashForString:inputData];
+}
 
 
 - (id) initWithCoder:(NSCoder *)aDecoder
@@ -149,6 +174,25 @@ static Achievements* _sharedAchievements;
             
         }
         
+        if (fileVersion == 3)
+        {
+            _purchasedProducts = [aDecoder decodeObjectForKey:PURCHASED_PRODUCTS];
+            
+            NSString* stdVersionHash = [self getHashForString:@"3"];
+            NSString* versionHash = [aDecoder decodeObjectForKey:FILEVERSION_HASH];
+            if (![versionHash isEqualToString:stdVersionHash])
+            {
+                _isTampered = YES;
+            }
+            else
+            {
+                NSString* stdDataHash = [self getHashForVersion3];
+                NSString* dataHash = [aDecoder decodeObjectForKey:DATAVALUES_HASH];
+                if (![dataHash isEqualToString:stdDataHash])
+                    _isTampered = YES;
+            }
+        }
+        
         // else do nothing.  Hopefully none of the 4 people who have downloaded version 1
         // will know enough to be dishonest before version 2 can upgrade their file!
     
@@ -161,7 +205,7 @@ static Achievements* _sharedAchievements;
 
 - (void) encodeWithCoder:(NSCoder *)aCoder
 {
-    const unsigned int FileVersion = 2;
+    const unsigned int FileVersion = 3;
     
     [aCoder encodeInt:FileVersion forKey:FILEVERSION];
     [aCoder encodeInt:random() % 0xffffffff forKey:LEVEL_V1];
@@ -182,8 +226,10 @@ static Achievements* _sharedAchievements;
     [aCoder encodeBool:_hasToby forKey:TOBY];
     [aCoder encodeBool:_hasAngie forKey:ANGIE];
     
-    [aCoder encodeObject:[self getHashForString:@"2"] forKey:FILEVERSION_HASH];
-    [aCoder encodeObject:[self getHashForVersion2] forKey:DATAVALUES_HASH];
+    [aCoder encodeObject:_purchasedProducts forKey:PURCHASED_PRODUCTS];
+    
+    [aCoder encodeObject:[self getHashForString:@"3"] forKey:FILEVERSION_HASH];
+    [aCoder encodeObject:[self getHashForVersion3] forKey:DATAVALUES_HASH];
 }
 
 
@@ -204,28 +250,11 @@ static Achievements* _sharedAchievements;
         {
             _sharedAchievements = [[Achievements alloc] init];
         }
-#ifdef DEBUG
-        _sharedAchievements.level = 1;
-        _sharedAchievements.trampoline = 5;
-        _sharedAchievements.trampoline2x = 5;
-        _sharedAchievements.blower = 5;
-        _sharedAchievements.blower2x = 5;
-        _sharedAchievements.plank = 5;
-        _sharedAchievements.slide = 5;
-        _sharedAchievements.accel2X = 3;
-        _sharedAchievements.accelHalfX = 3;
-        _sharedAchievements.antiGravity = 2;
-        _sharedAchievements.aligner = 2;
-        _sharedAchievements.launcher = 1;
-        _sharedAchievements.hasSteve = YES;
-        _sharedAchievements.hasEmily = YES;
-        _sharedAchievements.hasBruce = YES;
-        _sharedAchievements.hasToby = YES;
-        _sharedAchievements.hasAngie = YES;
-#endif
     }
     return _sharedAchievements;
 }
+
+
 
 - (void) save
 {
@@ -239,6 +268,66 @@ static Achievements* _sharedAchievements;
     [archiver encodeObject:self forKey:@"achievements"];
     [archiver finishEncoding];
     [data writeToFile:FILENAME atomically:YES];
+}
+
+
+- (void) addPurchasedProduct:(NSString *)productIdentifier
+{
+    if ([_purchasedProducts containsObject:productIdentifier])
+    {
+        // Don't want to rack up lots of items accidentally
+        return;
+    }
+    
+    NSSet* validProducts = [NSSet setWithObjects:Product_DevPack, Product_PowerPack, Product_SuperStartPack, nil];
+    if (! [validProducts containsObject:productIdentifier])
+    {
+        // this is mostly for my testing environment, since I've played around with
+        // different products.
+        return;
+    }
+    
+    [_purchasedProducts addObject:productIdentifier];
+    
+    if ([productIdentifier isEqualToString:Product_SuperStartPack]) //  3.99
+    {
+        _trampoline += 2;
+        _trampoline2x += 1;
+        _blower += 2;
+        _blower2x += 1;
+        _plank += 2;
+        _slide += 2;
+        _aligner += 1;
+    }
+    else if ([productIdentifier isEqualToString:Product_PowerPack]) // 5.99
+    {
+        _trampoline += 3;
+        _trampoline2x += 3;
+        _blower += 3;
+        _blower2x += 3;
+        _plank += 3;
+        _slide += 3;
+        _accel2X += 1;
+        _accelHalfX += 1;
+        _antiGravity += 1;
+        _aligner += 1;
+    }
+    else if ([productIdentifier isEqualToString:Product_DevPack]) // 9.99
+    {
+        _trampoline += 5;
+        _trampoline2x += 5;
+        _blower += 5;
+        _blower2x += 5;
+        _plank += 5;
+        _slide += 5;
+        _accel2X += 3;
+        _accelHalfX += 3;
+        _antiGravity += 2;
+        _aligner += 2;
+        _launcher += 1;
+    }
+    
+    [self save];
 }
 
 
@@ -462,6 +551,8 @@ static Achievements* _sharedAchievements;
     
 }
 
+
+
 - (void) level7Awards:(int)stars result:(struct AchievementResult*)result
 {
     switch(stars)
@@ -481,6 +572,8 @@ static Achievements* _sharedAchievements;
     }
     
 }
+
+
 
 - (void) level8Awards:(int)stars result:(struct AchievementResult*)result
 {
