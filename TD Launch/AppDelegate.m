@@ -303,8 +303,8 @@ unsigned int getCurrentTime()
         {
             case SKPaymentTransactionStatePurchased:
             {
-                NSLog(@"Purch: %@", txn.payment.productIdentifier);
                 [[Achievements sharedAchievements] addPurchasedProduct:txn.payment.productIdentifier];
+                [[SKPaymentQueue defaultQueue] finishTransaction:txn];
                 break;
                 
             }
@@ -312,8 +312,8 @@ unsigned int getCurrentTime()
             case SKPaymentTransactionStateRestored:
             {
                 SKPaymentTransaction* origTxn = txn.originalTransaction;
-                NSLog(@"Restore: %@", origTxn.payment.productIdentifier);
                 [[Achievements sharedAchievements] addPurchasedProduct:origTxn.payment.productIdentifier];
+                [[SKPaymentQueue defaultQueue] finishTransaction:txn];
                 break;
             }
                 
@@ -330,7 +330,6 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
-    NSLog(@"restoreCompletedTransactionsFailedWithError: %@", error);
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads
@@ -339,7 +338,6 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
-    NSLog(@"Done restoring transactions");
 }
 
 

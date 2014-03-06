@@ -705,7 +705,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     x += SCRNX(20);
     
-    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Store..." fntFile:@"TDFont120.fnt"];
+    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Help..." fntFile:@"TDFont120.fnt"];
     storeSprite.scale = 0.5;
     storeSprite.anchorPoint = ccp(0.5, 0.5);
     storeSprite.position = ccp(x, (objectDrawer.contentSize.height-SCRNY(40))/2);

@@ -151,6 +151,10 @@
 		247B20441627A50C00E57247 /* LevelMenuItems-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 247B203C1627A50C00E57247 /* LevelMenuItems-ipadhd.png */; };
 		2480BBCE1874ACA300C41D06 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2480BBCD1874ACA300C41D06 /* GameKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		2480BDAF1874C76A00C41D06 /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2480BDAE1874C76A00C41D06 /* GameCenter.m */; };
+		24826EB518C8166300CFE0FD /* ToolFont-ipad.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 24826EB118C8166300CFE0FD /* ToolFont-ipad.fnt */; };
+		24826EB618C8166300CFE0FD /* ToolFont-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24826EB218C8166300CFE0FD /* ToolFont-ipad.png */; };
+		24826EB718C8166300CFE0FD /* ToolFont-ipadhd.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 24826EB318C8166300CFE0FD /* ToolFont-ipadhd.fnt */; };
+		24826EB818C8166300CFE0FD /* ToolFont-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24826EB418C8166300CFE0FD /* ToolFont-ipadhd.png */; };
 		248292C8175CCFC2005CCBED /* L9-Bkg-1024-1024-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 248292A6175CCFC1005CCBED /* L9-Bkg-1024-1024-ipad.png */; };
 		248292C9175CCFC2005CCBED /* L9-Bkg-1024-1024-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 248292A7175CCFC1005CCBED /* L9-Bkg-1024-1024-ipadhd.png */; };
 		248292CA175CCFC2005CCBED /* L9-Bkg-1024-0-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 248292A8175CCFC1005CCBED /* L9-Bkg-1024-0-ipad.png */; };
@@ -860,6 +864,10 @@
 		2480BBCD1874ACA300C41D06 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		2480BDAD1874C76A00C41D06 /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
 		2480BDAE1874C76A00C41D06 /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
+		24826EB118C8166300CFE0FD /* ToolFont-ipad.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "ToolFont-ipad.fnt"; path = "Resources/ToolFont-ipad.fnt"; sourceTree = "<group>"; };
+		24826EB218C8166300CFE0FD /* ToolFont-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolFont-ipad.png"; path = "Resources/ToolFont-ipad.png"; sourceTree = "<group>"; };
+		24826EB318C8166300CFE0FD /* ToolFont-ipadhd.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "ToolFont-ipadhd.fnt"; path = "Resources/ToolFont-ipadhd.fnt"; sourceTree = "<group>"; };
+		24826EB418C8166300CFE0FD /* ToolFont-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolFont-ipadhd.png"; path = "Resources/ToolFont-ipadhd.png"; sourceTree = "<group>"; };
 		248292A6175CCFC1005CCBED /* L9-Bkg-1024-1024-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L9-Bkg-1024-1024-ipad.png"; path = "Resources/L9-Bkg-1024-1024-ipad.png"; sourceTree = "<group>"; };
 		248292A7175CCFC1005CCBED /* L9-Bkg-1024-1024-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L9-Bkg-1024-1024-ipadhd.png"; path = "Resources/L9-Bkg-1024-1024-ipadhd.png"; sourceTree = "<group>"; };
 		248292A8175CCFC1005CCBED /* L9-Bkg-1024-0-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "L9-Bkg-1024-0-ipad.png"; path = "Resources/L9-Bkg-1024-0-ipad.png"; sourceTree = "<group>"; };
@@ -1643,18 +1651,22 @@
 		24DC0BE6188566DD00A9BF7D /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				2462152E1890B6D000E36DB5 /* TDFontRed72-ipad.fnt */,
-				2462152F1890B6D000E36DB5 /* TDFontRed72-ipad.png */,
-				246215301890B6D000E36DB5 /* TDFontRed72-ipadhd.fnt */,
-				246215311890B6D000E36DB5 /* TDFontRed72-ipadhd.png */,
 				24DC0C3A1885725200A9BF7D /* TDFont120-ipad.fnt */,
 				24DC0C3B1885725200A9BF7D /* TDFont120-ipad.png */,
 				24DC0C3C1885725200A9BF7D /* TDFont120-ipadhd.fnt */,
 				24DC0C3D1885725200A9BF7D /* TDFont120-ipadhd.png */,
+				2462152E1890B6D000E36DB5 /* TDFontRed72-ipad.fnt */,
+				2462152F1890B6D000E36DB5 /* TDFontRed72-ipad.png */,
+				246215301890B6D000E36DB5 /* TDFontRed72-ipadhd.fnt */,
+				246215311890B6D000E36DB5 /* TDFontRed72-ipadhd.png */,
 				24DC0C4F1888158C00A9BF7D /* TDFontYellow96-ipad.fnt */,
 				24DC0C501888158C00A9BF7D /* TDFontYellow96-ipad.png */,
 				24DC0C511888158C00A9BF7D /* TDFontYellow96-ipadhd.fnt */,
 				24DC0C521888158C00A9BF7D /* TDFontYellow96-ipadhd.png */,
+				24826EB118C8166300CFE0FD /* ToolFont-ipad.fnt */,
+				24826EB218C8166300CFE0FD /* ToolFont-ipad.png */,
+				24826EB318C8166300CFE0FD /* ToolFont-ipadhd.fnt */,
+				24826EB418C8166300CFE0FD /* ToolFont-ipadhd.png */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
@@ -2245,9 +2257,11 @@
 				2459720917238E4B00AABADD /* L7-Cave1-ipadhd.png in Resources */,
 				2459720A17238E4B00AABADD /* L7-Cave2-ipad.png in Resources */,
 				2459720B17238E4B00AABADD /* L7-Cave2-ipadhd.png in Resources */,
+				24826EB618C8166300CFE0FD /* ToolFont-ipad.png in Resources */,
 				2459720C17238E4B00AABADD /* L7-Spray-ipad.png in Resources */,
 				2459720D17238E4B00AABADD /* L7-Spray-ipadhd.png in Resources */,
 				2474DE12172C281800326EE3 /* L8-Bkg-0-0-ipad.png in Resources */,
+				24826EB518C8166300CFE0FD /* ToolFont-ipad.fnt in Resources */,
 				2474DE13172C281800326EE3 /* L8-Bkg-0-0-ipadhd.png in Resources */,
 				2474DE14172C281800326EE3 /* L8-Bkg-0-1024-ipad.png in Resources */,
 				2474DE15172C281800326EE3 /* L8-Bkg-0-1024-ipadhd.png in Resources */,
@@ -2312,6 +2326,7 @@
 				24C7F2A6177622DC008E2B7C /* Numbers-ipadhd.png in Resources */,
 				24907091178308AB005972EA /* CharacterDrawer-ipad.png in Resources */,
 				24907092178308AB005972EA /* CharacterDrawer-ipadhd.png in Resources */,
+				24826EB718C8166300CFE0FD /* ToolFont-ipadhd.fnt in Resources */,
 				249070CC17830D4F005972EA /* ObjectDrawer-ipad.png in Resources */,
 				249070CD17830D4F005972EA /* ObjectDrawer-ipadhd.png in Resources */,
 				24D3D67017903A9600468839 /* ObjectDials-ipad.plist in Resources */,
@@ -2337,6 +2352,7 @@
 				2422312717C79F85003CB027 /* L4-Cave-ipadhd.png in Resources */,
 				2422312817C79F85003CB027 /* L4-Tunnel-ipad.png in Resources */,
 				24DC0C421885725200A9BF7D /* TDFont120-ipad.fnt in Resources */,
+				24826EB818C8166300CFE0FD /* ToolFont-ipadhd.png in Resources */,
 				2422312917C79F85003CB027 /* L4-Tunnel-ipadhd.png in Resources */,
 				246215331890B6D000E36DB5 /* TDFontRed72-ipad.png in Resources */,
 				2448BB4518BB7A5100EF31C2 /* AppStore-ipad.png in Resources */,

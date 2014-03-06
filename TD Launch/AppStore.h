@@ -34,5 +34,7 @@
 @property NSString* title;
 @property NSString* description;
 @property NSString* price;
+@property CCLabelBMFont* priceLabel;
+@property CCSprite* priceBackground;
 @property SKProduct* product;
 @end

@@ -40,6 +40,7 @@ TD Launch/Resources/ObstacleSheet*
 TD Launch/Resources/RecapBoard*
 TD Launch/Resources/CloudLibrary*
 TD Launch/Resources/TDFont*
+TD Launch/Resources/*.fnt
 
 
 TD Launch/Images.xcassets

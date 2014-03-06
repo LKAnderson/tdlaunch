@@ -257,6 +257,11 @@ def ExportImages():
         CropImageAdj("exported/FieldObjects", "exported/AntiGravity", 154, 432, 64, 64)
         CropImageAdj("exported/FieldObjects", "exported/Aligner", 369, 411, 64, 64)
         
+        print
+        print "Bundle Icon"
+        print
+        CropImageAdj("exported/FieldObjects", "exported/ToolBundle", 380, 40, 112, 139)
+        
 
         print
         print "Balloons"
@@ -400,8 +405,11 @@ def ExportImages():
         CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Empty", 100, 940, 42, 42)
         CropImageAdj("exported/MainMenuButtons", "exported/Checkbox_Filled", 100, 875, 51.402, 55.081)
 
+        CropImageAdj("exported/MainMenuButtons", "exported/AppStoreBuy", 650, 499, 196, 105)
+
         products.append("exported/AppStore-ipad.png")
         products.append("exported/AppStore-ipadhd.png")
+
 
 
     if isExported("LevelMenu"):
@@ -577,7 +585,7 @@ def ExportImages():
 def SpriteSheets():
     CreateSpriteSheet("Tools", [
         "Blower", "Blower2x", "Drum", "Drum2x", "Plank", "Slide", "Launcher",
-        "Accelerator2X", "AcceleratorHalfX", "AntiGravity", "Aligner",
+        "Accelerator2X", "AcceleratorHalfX", "AntiGravity", "Aligner", "ToolBundle",
         "RedBalloon", "YellowBalloon", "BlueBalloon",
         "Poof01", "Poof02", "Poof03", "Poof04", "Poof05",
         "Target"], True)
@@ -588,7 +596,7 @@ def SpriteSheets():
     CreateSpriteSheet("Menu", [
         "Back", "Go",  "Reset", "ResetGo", "ClearAll", "Stats", "ToggleMenu", "Pause", "Stop", "OffScreenPointer", "OrangeStar",
         "TrackPlayerOn", "TrackPlayerOff", "DialogBack", "YesButton", "NoButton",
-        "TutorialBack1", "TutorialBack2", "TutorialArrow",
+        "TutorialBack1", "TutorialBack2", "TutorialArrow", "AppStoreBuy",
         "SoundOn", "SoundOff", "Checkbox_Empty", "Checkbox_Filled"], True)
 
     sprites = []

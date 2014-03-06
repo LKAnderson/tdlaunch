@@ -50,10 +50,8 @@
     if (self = [super init])
     {
         _toolNamesInOrder = [NSArray arrayWithObjects:Tool_Plank,Tool_Slide,Tool_Drums,Tool_Blowers,
-                             Tool_Reducer,Tool_Doubler,Tool_Aligner,Tool_Launcher,Tool_GravityReverser, nil];
-        
-        _productNamesInOrder = [NSArray arrayWithObjects:
-                                Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
+                             Tool_Reducer,Tool_Doubler,Tool_Aligner,Tool_Launcher,Tool_GravityReverser,
+                             Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
         
 //        [products setValue:@"LBL:Bundle" forKey:Product_SuperStartPack];
 //        [products setValue:@"LBL:Bundle" forKey:Product_PowerPack];
@@ -141,7 +139,7 @@
     
     model = [[ProductModel alloc] init];
     model.title = NSLocalizedString(@"AppStore_Slide_Title", "Slide");
-    model.description = NSLocalizedString(@"Appstore_Slide_Description", @"Description");
+    model.description = NSLocalizedString(@"AppStore_Slide_Description", @"Description");
     model.icon = [CCSprite spriteWithSpriteFrameName:@"Slide.png"];
     model.icon.rotation = -45.0;
     [products setObject:model forKey:Tool_Slide];
@@ -211,19 +209,37 @@
     model.icon = [CCSprite spriteWithSpriteFrameName:@"AntiGravity.png"];
     [products setObject:model forKey:Tool_GravityReverser];
     
+    
+    model = [[ProductModel alloc] init];
+    model.title = @"Super Starter Pack";
+    model.description = @"TOOLS:ddD  bbB  ppss  X";
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
+    model.icon.scale = 0.65;
+    [products setObject:model forKey:Product_SuperStartPack];
+    
+    model = [[ProductModel alloc] init];
+    model.title = @"Power Pack";
+    model.description = @"TOOLS:ddd  DDD  bbb  BBB\nppp  sss  A a g X";
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
+    model.icon.scale = 0.65;
+    [products setObject:model forKey:Product_PowerPack];
+    
+    model = [[ProductModel alloc] init];
+    model.title = @"Developer's Pack";
+    model.description = @"TOOLS:ddddd  DDDDD  bbbbb\nBBBBB  ppppp  sssss\nAAA aaa gg XX L";
+    model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
+    model.icon.scale = 0.65;
+    [products setObject:model forKey:Product_DevPack];
+    
     _productInfo = products;
     
     [self loadProductTable];
     
-//    _loadingLabel = [CCLabelBMFont labelWithString:@"Loading..." fntFile:@"TDFontYellow96.fnt"];
-//    _loadingLabel.anchorPoint = ccp(0.5,0.5);
-//    _loadingLabel.position = ccp(screen.width/2, screen.height/2);
-//    [self addChild:_loadingLabel];
-    
     // Build the set of product ids and send it off to StoreKit.
-//    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:[_productInfo allKeys]]];
-//    request.delegate = self;
-//    [request start];
+    NSSet* productIds = [NSSet setWithObjects:Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
+    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:productIds];
+    request.delegate = self;
+    [request start];
     
     
     
@@ -269,18 +285,11 @@
         [productTable addObject:[_productInfo objectForKey:toolId]];
         tableHeight += tableSpacing;
         
-//        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-//        [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-//        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-//        [numberFormatter setLocale:product.priceLocale];
-//        model.price = [numberFormatter stringFromNumber:product.price];
-//        
-//        [productTable addObject:model];
+
     }
     
     CCNode* tableView = [CCNode node];
     tableView.contentSize = CGSizeMake(screen.width, tableHeight);
-    
     
     float y = tableHeight - (tableSpacing/2);
     
@@ -293,37 +302,52 @@
         
         CCLabelBMFont* title = [CCLabelBMFont labelWithString:product.title fntFile:@"TDFont120.fnt"];
         title.scale = 0.5;
-        CCLabelBMFont* description = [CCLabelBMFont labelWithString:product.description fntFile:@"TDFontYellow96.fnt"];
-        description.scale = 0.5;
+
+        NSString* descFont = @"TDFontYellow96.fnt";
+        float descScale = 0.5;
+        BOOL isPurchasable = NO;
+        if ([product.description hasPrefix:@"TOOLS:"])
+        {
+            isPurchasable = YES;
+            descFont = @"ToolFont.fnt";
+            descScale = 1.0;
+            product.description = [product.description substringFromIndex:6];
+        }
+        
+        CCLabelBMFont* description = [CCLabelBMFont labelWithString:product.description fntFile:descFont];
+        description.scale = descScale;
+
         
         CCNode* titleBox = [CCNode node];
         titleBox.contentSize = CGSizeMake(MAX(title.contentSize.width * title.scale, description.contentSize.width * description.scale),
-                                          (title.contentSize.height * title.scale) + (description.contentSize.height * description.scale));
+                                          (title.contentSize.height * title.scale) + (description.contentSize.height * description.scale) + SCRNY(10));
         description.anchorPoint = ccp(0, 0);
         description.position = ccp(0, 0);
         [titleBox addChild:description];
         
         title.anchorPoint = ccp(0,0);
-        title.position = ccp(0, BB_TOP(description));
+        title.position = ccp(0, BB_TOP(description)+SCRNY(10));
         [titleBox addChild:title];
         
         titleBox.anchorPoint = ccp(0, 0.5);
         titleBox.position = ccp(DESCRIPTION_COLUMN, y);
         [tableView addChild:titleBox];
         
+        CCLabelBMFont* price = [CCLabelBMFont labelWithString:@"" fntFile:@"TDFontYellow96.fnt"];
+        price.scale = 0.8;
+        price.anchorPoint = ccp(0.5, 0.4);
+        price.position = ccp(PRICE_COLUMN, y);
+        [tableView addChild:price z:100];
         
-//        CCLabelBMFont* price = [CCLabelBMFont labelWithString:product.price fntFile:@"TDFontYellow96.fnt"];
-//        price.scale = 0.7;
-//        price.anchorPoint = ccp(0.5, 0.5);
-//        price.position = ccp(PRICE_COLUMN, y);
-//        [tableView addChild:price];
-//        price.isTouchEnabled = YES;
-//        [price addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
-//            AUDIOTIC1;
-//            SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:product.product];
-//            payment.quantity = 1;
-//            [[SKPaymentQueue defaultQueue] addPayment:payment];
-//        }]];
+        if (isPurchasable)
+        {
+            product.priceLabel = price;
+            product.priceBackground = [CCSprite spriteWithSpriteFrameName:@"AppStoreBuy.png"];
+            product.priceBackground.scale = 0.8;
+            product.priceBackground.anchorPoint = ccp(0.5, 0.5);
+            product.priceBackground.position = price.position;
+            [tableView addChild:product.priceBackground z:99];
+        }
         
         y -= tableSpacing;
     }
@@ -352,7 +376,43 @@
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
     _storeKitProducts = response.products;
-    [self loadProductTable];
+    
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    
+    for (SKProduct* product in _storeKitProducts)
+    {
+        ProductModel* model = [_productInfo objectForKey:product.productIdentifier];
+        if (model == nil)
+            continue;
+        
+        if (model.priceLabel != nil)
+        {
+            if ([[Achievements sharedAchievements].purchasedProducts containsObject:product.productIdentifier])
+            {
+                model.priceLabel.string = @"Loaded";
+                model.priceLabel.scale = 0.8;
+            }
+            else
+            {
+                [numberFormatter setLocale:product.priceLocale];
+                model.priceLabel.string = [numberFormatter stringFromNumber:product.price];
+                
+                model.priceLabel.isTouchEnabled = YES;
+                [model.priceLabel addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
+                    AUDIOTIC1;
+                    SKMutablePayment* payment = [SKMutablePayment paymentWithProduct:product];
+                    payment.quantity = 1;
+                    [[SKPaymentQueue defaultQueue] addPayment:payment];
+                }]];
+            }
+            model.priceBackground.visible = YES;
+        }
+    }
+    
+    
+
 }
 
 

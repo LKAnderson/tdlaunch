@@ -286,17 +286,17 @@ GameLevel* getLevelForID(int ID)
     gameCenterButton.isTouchEnabled = NO;
     
     
-    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Store..." fntFile:@"TDFont120.fnt"];
-    storeSprite.scale = 0.5;
-    storeSprite.anchorPoint = ccp(0.5, 0.5);
-    storeSprite.position = ccp(gameCenterButton.position.x, gameCenterButton.position.y + SCRNX(80));
-    storeSprite.isTouchEnabled = YES;
-    [self addChild:storeSprite];
+//    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Store..." fntFile:@"TDFont120.fnt"];
+//    storeSprite.scale = 0.5;
+//    storeSprite.anchorPoint = ccp(0.5, 0.5);
+//    storeSprite.position = ccp(gameCenterButton.position.x, gameCenterButton.position.y + SCRNX(80));
+//    storeSprite.isTouchEnabled = YES;
+//    [self addChild:storeSprite];
     
-    [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
-                                       {
-                                           [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
-                                       }]];
+//    [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
+//                                       {
+//                                           [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
+//                                       }]];
     
     
     [[EventManager sharedManager] subscribe:GAMECENTER_AVAILABLE listener:self];
