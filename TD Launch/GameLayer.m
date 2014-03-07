@@ -322,6 +322,7 @@ if (accelHalfXTimer > 0) a *= 0.5
 {
     [super onEnter];
     self.isTouchEnabled = YES;
+    APPCONTROLLER.adsEnabled = YES;
 
     if ([[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:@"Tools.plist"] == nil )
     {
@@ -1522,15 +1523,11 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         afo.sprite.zOrder = AFO_CONFIG_Z;
     }
-    
-    APPCONTROLLER.adsEnabled = YES;
 }
 
 
 - (void) enterSimulationState
 {
-    APPCONTROLLER.adsEnabled = NO;
-    
     isPaused = NO;
     [self removeRecapScreen];
     
@@ -1808,7 +1805,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     cpVect currentPos = character.body.pos;
     cpVect d = cpvsub(currentPos, lastPos);
     
-    CGSize screen = [[CCDirector sharedDirector] winSize];
+    CGSize screen = self.contentSize; //[[CCDirector sharedDirector] winSize];
     
     if (!isLaunching){
         distance += (unsigned int)(sqrt(d.x*d.x + d.y*d.y)); // * (1024 / screen.width));

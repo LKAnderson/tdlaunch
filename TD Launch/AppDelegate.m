@@ -295,6 +295,18 @@ unsigned int getCurrentTime()
 
 // SKPaymentTransactionObserver methods
 
+- (SKProduct*) findInAppProduct:(NSString*)productIdentifier
+{
+    for (SKProduct* product in _inAppProducts)
+    {
+        if ([product.productIdentifier isEqualToString:productIdentifier])
+        {
+            return product;
+        }
+    }
+    return nil;
+}
+
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
     for (SKPaymentTransaction* txn in transactions)
@@ -305,6 +317,14 @@ unsigned int getCurrentTime()
             {
                 [[Achievements sharedAchievements] addPurchasedProduct:txn.payment.productIdentifier];
                 [[SKPaymentQueue defaultQueue] finishTransaction:txn];
+                
+                // TODO: Localize me
+                SKProduct* product = [self findInAppProduct:txn.payment.productIdentifier];
+                if (product != nil)
+                {
+                    NSString* msg = [NSString stringWithFormat:@"%@ has been added to your game.", product.localizedTitle];
+                    [[[UIAlertView alloc] initWithTitle:@"Purchase Complete" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                }
                 break;
                 
             }

@@ -13,7 +13,6 @@
 
 @interface AppStore : CCLayer <EventListener, SKProductsRequestDelegate>
 {
-    NSArray* _storeKitProducts;
     NSDictionary* _productInfo;
     
     NSArray* _toolNamesInOrder;

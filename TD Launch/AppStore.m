@@ -25,9 +25,9 @@
 
 
 
-#define ICON_COLUMN             (0.20 * [[CCDirector sharedDirector] winSize].width)
-#define DESCRIPTION_COLUMN      (0.35 * [[CCDirector sharedDirector] winSize].width)
-#define PRICE_COLUMN            (0.85 * [[CCDirector sharedDirector] winSize].width)
+#define ICON_COLUMN             (0.15 * [[CCDirector sharedDirector] winSize].width)
+#define DESCRIPTION_COLUMN      (0.275 * [[CCDirector sharedDirector] winSize].width)
+#define PRICE_COLUMN            (0.80 * [[CCDirector sharedDirector] winSize].width)
 
 @implementation ProductModel
 @end
@@ -102,7 +102,7 @@
     
     CCNode* goBackContainer = [CCNode node];
     goBackContainer.contentSize = CGSizeMake(MAX(BB_WIDTH(goBackButton), BB_WIDTH(goBackLabel)),
-                                             BB_HEIGHT(goBackButton) + BB_HEIGHT(goBackLabel) - SCRNY(20));
+                                             BB_HEIGHT(goBackButton) + BB_HEIGHT(goBackLabel));
     goBackContainer.anchorPoint = ccp(0.5, 0.5);
     goBackContainer.position = ccp(ICON_COLUMN/3, SCRNY(55));
     
@@ -248,7 +248,7 @@
 
 - (SKProduct*) findProductById:(NSString*) productId
 {
-    for (SKProduct* product in _storeKitProducts)
+    for (SKProduct* product in APPCONTROLLER.inAppProducts)
     {
         if ([product.productIdentifier isEqualToString:productId])
         {
@@ -261,16 +261,6 @@
 
 - (void) loadProductTable
 {
-//    CCCallBlock* cleanup = [CCCallBlock actionWithBlock:^(void){
-//        [self removeChild:_loadingLabel cleanup:NO];
-//        [self unscheduleUpdate];
-//    }];
-//    
-//    [_loadingLabel runAction:[CCSequence actionOne:[CCFadeOut actionWithDuration:0.25] two:cleanup]];
-//    [self scheduleUpdate];
-    
-    
-    
     // First, build the product listing table so we know how big to make the scrollview.
     
     CGSize screen = [[CCDirector sharedDirector] winSize];
@@ -346,6 +336,7 @@
             product.priceBackground.scale = 0.8;
             product.priceBackground.anchorPoint = ccp(0.5, 0.5);
             product.priceBackground.position = price.position;
+            product.priceBackground.visible = NO;
             [tableView addChild:product.priceBackground z:99];
         }
         
@@ -375,13 +366,13 @@
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
-    _storeKitProducts = response.products;
+    APPCONTROLLER.inAppProducts = response.products;
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     
-    for (SKProduct* product in _storeKitProducts)
+    for (SKProduct* product in APPCONTROLLER.inAppProducts)
     {
         ProductModel* model = [_productInfo objectForKey:product.productIdentifier];
         if (model == nil)

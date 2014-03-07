@@ -28,6 +28,7 @@
 @property (readonly) UINavigationController *navController;
 @property (readonly) CCDirectorIOS *director;
 @property (readonly) ADBannerView* iAdView;
+@property NSArray* inAppProducts;
 
 - (void) setAdsEnabled:(BOOL)enabled;
 

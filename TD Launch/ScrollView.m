@@ -311,7 +311,7 @@
     if (CAN_HSCROLL == NO && CAN_VSCROLL == NO)
         return (CGPoint) { 0, 0 };
     
-    CGSize screen = self.contentSize; //[[CCDirector sharedDirector] winSize];
+    CGSize screen = self.contentSize;
         
     CGPoint adjustment = ccp(0,0);
     
