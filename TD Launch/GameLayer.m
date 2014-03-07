@@ -254,8 +254,6 @@ if (accelHalfXTimer > 0) a *= 0.5
         CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height - dy);
         self.contentSize = newSize;
         scrollView.contentSize = newSize;
-
-        //scrollView.position = ccp(scrollView.position.x, scrollView.position.y - dy);
     }
     else if (event == ADBANNER_HIDDEN)
     {
@@ -269,6 +267,11 @@ if (accelHalfXTimer > 0) a *= 0.5
         CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height + dy);
         self.contentSize = newSize;
         scrollView.contentSize = newSize;
+        if (!isSimulating)
+        {
+            //keepNodeOnScreen will do this for us if we're simulating.
+            scrollView.content.position = ccp(scrollView.content.position.x, scrollView.content.position.y + dy);
+        }
     }
     
     return YES;
