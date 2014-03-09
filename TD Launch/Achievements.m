@@ -196,6 +196,10 @@ static Achievements* _sharedAchievements;
         // else do nothing.  Hopefully none of the 4 people who have downloaded version 1
         // will know enough to be dishonest before version 2 can upgrade their file!
     
+        if (! _isTampered && fileVersion < 3)
+        {
+            [self addPurchasedProduct:Product_SuperStartPack];
+        }
 
     }
     return self;
