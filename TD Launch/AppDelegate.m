@@ -318,12 +318,12 @@ unsigned int getCurrentTime()
                 [[Achievements sharedAchievements] addPurchasedProduct:txn.payment.productIdentifier];
                 [[SKPaymentQueue defaultQueue] finishTransaction:txn];
                 
-                // TODO: Localize me
+                
                 SKProduct* product = [self findInAppProduct:txn.payment.productIdentifier];
                 if (product != nil)
                 {
-                    NSString* msg = [NSString stringWithFormat:@"%@ has been added to your game.", product.localizedTitle];
-                    [[[UIAlertView alloc] initWithTitle:@"Purchase Complete" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                    NSString* msg = [NSString stringWithFormat:@"%@ %@", product.localizedTitle, NSLocalizedString(@"AppStore_Purchase_Complete", nil)];
+                    [[[UIAlertView alloc] initWithTitle:@"In-App Purchase" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
                 }
                 break;
                 

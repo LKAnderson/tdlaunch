@@ -211,21 +211,21 @@
     
     
     model = [[ProductModel alloc] init];
-    model.title = @"Super Starter Pack";
+    model.title = NSLocalizedString(@"AppStore_SuperStartPack_Title", @"Super Starter Pack");
     model.description = @"TOOLS:ddD  bbB  ppss  X";
     model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
     model.icon.scale = 0.65;
     [products setObject:model forKey:Product_SuperStartPack];
     
     model = [[ProductModel alloc] init];
-    model.title = @"Power Pack";
+    model.title = NSLocalizedString(@"AppStore_PowerPack_Title", @"Power Pack");
     model.description = @"TOOLS:ddd  DDD  bbb  BBB\nppp  sss  A a g X";
     model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
     model.icon.scale = 0.65;
     [products setObject:model forKey:Product_PowerPack];
     
     model = [[ProductModel alloc] init];
-    model.title = @"Developer's Pack";
+    model.title = NSLocalizedString(@"AppStore_DevPack_Title",@"Developer's Pack");
     model.description = @"TOOLS:ddddd  DDDDD  bbbbb\nBBBBB  ppppp  sssss\nAAA aaa gg XX L";
     model.icon = [CCSprite spriteWithSpriteFrameName:@"ToolBundle.png"];
     model.icon.scale = 0.65;
@@ -382,7 +382,7 @@
         {
             if ([[Achievements sharedAchievements].purchasedProducts containsObject:product.productIdentifier])
             {
-                model.priceLabel.string = @"Loaded";
+                model.priceLabel.string = NSLocalizedString(@"AppStore_Loaded", @"Loaded");
                 model.priceLabel.scale = 0.8;
             }
             else
@@ -390,6 +390,9 @@
                 [numberFormatter setLocale:product.priceLocale];
                 model.priceLabel.string = [numberFormatter stringFromNumber:product.price];
                 
+#ifdef DEBUG
+            }
+#endif
                 model.priceLabel.isTouchEnabled = YES;
                 [model.priceLabel addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
                     AUDIOTIC1;
@@ -397,7 +400,9 @@
                     payment.quantity = 1;
                     [[SKPaymentQueue defaultQueue] addPayment:payment];
                 }]];
+#ifndef DEBUG
             }
+#endif
             model.priceBackground.visible = YES;
         }
     }
