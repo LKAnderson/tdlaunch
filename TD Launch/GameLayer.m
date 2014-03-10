@@ -250,6 +250,11 @@ if (accelHalfXTimer > 0) a *= 0.5
         [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
         [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
         [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+        
+        inPlayDrawer.openPosition = ccp(inPlayDrawer.openPosition.x, inPlayDrawer.openPosition.y - dy);
+        if (inPlayDrawer.isOpen)
+            [inPlayDrawer open:0.25];
+        
 
         CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height - dy);
         self.contentSize = newSize;
@@ -263,11 +268,16 @@ if (accelHalfXTimer > 0) a *= 0.5
         [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
         [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
         [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+
+        inPlayDrawer.openPosition = ccp(inPlayDrawer.openPosition.x, inPlayDrawer.openPosition.y + dy);
+        if (inPlayDrawer.isOpen)
+            [inPlayDrawer open:0.25];
+
         
         CGSize newSize = CGSizeMake(self.contentSize.width, self.contentSize.height + dy);
         self.contentSize = newSize;
         scrollView.contentSize = newSize;
-        if (!isSimulating)
+        if (!isSimulating && scrollView.content.position.y > 0)
         {
             //keepNodeOnScreen will do this for us if we're simulating.
             scrollView.content.position = ccp(scrollView.content.position.x, scrollView.content.position.y + dy);
