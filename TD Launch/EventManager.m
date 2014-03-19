@@ -15,6 +15,7 @@ NSString* GAMECENTER_AVAILABLE = @"gamecenter_available";
 NSString* GAMECENTER_UNAVAILABLE = @"gamecenter_unavailable";
 NSString* ADBANNER_VISIBLE = @"adbanner_visible";
 NSString* ADBANNER_HIDDEN = @"adbanner_hidden";
+NSString* PURCHASE_COMPLETE = @"purchase_complete";
 
 
 

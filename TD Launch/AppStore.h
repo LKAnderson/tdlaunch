@@ -19,6 +19,7 @@
     NSArray* _productNamesInOrder;
     
     CCLabelBMFont* _loadingLabel;
+    CCLabelBMFont* _reloadLabel;
 }
 
 + (CCScene*) scene;

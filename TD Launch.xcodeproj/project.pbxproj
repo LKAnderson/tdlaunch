@@ -303,6 +303,7 @@
 		24E598A115E3AD4F00D836F7 /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E598A015E3AD4F00D836F7 /* MainMenu.m */; };
 		24E8401B186F7DA800A88CDE /* IntroLayer-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24E84019186F7DA800A88CDE /* IntroLayer-ipad.png */; };
 		24E8401C186F7DA800A88CDE /* IntroLayer-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24E8401A186F7DA800A88CDE /* IntroLayer-ipadhd.png */; };
+		24F7DADA18D9C6EA001BED3C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7DAD918D9C6EA001BED3C /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1035,6 +1036,7 @@
 		24E598A015E3AD4F00D836F7 /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
 		24E84019186F7DA800A88CDE /* IntroLayer-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IntroLayer-ipad.png"; path = "Resources/IntroLayer-ipad.png"; sourceTree = "<group>"; };
 		24E8401A186F7DA800A88CDE /* IntroLayer-ipadhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "IntroLayer-ipadhd.png"; path = "Resources/IntroLayer-ipadhd.png"; sourceTree = "<group>"; };
+		24F7DAD918D9C6EA001BED3C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1042,6 +1044,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24F7DADA18D9C6EA001BED3C /* libz.dylib in Frameworks */,
 				244C390F18B39E3D0097815D /* iAd.framework in Frameworks */,
 				2480BBCE1874ACA300C41D06 /* GameKit.framework in Frameworks */,
 				24DB611818608EA00054F17A /* libChipmunkPro-iPhone.a in Frameworks */,
@@ -1088,6 +1091,7 @@
 		240560FF15D1431B00CF2B9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				24F7DAD918D9C6EA001BED3C /* libz.dylib */,
 				24C854A918B974A000BD5580 /* StoreKit.framework */,
 				244C390E18B39E3D0097815D /* iAd.framework */,
 				2480BBCD1874ACA300C41D06 /* GameKit.framework */,
@@ -2441,6 +2445,7 @@
 		240562F715D1431F00CF2B9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2468,12 +2473,14 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
+				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 			};
 			name = Debug;
 		};
 		240562F815D1431F00CF2B9B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2501,6 +2508,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
+				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 			};
 			name = Release;
 		};
@@ -2508,6 +2516,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2532,6 +2541,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../cocos2d-iphone-2.0/cocos2d\"/** \"$(SRCROOT)/../cocos2d-iphone-2.0/external\"/** \"$(SRCROOT)/../cocos2d-iphone-2.0/CocosDenshion\"/** \"$(SRCROOT)/../ChipmunkPro-6.2.1/ChipmunkPro-iPhone/**";
+				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2540,11 +2550,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COMPRESS_PNG_FILES = NO;
+				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TD Launch/Prefix.pch";
@@ -2565,6 +2576,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../cocos2d-iphone-2.0/cocos2d\"/** \"$(SRCROOT)/../cocos2d-iphone-2.0/external\"/** \"$(SRCROOT)/../cocos2d-iphone-2.0/CocosDenshion\"/** \"$(SRCROOT)/../ChipmunkPro-6.2.1/ChipmunkPro-iPhone/**";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

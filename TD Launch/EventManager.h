@@ -15,6 +15,7 @@ extern NSString* GAMECENTER_AVAILABLE;
 extern NSString* GAMECENTER_UNAVAILABLE;
 extern NSString* ADBANNER_VISIBLE;
 extern NSString* ADBANNER_HIDDEN;
+extern NSString* PURCHASE_COMPLETE;
 
 
 @protocol EventListener <NSObject>

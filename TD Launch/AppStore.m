@@ -65,6 +65,7 @@
 - (void) onExit
 {
     [super onExit];
+    [[EventManager sharedManager] unsubscribe:PURCHASE_COMPLETE listener:self];
 }
 
 
@@ -73,6 +74,8 @@
 {
     [super onEnter];
     self.isTouchEnabled = YES;
+    
+    [[EventManager sharedManager] subscribe:PURCHASE_COMPLETE listener:self];
     
     APPCONTROLLER.adsEnabled = NO;
     
@@ -274,14 +277,13 @@
        
         [productTable addObject:[_productInfo objectForKey:toolId]];
         tableHeight += tableSpacing;
-        
-
     }
+    tableHeight += tableSpacing; // Previous Purchases button
     
     CCNode* tableView = [CCNode node];
     tableView.contentSize = CGSizeMake(screen.width, tableHeight);
     
-    float y = tableHeight - (tableSpacing/2);
+    float y = tableHeight - tableSpacing / 2;
     
     for (int i=0; i < productTable.count; i++)
     {
@@ -343,6 +345,29 @@
         y -= tableSpacing;
     }
     
+    CCSprite* reloadBackground = [CCSprite spriteWithSpriteFrameName:@"AppStoreBuy.png"];
+    reloadBackground.scale = 1.0;
+    reloadBackground.anchorPoint = ccp(0.5, 0.5);
+    reloadBackground.position = ccp(screen.width/2, y);
+    [tableView addChild:reloadBackground];
+    
+    _reloadLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppStore_Reload", "Reload") fntFile:@"TDFontYellow96.fnt"];
+    _reloadLabel.alignment = kCCTextAlignmentCenter;
+    _reloadLabel.scale = 0.45;
+    _reloadLabel.anchorPoint = ccp(0.5, 0.4);
+    _reloadLabel.position = ccp(BB_WIDTH(reloadBackground)/2, BB_HEIGHT(reloadBackground)/2);
+    [reloadBackground addChild:_reloadLabel];
+    
+    
+    
+    reloadBackground.isTouchEnabled = YES;
+    [reloadBackground addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item) {
+        _reloadLabel.string = NSLocalizedString(@"AppStore_Reloading", "Restoring...");
+        AUDIOTIC1;
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    }]];
+
+    
     ScrollView* scrollView = [ScrollView viewWithContent:tableView];
     scrollView.contentSize = CGSizeMake(screen.width, screen.height);
     scrollView.anchorPoint = ccp(0.5, 0);
@@ -355,6 +380,16 @@
 
 - (BOOL) eventOccurred:(NSString*)event data:(id)data
 {
+    if (event == PURCHASE_COMPLETE)
+    {
+        NSString* productId = data;
+        ProductModel* product = [_productInfo objectForKey:productId];
+        if (product != nil && product.priceLabel != nil)
+        {
+            product.priceLabel.string = NSLocalizedString(@"AppStore_Loaded", NULL);
+            _reloadLabel.string = NSLocalizedString(@"AppStore_Reload", "Reload");
+        }
+    }
     return YES;
 }
 

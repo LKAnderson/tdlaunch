@@ -155,12 +155,6 @@ unsigned int getCurrentTime()
 		[director_ startAnimation];
     
     [[EventManager sharedManager] publish:APP_ACTIVATED data:nil];
-    
-    if ([Achievements sharedAchievements].purchasedProducts.count == 0)
-    {
-        // This must be a fresh install, so ask the App Store what they've purchased.
-        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-    }
 }
 
 -(void) applicationDidEnterBackground:(UIApplication*)application
@@ -322,6 +316,7 @@ unsigned int getCurrentTime()
                 SKProduct* product = [self findInAppProduct:txn.payment.productIdentifier];
                 if (product != nil)
                 {
+                    [[EventManager sharedManager] publish:PURCHASE_COMPLETE data:txn.payment.productIdentifier];
                     NSString* msg = [NSString stringWithFormat:@"%@ %@", product.localizedTitle, NSLocalizedString(@"AppStore_Purchase_Complete", nil)];
                     [[[UIAlertView alloc] initWithTitle:@"In-App Purchase" message:msg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
                 }
@@ -332,8 +327,10 @@ unsigned int getCurrentTime()
             case SKPaymentTransactionStateRestored:
             {
                 SKPaymentTransaction* origTxn = txn.originalTransaction;
+                
                 [[Achievements sharedAchievements] addPurchasedProduct:origTxn.payment.productIdentifier];
                 [[SKPaymentQueue defaultQueue] finishTransaction:txn];
+                [[EventManager sharedManager] publish:PURCHASE_COMPLETE data:origTxn.payment.productIdentifier];
                 break;
             }
                 
@@ -358,6 +355,7 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
+    [[[UIAlertView alloc] initWithTitle:@"In-App Purchase" message:NSLocalizedString(@"AppStore_Restore_Complete", NULL) delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 
