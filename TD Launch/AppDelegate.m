@@ -347,6 +347,7 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
+    [[EventManager sharedManager] publish:PURCHASE_COMPLETE data:nil];
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads
@@ -355,6 +356,7 @@ unsigned int getCurrentTime()
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
+    [[EventManager sharedManager] publish:PURCHASE_COMPLETE data:nil];
     [[[UIAlertView alloc] initWithTitle:@"In-App Purchase" message:NSLocalizedString(@"AppStore_Restore_Complete", NULL) delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 

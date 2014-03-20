@@ -907,27 +907,34 @@ if (accelHalfXTimer > 0) a *= 0.5
                                          [DRAWER addChild:VAR];
 
     
-    #define SS(A) (isSmallScreen ? A-15 : A)
+    //#define SS(A) (isSmallScreen ? A-15 : A)
+    #define POS(N) (SCRNX(50) + (N * ((menuDrawer.contentSize.width-SCRNX(50)-SCRNX(30))/8)))
     
     NEW_MENU_BUTTON(menuDrawer, backButton, @"Back.png", SCRNX(50));
-    NEW_MENU_BUTTON(menuDrawer, characterButton, @"SteveHappy.png", SCRNX(SS(200)));
+    NEW_MENU_BUTTON(menuDrawer, characterButton, @"SteveHappy.png", POS(1));
     characterButton.scale = 0.6;
-    NEW_MENU_BUTTON(menuDrawer, objectButton, @"Blower.png", SCRNX(SS(335)));
+    NEW_MENU_BUTTON(menuDrawer, objectButton, @"Blower.png", POS(2));
     objectButton.scale = 0.7;
     objectButton.rotation = 40;
-    NEW_MENU_BUTTON(menuDrawer, goButton, @"Go.png", SCRNX(SS(470)));
-    NEW_MENU_BUTTON(menuDrawer, resetButton, @"Reset.png", SCRNX(SS(600)));
+    NEW_MENU_BUTTON(menuDrawer, goButton, @"Go.png", POS(3));
+    NEW_MENU_BUTTON(menuDrawer, resetButton, @"Reset.png", POS(4));
     
     CCLabelBMFont* clearAllButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ClearAllLabel", @"Clear\nAll") fntFile:@"TDFontRed72.fnt"];
     clearAllButton.alignment = kCCTextAlignmentCenter;
     clearAllButton.scale = 0.9;
     clearAllButton.anchorPoint = ccp(0.5,0.5);
-    clearAllButton.position = ccp(SCRNX(SS(740)), menuDrawer.contentSize.height*1.1/2);
+    clearAllButton.position = ccp(POS(5), menuDrawer.contentSize.height*1.1/2);
     clearAllButton.isTouchEnabled = YES;
     [menuDrawer addChild:clearAllButton];
-    //NEW_MENU_BUTTON(menuDrawer, clearAllButton, @"ClearAll.png", SCRNX(SS(750)));
     
-    NEW_MENU_BUTTON(menuDrawer, statsButton, @"Stats.png", SCRNX(SS(875)));
+    CCLabelBMFont* helpButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ObjectDrawer_Help", @"Help...") fntFile:@"TDFont120.fnt"];
+    helpButton.scale = 0.5;
+    helpButton.anchorPoint = ccp(0.5,0.5);
+    helpButton.position = ccp(POS(6), menuDrawer.contentSize.height*1.1/2);
+    helpButton.isTouchEnabled = YES;
+    [menuDrawer addChild:helpButton];
+    
+    NEW_MENU_BUTTON(menuDrawer, statsButton, @"Stats.png", POS(7));
     NEW_MENU_BUTTON(menuDrawer, toggleButton, @"ToggleMenu.png", menuDrawer.contentSize.width - SCRNX(30));
     
     characterTutPos = characterButton.position;
@@ -994,6 +1001,13 @@ if (accelHalfXTimer > 0) a *= 0.5
                                            [self addChild:yesNo z:9999999];
                                       }]];
     
+    [helpButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
+                                       {
+                                           AUDIOTIC1;
+                                           [gameLevel saveTempFile];
+                                           [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
+                                       }]];
+    
     [statsButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
                                        {
                                            AUDIOTIC1;
@@ -1018,7 +1032,7 @@ if (accelHalfXTimer > 0) a *= 0.5
                {
                    TutorialDialog* tut = [[TutorialDialog alloc]
                                           initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe down to\nclose the\nmenu")
-                                          at:ccp(self.contentSize.width/2,
+                                          at:ccp(self.contentSize.width*0.67,
                                                  self.contentSize.height*0.65)
                                           anchorPoint:ccp(.5,.5)
                                           scaledTo:nil
@@ -1051,7 +1065,7 @@ if (accelHalfXTimer > 0) a *= 0.5
                {
                    TutorialDialog* tut = [[TutorialDialog alloc]
                                           initWithMessage:NSLocalizedString(@"GameLayer_Tutorial_Menu",@"Swipe down to\nclose the\nmenu")
-                                          at:ccp(self.contentSize.width/2,
+                                          at:ccp(self.contentSize.width*0.67,
                                                  self.contentSize.height*0.65)
                                           anchorPoint:ccp(.5,.5)
                                           scaledTo:nil

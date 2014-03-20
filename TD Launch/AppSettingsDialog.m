@@ -153,7 +153,7 @@
 {
     // I know, bad use of a singleton...
     Settings* s = [Settings globalSettings];
-    s.showCharacterTutorial = s.showDrawerTutorial = s.showObjectTutorial = s.showRotateTutorial = ! s.showCharacterTutorial;
+    s.showCharacterTutorial = s.showDrawerTutorial = s.showObjectTutorial = s.showRotateTutorial = !s.showTutorial;
     [self syncCheckboxes];
     AUDIOTIC1;
  }

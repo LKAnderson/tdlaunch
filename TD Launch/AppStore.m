@@ -382,12 +382,13 @@
 {
     if (event == PURCHASE_COMPLETE)
     {
+        _reloadLabel.string = NSLocalizedString(@"AppStore_Reload", "Reload");
+        
         NSString* productId = data;
         ProductModel* product = [_productInfo objectForKey:productId];
         if (product != nil && product.priceLabel != nil)
         {
             product.priceLabel.string = NSLocalizedString(@"AppStore_Loaded", NULL);
-            _reloadLabel.string = NSLocalizedString(@"AppStore_Reload", "Reload");
         }
     }
     return YES;

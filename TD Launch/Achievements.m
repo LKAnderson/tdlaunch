@@ -109,8 +109,13 @@ static Achievements* _sharedAchievements;
     int numIntValues = 13;
     int intValues[] = { 2, _level, _trampoline, _trampoline2x, _blower, _blower2x, _plank, _slide, _launcher, _accel2X, _accelHalfX, _antiGravity,          _aligner };
     
-    int numBoolValues = 5;
-    BOOL boolValues[] = { _hasSteve, _hasEmily, _hasBruce, _hasToby, _hasAngie };
+    int numBoolValues = 8;
+    BOOL boolValues[] = {
+        _hasSteve, _hasEmily, _hasBruce, _hasToby, _hasAngie,
+        [_purchasedProducts containsObject:Product_SuperStartPack],
+        [_purchasedProducts containsObject:Product_PowerPack],
+        [_purchasedProducts containsObject:Product_DevPack]
+    };
     
     NSMutableString* inputData = [NSMutableString string];
     for (int i=0; i < numIntValues; i++)
@@ -118,11 +123,6 @@ static Achievements* _sharedAchievements;
     
     for (int i=0; i < numBoolValues; i++)
         [inputData appendString:(boolValues[i] == YES ? @"A" : @"B")];
-    
-    for (NSString* productId in _purchasedProducts)
-    {
-        [inputData appendString:productId];
-    }
     
     return [self getHashForString:inputData];
 }
@@ -193,9 +193,7 @@ static Achievements* _sharedAchievements;
             }
         }
         
-        // else do nothing.  Hopefully none of the 4 people who have downloaded version 1
-        // will know enough to be dishonest before version 2 can upgrade their file!
-    
+            
         if (! _isTampered && fileVersion < 3)
         {
             [self addPurchasedProduct:Product_SuperStartPack];
