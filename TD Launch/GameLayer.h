@@ -27,6 +27,18 @@
     CCLabelBMFont* mainGemsLabel;
     CCLabelAtlas* mainGemsValue;
     
+    CGFloat mainScoreLabelAdHidY;
+    CGFloat mainScoreLabelAdVisY;
+    
+    CGFloat mainScoreValueAdHidY;
+    CGFloat mainScoreValueAdVisY;
+    
+    CGFloat mainGemsLabelAdHidY;
+    CGFloat mainGemsLabelAdVisY;
+    
+    CGFloat mainGemsValueAdHidY;
+    CGFloat mainGemsValueAdVisY;
+    
     CCNode* gameLayer;
     ScrollView* scrollView;
     

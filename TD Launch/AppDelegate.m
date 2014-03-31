@@ -267,6 +267,11 @@ unsigned int getCurrentTime()
     }
 }
 
+- (BOOL) adBannerVisible
+{
+    return _iAdView != nil && _iAdView.hidden == NO;
+}
+
 
 - (void) bannerViewWillLoadAd:(ADBannerView *)banner
 {

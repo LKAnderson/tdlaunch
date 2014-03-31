@@ -246,10 +246,16 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         ADBannerView* adView = (ADBannerView*)data;
         float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
-        [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
-        [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
-        [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
-        [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,-dy)]];
+        
+        if (mainScoreLabelAdVisY == 0) mainScoreLabelAdVisY = mainScoreLabel.position.y - dy;
+        if (mainScoreValueAdVisY == 0) mainScoreValueAdVisY = mainScoreValue.position.y - dy;
+        if (mainGemsLabelAdVisY == 0) mainGemsLabelAdVisY = mainGemsLabel.position.y - dy;
+        if (mainGemsValueAdVisY == 0) mainGemsValueAdVisY = mainGemsValue.position.y - dy;
+        
+        [mainScoreLabel runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainScoreLabel.position.x,mainScoreLabelAdVisY)]];
+        [mainScoreValue runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainScoreValue.position.x,mainScoreValueAdVisY)]];
+        [mainGemsLabel runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainGemsLabel.position.x,mainGemsLabelAdVisY)]];
+        [mainGemsValue runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainGemsValue.position.x,mainGemsValueAdVisY)]];
         
         inPlayDrawer.openPosition = ccp(inPlayDrawer.openPosition.x, inPlayDrawer.openPosition.y - dy);
         if (inPlayDrawer.isOpen)
@@ -264,10 +270,11 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         ADBannerView* adView = (ADBannerView*)data;
         float dy = adView.frame.size.height - (isSmallScreen ? 1 : 0);
-        [mainScoreLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
-        [mainScoreValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
-        [mainGemsLabel runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
-        [mainGemsValue runAction:[CCMoveBy actionWithDuration:0.25 position:ccp(0,dy)]];
+        
+        [mainScoreLabel runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainScoreLabel.position.x,mainScoreLabelAdHidY)]];
+        [mainScoreValue runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainScoreValue.position.x,mainScoreValueAdHidY)]];
+        [mainGemsLabel runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainGemsLabel.position.x,mainGemsLabelAdHidY)]];
+        [mainGemsValue runAction:[CCMoveTo actionWithDuration:0.25 position:ccp(mainGemsValue.position.x,mainGemsValueAdHidY)]];
 
         inPlayDrawer.openPosition = ccp(inPlayDrawer.openPosition.x, inPlayDrawer.openPosition.y + dy);
         if (inPlayDrawer.isOpen)
@@ -358,6 +365,10 @@ if (accelHalfXTimer > 0) a *= 0.5
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"RecapBoard.png"]];
     [self addChild:[CCSpriteBatchNode batchNodeWithFile:@"ObstacleSheet.png"]];
     
+    mainScoreLabelAdVisY = 0;
+    mainScoreValueAdVisY = 0;
+    mainGemsLabelAdVisY  = 0;
+    mainGemsValueAdVisY  = 0;
     
     [gameLevel loadResources:self];
     
@@ -436,24 +447,28 @@ if (accelHalfXTimer > 0) a *= 0.5
     mainScoreValue.scale = 0.5;
     mainScoreValue.anchorPoint = ccp(1,0);
     mainScoreValue.position = valueRef;
+    mainScoreValueAdHidY = mainScoreValue.position.y;
     [self addChild:mainScoreValue];
     
     mainScoreLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ScoreLabel", @"Score") fntFile:@"TDFontYellow96.fnt"];
     TDFONT_MEDIUM(mainScoreLabel);
     mainScoreLabel.anchorPoint = ccp(1,0);
     mainScoreLabel.position = ccp(mainScoreValue.boundingBox.origin.x - SCRNX(3), mainScoreValue.position.y+SCRNY(3));
+    mainScoreLabelAdHidY = mainScoreLabel.position.y;
     [self addChild:mainScoreLabel];
     
     mainGemsValue = NUMBERS_ATLAS;
     mainGemsValue.scale = 0.5;
     mainGemsValue.anchorPoint = ccp(1,0);
     mainGemsValue.position = ccp(valueRef.x, mainScoreValue.position.y - SCRNY(31.5));
+    mainGemsValueAdHidY = mainGemsValue.position.y;
     [self addChild:mainGemsValue];
 
     mainGemsLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_BalloonsLabel", @"Balloons") fntFile:@"TDFontYellow96.fnt"];
     TDFONT_MEDIUM(mainGemsLabel);
     mainGemsLabel.anchorPoint = ccp(0,0);
     mainGemsLabel.position = ccp(mainScoreLabel.boundingBox.origin.x, mainGemsValue.position.y + (SCRNY(3)));
+    mainGemsLabelAdHidY = mainGemsLabel.position.y;
     [self addChild:mainGemsLabel];
     
     [self updateScores];
@@ -571,6 +586,11 @@ if (accelHalfXTimer > 0) a *= 0.5
     [[EventManager sharedManager] subscribe:APP_DEACTIVATED listener:self];
     [[EventManager sharedManager] subscribe:ADBANNER_HIDDEN listener:self];
     [[EventManager sharedManager] subscribe:ADBANNER_VISIBLE listener:self];
+    
+    if (APPCONTROLLER.adBannerVisible)
+    {
+        [[EventManager sharedManager] publish:ADBANNER_VISIBLE data:APPCONTROLLER.iAdView];
+    }
 }
 
 
@@ -1401,15 +1421,18 @@ if (accelHalfXTimer > 0) a *= 0.5
     CGPoint nextLvlPos = ccp(BB_RIGHT(recapScreen) - SCRNX(60),
                              recapScreen.boundingBox.origin.y + BB_TOP(title) - title.boundingBox.size.height*0.6);
 
-    if ([Achievements sharedAchievements].level > gameLevel.ID && showAchievements && gameLevel.ID < 10)
+    if ([Achievements sharedAchievements].level > gameLevel.ID)
     {
-        [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5 position:nextLvlPos]];
-        [nextLevelButton runAction:[CCFadeIn actionWithDuration:0.75]];
-    }
-    else
-    {
-        nextLevelButton.position = nextLvlPos;
-        nextLevelButton.opacity = 255;
+        if (showAchievements && gameLevel.ID < 10)
+        {
+            [nextLevelButton runAction:[CCMoveTo actionWithDuration:0.5 position:nextLvlPos]];
+            [nextLevelButton runAction:[CCFadeIn actionWithDuration:0.75]];
+        }
+        else
+        {
+            nextLevelButton.position = nextLvlPos;
+            nextLevelButton.opacity = 255;
+        }
     }
 
     [nextLevelButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
