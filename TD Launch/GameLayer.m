@@ -792,7 +792,8 @@ if (accelHalfXTimer > 0) a *= 0.5
         
     // Create the Character Drawer
     characterDrawer = [Drawer node];
-    characterDrawer.contentSize = CGSizeMake(screen.width * .65, screen.height * .25);
+    characterDrawer.contentSize = CGSizeMake(screen.width * (isSmallScreen ? 0.85 : .65),
+                                             screen.height * (isSmallScreen ? 0.40 : .25));
     characterDrawer.anchorPoint = ccp(0.5, 0);
     characterDrawer.closedPosition = ccp( screen.width/2, SCRNY(-10) - characterDrawer.contentSize.height );
     characterDrawer.openPosition = ccp(objectDrawer.closedPosition.x, menuDrawer.contentSize.height);
@@ -844,7 +845,7 @@ if (accelHalfXTimer > 0) a *= 0.5
         chSprite.position = ccp(xSpacer*(i+1), characterDrawer.contentSize.height/6);
         chSprite.isTouchEnabled = YES;
         if (isSmallScreen)
-            chSprite.scale = 0.8;
+            chSprite.scale = 1.3;
         chSprite.tag = i;
         [characterDrawer addChild:chSprite];
         
@@ -898,7 +899,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     
    
     menuDrawer = [Drawer node];
-    menuDrawer.contentSize = CGSizeMake(screen.width, screen.height * (isSmallScreen ? 0.15 : 0.10));
+    menuDrawer.contentSize = CGSizeMake(screen.width, screen.height * (isSmallScreen ? 0.20 : 0.10));
     menuDrawer.anchorPoint = ccp(0,0);
     menuDrawer.position = ccp(0,0);
     menuDrawer.closedPosition = ccp( screen.width - SCRNX(100), 0 );
@@ -921,34 +922,35 @@ if (accelHalfXTimer > 0) a *= 0.5
     
     
     #define NEW_MENU_BUTTON(DRAWER,VAR,IMAGE,X) CCSprite* VAR = [CCSprite spriteWithSpriteFrameName:IMAGE]; \
+                                         VAR.scale = isSmallScreen ? 1.3 : 1.0; \
                                          VAR.anchorPoint = ccp(0.5,0.5); \
                                          VAR.position = ccp(X, menuDrawer.contentSize.height/2); \
                                          VAR.isTouchEnabled = YES; \
                                          [DRAWER addChild:VAR];
 
     
-    //#define SS(A) (isSmallScreen ? A-15 : A)
     #define POS(N) (SCRNX(50) + (N * ((menuDrawer.contentSize.width-SCRNX(50)-SCRNX(30))/8)))
+    #define SMALLADJ(S) S * (isSmallScreen ? 1.3 : 1.0)
     
     NEW_MENU_BUTTON(menuDrawer, backButton, @"Back.png", SCRNX(50));
     NEW_MENU_BUTTON(menuDrawer, characterButton, @"SteveHappy.png", POS(1));
-    characterButton.scale = 0.6;
+    characterButton.scale = SMALLADJ(0.6);
     NEW_MENU_BUTTON(menuDrawer, objectButton, @"Blower.png", POS(2));
-    objectButton.scale = 0.7;
+    objectButton.scale = SMALLADJ(0.7);
     objectButton.rotation = 40;
     NEW_MENU_BUTTON(menuDrawer, goButton, @"Go.png", POS(3));
     NEW_MENU_BUTTON(menuDrawer, resetButton, @"Reset.png", POS(4));
     
     CCLabelBMFont* clearAllButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ClearAllLabel", @"Clear\nAll") fntFile:@"TDFontRed72.fnt"];
     clearAllButton.alignment = kCCTextAlignmentCenter;
-    clearAllButton.scale = 0.9;
+    clearAllButton.scale = SMALLADJ(0.9);
     clearAllButton.anchorPoint = ccp(0.5,0.5);
     clearAllButton.position = ccp(POS(5), menuDrawer.contentSize.height*1.1/2);
     clearAllButton.isTouchEnabled = YES;
     [menuDrawer addChild:clearAllButton];
     
-    CCLabelBMFont* helpButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ObjectDrawer_Help", @"Help...") fntFile:@"TDFont120.fnt"];
-    helpButton.scale = 0.5;
+    CCLabelBMFont* helpButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_ObjectDrawer_Help", @"Help") fntFile:@"TDFont120.fnt"];
+    helpButton.scale = SMALLADJ(0.5);
     helpButton.anchorPoint = ccp(0.5,0.5);
     helpButton.position = ccp(POS(6), menuDrawer.contentSize.height*1.1/2);
     helpButton.isTouchEnabled = YES;
@@ -1411,7 +1413,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     NSString* nextLevelStr = NSLocalizedString(@"GameLayer_Recap_NextLevel", @"Next Level");
     nextLevelButton = [CCLabelBMFont labelWithString:nextLevelStr fntFile:@"TDFontYellow96.fnt"];
     nextLevelButton.alignment = kCCTextAlignmentCenter;
-    nextLevelButton.scale = 0.45;
+    nextLevelButton.scale = isSmallScreen ? 0.75 : 0.45;
     nextLevelButton.anchorPoint = ccp(1,0.5);
     nextLevelButton.position = ccp(BB_RIGHT(recapScreen) - SCRNX(60), BB_TOP(recapScreen));
     
@@ -1488,6 +1490,8 @@ if (accelHalfXTimer > 0) a *= 0.5
     {
         gameCenterButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"GameLayer_Recap_LeaderboardsLabel", @"Leaderboards") fntFile:@"TDFont120.fnt"];
         TDFONT_MEDIUM(gameCenterButton);
+        if (isSmallScreen)
+            gameCenterButton.scale *= 1.4;
         gameCenterButton.anchorPoint = ccp(0,0);
         gameCenterButton.position = ccp(recapScreen.boundingBox.origin.x + SCRNX(30),
                                         recapScreen.boundingBox.origin.y + SCRNX(20));

@@ -20,7 +20,7 @@ Settings* _globalSettings = nil;
     if (self = [super init])
     {
         _sound = YES;
-        _gameCenter = NO;
+        _gameCenter = YES;
         _showCharacterTutorial = YES;
         _showObjectTutorial = YES;
         _showDrawerTutorial = YES;

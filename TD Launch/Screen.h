@@ -28,7 +28,7 @@ extern BOOL isRetinaScreen;
 
 // Font sizes
 #define TDFONT_LARGE(obj)       obj.scale = 1.0
-#define TDFONT_MEDIUMLARGE(obj)     obj.scale = 0.75
+#define TDFONT_MEDIUMLARGE(obj)     obj.scale = isSmallScreen ? 0.85 : 0.75
 #define TDFONT_MEDIUM(obj)      obj.scale = 0.5
 
 

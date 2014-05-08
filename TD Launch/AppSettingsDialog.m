@@ -24,44 +24,51 @@
     unchecked = ((CCSprite*)[CCSprite spriteWithSpriteFrameName:@"Checkbox_Empty.png"]).displayFrame;
     
     CCSprite* dialogBack = [CCSprite spriteWithSpriteFrameName:@"DialogBack.png"];
+    dialogBack.scale = isSmallScreen ? 1.4 : 1.0;
 
     CCNode* dialog = [CCNode node];
     dialog.anchorPoint = ccp(0.5,0.5);
     dialog.position = ccp(self.parent.contentSize.width/2, self.parent.contentSize.height/2);
-    dialog.contentSize = dialogBack.contentSize;
+    dialog.contentSize = dialogBack.boundingBox.size;
     [self addChild:dialog];
     
-    dialogBack.anchorPoint = ccp(0,0);
-    dialogBack.position = ccp(0,0);
+    dialogBack.anchorPoint = ccp(.5,.5);
+    dialogBack.position = ccp(dialog.contentSize.width/2, dialog.contentSize.height/2);
     [dialog addChild:dialogBack];
     
     gcCheckbox = [CCSprite spriteWithSpriteFrameName:@"Checkbox_Empty.png"];
+    gcCheckbox.scale = isSmallScreen ? 1.2 : 1.0;
     gcCheckbox.anchorPoint = ccp(0,0);
     gcCheckbox.position = ccp(dialog.contentSize.width * .09, dialog.contentSize.height * .67);
     [dialog addChild:gcCheckbox];
     
     CCLabelBMFont* gcLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppSettingsDialog_GameCenterLabel", @"GameCenter") fntFile:@"TDFont120.fnt"];
+    gcLabel.scale = isSmallScreen ? 1.2 : 1.0;
     gcLabel.anchorPoint = ccp(0,0);
     gcLabel.position = ccp(gcCheckbox.position.x + (1.6 * gcCheckbox.contentSize.width), gcCheckbox.position.y);
     [dialog addChild:gcLabel];
     
     soundCheckbox = [CCSprite spriteWithSpriteFrameName:@"Checkbox_Filled.png"];
+    soundCheckbox.scale = isSmallScreen ? 1.2 : 1.0;
     soundCheckbox.anchorPoint = ccp(0,0);
     soundCheckbox.position = ccp(gcCheckbox.position.x, dialog.contentSize.height * .40);
     [dialog addChild:soundCheckbox];
     
     CCLabelBMFont* soundLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppSettingsDialog_SoundLabel", @"Sound") fntFile:@"TDFont120.fnt"];
+    soundLabel.scale = isSmallScreen ? 1.2 : 1.0;
     soundLabel.anchorPoint = ccp(0,0);
     soundLabel.position = ccp(gcLabel.position.x, soundCheckbox.position.y);
     [dialog addChild:soundLabel];
     
     
     tutorialCheckbox = [CCSprite spriteWithSpriteFrameName:@"Checkbox_Empty.png"];
+    tutorialCheckbox.scale = isSmallScreen ? 1.2 : 1.0;
     tutorialCheckbox.anchorPoint = ccp(0,0);
     tutorialCheckbox.position = ccp(gcCheckbox.position.x, dialog.contentSize.height * .13);
     [dialog addChild:tutorialCheckbox];
     
     CCLabelBMFont* tutorialLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppSettingsDialog_TutorialLabel", @"Tutorial") fntFile:@"TDFont120.fnt"];
+    tutorialLabel.scale = isSmallScreen ? 1.2 : 1.0;
     tutorialLabel.anchorPoint = ccp(0,0);
     tutorialLabel.position = ccp(gcLabel.position.x, tutorialCheckbox.position.y);
     [dialog addChild:tutorialLabel];

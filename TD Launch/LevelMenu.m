@@ -155,14 +155,14 @@ GameLevel* getLevelForID(int ID)
     menuStars = stars;
     
     // Now position them
-    CGSize buttonGap = isSmallScreen ? CGSizeMake(40, 30) : CGSizeMake( 50, 30 );
+    CGSize buttonGap = isSmallScreen ? CGSizeMake(50, 30) : CGSizeMake( 50, 30 );
     CCSprite* button1 = [menuButtons objectAtIndex:0];
     
     buttonPanel = [CCNode node];
-    buttonPanel.contentSize = CGSizeMake((button1.contentSize.width * 4) + (buttonGap.width * 3)
-                                         + (isSmallScreen ? button1.contentSize.width * .5 : 0),
-                                         (button1.contentSize.height * 3) + (buttonGap.height * 2)
-                                         + (isSmallScreen ? button1.contentSize.height * .5 : 0));
+    buttonPanel.contentSize = CGSizeMake((button1.boundingBox.size.width * 4) + (buttonGap.width * 3)
+                                         + (isSmallScreen ? button1.boundingBox.size.width * .5 : 0),
+                                         (button1.boundingBox.size.height * 3) + (buttonGap.height * 2)
+                                         + (isSmallScreen ? button1.boundingBox.size.height * .5 : 0));
     
     for (int i=1, x=0, y=0; i <= 10; i++, x += button1.contentSize.width + buttonGap.width)
     {
@@ -178,8 +178,8 @@ GameLevel* getLevelForID(int ID)
         CCSprite* star = [menuStars objectAtIndex:i-1];
         if (isSmallScreen)
         {
-            button.scale = 1.5;
-            star.scale = 1.5;
+            button.scale = 1.8;
+            star.scale = 1.8;
         }
         button.anchorPoint = ccp( 0, 1 );
         button.position = ccp(x, buttonPanel.contentSize.height - y); // inverted coords
@@ -195,7 +195,7 @@ GameLevel* getLevelForID(int ID)
         {
             star.anchorPoint = ccp( 0.5, 1 );
             star.position = ccp(button.boundingBox.origin.x + button.boundingBox.size.width/2,
-                                button.boundingBox.origin.y + 3);
+                                button.boundingBox.origin.y + (isSmallScreen ? 18 : 3));
             //            star.position = ccp(button.position.x + button.contentSize.width/2, 3 + button.position.y - button.contentSize.height);
             [buttonPanel addChild:star];
         }
@@ -212,7 +212,7 @@ GameLevel* getLevelForID(int ID)
     loadingMsg = [CCLabelBMFont labelWithString:NSLocalizedString(@"LevelMenu_LoadingMsg", @"Loading...") fntFile:@"TDFont120.fnt"];
     TDFONT_MEDIUMLARGE(loadingMsg);
     loadingMsg.anchorPoint = ccp(0.5,0.5);
-    loadingMsg.position = ccp(screen.width/2, isSmallScreen ? screen.height * .15 : screen.height * .20);
+    loadingMsg.position = ccp(screen.width/2, isSmallScreen ? screen.height * .90 : screen.height * .20);
     loadingMsg.visible = NO;
     [self addChild:loadingMsg];
     
@@ -237,6 +237,8 @@ GameLevel* getLevelForID(int ID)
     aboutScreen = nil;
     aboutIcon = [CCLabelBMFont labelWithString:NSLocalizedString(@"LevelMenu_AboutLabel", @"About") fntFile:@"TDFont120.fnt"];
     TDFONT_MEDIUM(aboutIcon);
+    if (isSmallScreen)
+        TDFONT_MEDIUMLARGE(aboutIcon);
     aboutIcon.anchorPoint = ccp(0,0);
     if (isSmallScreen)
         aboutIcon.position = ccp(screen.width*0.07, screen.height*0.075);
@@ -250,6 +252,8 @@ GameLevel* getLevelForID(int ID)
     
     CCLabelBMFont* settingsButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"LevelMenu_OptionsLabel", @"Options") fntFile:@"TDFont120.fnt"];
     TDFONT_MEDIUM(settingsButton);
+    if (isSmallScreen)
+        TDFONT_MEDIUMLARGE(settingsButton);
     settingsButton.anchorPoint = ccp(1,0);
     if (isSmallScreen)
         settingsButton.position = ccp(screen.width * 0.93, aboutIcon.position.y);
@@ -273,6 +277,8 @@ GameLevel* getLevelForID(int ID)
     
     gameCenterButton = [CCLabelBMFont labelWithString:NSLocalizedString(@"LevelMenu_LeaderboardsLabel", @"Leaderboards") fntFile:@"TDFont120.fnt"];
     TDFONT_MEDIUM(gameCenterButton);
+    if (isSmallScreen)
+        TDFONT_MEDIUMLARGE(gameCenterButton);
     gameCenterButton.anchorPoint = ccp(0.5, 0);
     gameCenterButton.position = ccp(screen.width/2, aboutIcon.position.y);
     gameCenterButton.opacity = 0;
