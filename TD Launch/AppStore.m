@@ -35,28 +35,47 @@
 
 @implementation AppStore
 
-+(CCScene *) scene
++(CCScene *) sceneAsStore
 {
 	CCScene *scene = [CCScene node];
-	AppStore *layer = [AppStore node];
+	AppStore *layer = [[AppStore alloc] initAsStore];
 	[scene addChild: layer];
 	return scene;
 }
 
++(CCScene *) sceneAsHelp
+{
+    CCScene *scene = [CCScene node];
+    AppStore *layer = [[AppStore alloc] initAsHelp];
+    [scene addChild: layer];
+    return scene;
+}
 
 
-- (id) init
+
+- (id) initAsHelp
 {
     if (self = [super init])
     {
+        _isStore = NO;
         _toolNamesInOrder = [NSArray arrayWithObjects:Tool_Plank,Tool_Slide,Tool_Drums,Tool_Blowers,
                              Tool_Reducer,Tool_Doubler,Tool_Aligner,Tool_Launcher,Tool_GravityReverser,
                              Product_SuperStartPack, Product_PowerPack, Product_DevPack, nil];
         
-//        [products setValue:@"LBL:Bundle" forKey:Product_SuperStartPack];
-//        [products setValue:@"LBL:Bundle" forKey:Product_PowerPack];
-//        [products setValue:@"LBL:Bundle" forKey:Product_DevPack];
+    }
+    return self;
+}
 
+- (id) initAsStore
+{
+    if (self = [super init])
+    {
+        _isStore = YES;
+        _toolNamesInOrder = [NSArray arrayWithObjects:Product_SuperStartPack, Product_PowerPack, Product_DevPack,
+                             Tool_Plank,Tool_Slide,Tool_Drums,Tool_Blowers,
+                             Tool_Reducer,Tool_Doubler,Tool_Aligner,Tool_Launcher,Tool_GravityReverser,
+                             nil];
+        
     }
     return self;
 }
@@ -264,6 +283,7 @@
 
 - (void) loadProductTable
 {
+    
     // First, build the product listing table so we know how big to make the scrollview.
     
     CGSize screen = [[CCDirector sharedDirector] winSize];
@@ -284,6 +304,27 @@
     tableView.contentSize = CGSizeMake(screen.width, tableHeight);
     
     float y = tableHeight - tableSpacing / 2;
+    
+    
+    CCSprite* reloadBackground = [CCSprite spriteWithSpriteFrameName:@"AppStoreBuy.png"];
+    reloadBackground.scale = 1.0;
+    reloadBackground.anchorPoint = ccp(0.5, 0.5);
+    [tableView addChild:reloadBackground];
+    
+    _reloadLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppStore_Reload", "Reload") fntFile:@"TDFontYellow96.fnt"];
+    _reloadLabel.alignment = kCCTextAlignmentCenter;
+    _reloadLabel.scale = 0.45;
+    _reloadLabel.anchorPoint = ccp(0.5, 0.4);
+    [reloadBackground addChild:_reloadLabel];
+    
+    if (_isStore)
+    {
+        reloadBackground.position = ccp(screen.width/2, y);
+        _reloadLabel.position = ccp(BB_WIDTH(reloadBackground)/2, BB_HEIGHT(reloadBackground)/2);
+        y -= tableSpacing;
+    }
+    
+    
     
     for (int i=0; i < productTable.count; i++)
     {
@@ -345,19 +386,12 @@
         y -= tableSpacing;
     }
     
-    CCSprite* reloadBackground = [CCSprite spriteWithSpriteFrameName:@"AppStoreBuy.png"];
-    reloadBackground.scale = 1.0;
-    reloadBackground.anchorPoint = ccp(0.5, 0.5);
-    reloadBackground.position = ccp(screen.width/2, y);
-    [tableView addChild:reloadBackground];
     
-    _reloadLabel = [CCLabelBMFont labelWithString:NSLocalizedString(@"AppStore_Reload", "Reload") fntFile:@"TDFontYellow96.fnt"];
-    _reloadLabel.alignment = kCCTextAlignmentCenter;
-    _reloadLabel.scale = 0.45;
-    _reloadLabel.anchorPoint = ccp(0.5, 0.4);
-    _reloadLabel.position = ccp(BB_WIDTH(reloadBackground)/2, BB_HEIGHT(reloadBackground)/2);
-    [reloadBackground addChild:_reloadLabel];
-    
+    if (!_isStore)
+    {
+        reloadBackground.position = ccp(screen.width/2, y);
+        _reloadLabel.position = ccp(BB_WIDTH(reloadBackground)/2, BB_HEIGHT(reloadBackground)/2);
+    }
     
     
     reloadBackground.isTouchEnabled = YES;

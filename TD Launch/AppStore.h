@@ -22,7 +22,12 @@
     CCLabelBMFont* _reloadLabel;
 }
 
-+ (CCScene*) scene;
++ (CCScene*) sceneAsStore;
++ (CCScene*) sceneAsHelp;
+- (id) initAsStore;
+- (id) initAsHelp;
+
+@property BOOL isStore;
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response;
 

@@ -749,7 +749,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
     {
         [gameLevel saveTempFile];
-        [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
+        [[CCDirector sharedDirector] replaceScene:[AppStore sceneAsHelp]];
     }]];
     
     [storeSprite addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UIPanGestureRecognizer alloc] init] block:^(UIGestureRecognizer* r, CCNode* item)
@@ -1027,7 +1027,7 @@ if (accelHalfXTimer > 0) a *= 0.5
                                        {
                                            AUDIOTIC1;
                                            [gameLevel saveTempFile];
-                                           [[CCDirector sharedDirector] replaceScene:[AppStore scene]];
+                                           [[CCDirector sharedDirector] replaceScene:[AppStore sceneAsHelp]];
                                        }]];
     
     [statsButton addGestureRecognizer:[GestureRecognizerWithBlock recognizer:[[UITapGestureRecognizer alloc] init] block:^(UIGestureRecognizer* recognizer, CCNode* item)
