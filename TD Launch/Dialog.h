@@ -18,6 +18,8 @@
 
 - (void) setCloseHandler:(void (^)(id))handler;
 - (void) closeDialog;
+
+- (CGPoint) adjustPointForBannerAd:(CGPoint)point;
 @end
 
 

@@ -155,6 +155,7 @@
     
     CGPoint pTap = [tap locationInView:[[CCDirector sharedDirector] view]];
     CGPoint pSlider = [_sliderTouch convertToNodeSpaceAR:pTap];
+    pSlider = [self adjustPointForBannerAd:pSlider];
     double position = (_sliderTouch.contentSize.height/2) - pSlider.y;  // AR call seems to assume 0.5,0.5? Weird. Can't wait for SpriteKit!
 
     LauncherObjectSettings* settings = (LauncherObjectSettings*)self.settings;
@@ -182,6 +183,7 @@
     
     CGPoint pTap = [tap locationInView:[[CCDirector sharedDirector] view]];
     CGPoint pSlider = [_sliderTouch convertToNodeSpaceAR:pTap];
+    pSlider = [self adjustPointForBannerAd:pSlider];
     double position = (_sliderTouch.contentSize.height/2) - pSlider.y;
     
     LauncherObjectSettings* settings = (LauncherObjectSettings*)self.settings;

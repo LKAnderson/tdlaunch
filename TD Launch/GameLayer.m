@@ -518,15 +518,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     [self addGestureRecognizer:[CCGestureRecognizer CCRecognizerWithRecognizerTargetAction:[[UIPinchGestureRecognizer alloc] init] target:self action:@selector(fieldPinched:item:)]];
     
     
-    for (ActiveFieldObject* obj in gameLevel.gameConfig.activeFieldObjects)
-    {
-        [self addObjectToField:obj];
-    }
-    
-    for (ActiveFieldObject* obj in gameLevel.staticFieldObjects)
-    {
-        [self addObjectToField:obj];
-    }
+    [self addAllGameObjects];
    
     NSArray* frames = @[
         ((CCSprite*)[CCSprite spriteWithSpriteFrameName:@"Poof01.png"]).displayFrame,
@@ -599,7 +591,7 @@ if (accelHalfXTimer > 0) a *= 0.5
 {
     
 	space = [gameLevel createSpace];
-    //cpSpaceUseSpatialHash(space.space, 50, 10);
+    
     space.sleepTimeThreshold = 0.75;
     space.idleSpeedThreshold = 0;
     space.collisionPersistence = 1;
@@ -1015,7 +1007,7 @@ if (accelHalfXTimer > 0) a *= 0.5
                                            YesNoDialog* yesNo = [[YesNoDialog alloc] initWithMessage:NSLocalizedString(@"GameLayer_AreYouSureMsg", @"Are you sure?")
                                                            onYes:^(){
                                                                AUDIOTIC2;
-                                                               [self clearAllObjects];
+                                                               [self clearAllObjects:YES];
                                                            }
                                                            onNo:^(){
                                                                AUDIOTIC2;
@@ -1582,6 +1574,8 @@ if (accelHalfXTimer > 0) a *= 0.5
 
 - (void) enterSimulationState
 {
+    [self resetPhysicsObjects];
+    
     isPaused = NO;
     [self removeRecapScreen];
     
@@ -2105,6 +2099,20 @@ if (accelHalfXTimer > 0) a *= 0.5
 }
 
 
+- (void) resetBody:(ChipmunkBody*)body inSpace:(ChipmunkSpace*)bodySpace
+{
+    body.vel = cpvzero;
+    body.angVel = 0;
+    [body resetForces];
+    body.body->v_bias_private = cpvzero;
+    body.body->w_bias_private = 0;
+    [bodySpace reindexShapesForBody:body];
+    for (ChipmunkShape* shape in body.shapes)
+    {
+        shape.surfaceVel = cpvzero;
+    }
+}
+
 - (void) resetField
 {
     for (ActiveFieldObject* obj in gameLevel.gameConfig.activeFieldObjects)
@@ -2153,27 +2161,11 @@ if (accelHalfXTimer > 0) a *= 0.5
         }
     }
     
-    characterSprite.body.vel = cpvzero;
-    characterSprite.body.angle = 0;
-    characterSprite.body.angVel = 0;
-    [characterSprite.body resetForces];
-    /* this is the ugly part */
-    characterSprite.body.body->v_bias_private = cpvzero;
-    characterSprite.body.body->w_bias_private = 0;
-    [space reindexShapesForBody:characterSprite.body];
+    [self resetBody:characterSprite.body inSpace:space];
     
     for (ChipmunkBody* body in space.bodies)
     {
-        body.vel = cpvzero;
-        body.angVel = 0;
-        [body resetForces];
-        body.body->v_bias_private = cpvzero;
-        body.body->w_bias_private = 0;
-        [space reindexShapesForBody:body];
-        for (ChipmunkShape* shape in body.shapes)
-        {
-            shape.surfaceVel = cpvzero;
-        }
+        [self resetBody:body inSpace:space];
     }
     space.space->curr_dt_private = 0;
     space.space->stamp_private = 0;
@@ -2284,6 +2276,7 @@ if (accelHalfXTimer > 0) a *= 0.5
 
 
 
+
 - (void) addObjectToField:(ActiveFieldObject*) obj
 {
     if (obj.definition == nil)
@@ -2318,7 +2311,52 @@ if (accelHalfXTimer > 0) a *= 0.5
 }
 
 
-- (void) clearAllObjects
+- (void) addAllGameObjects
+{
+    for (ActiveFieldObject* obj in gameLevel.gameConfig.activeFieldObjects)
+    {
+        [self addObjectToField:obj];
+    }
+    
+
+    for (ActiveFieldObject* obj in gameLevel.staticFieldObjects)
+    {
+        [self addObjectToField:obj];
+    }
+}
+
+- (void) resetPhysicsObjects
+{
+    for (ActiveFieldObject* obj in gameLevel.gameConfig.activeFieldObjects)
+    {
+        if (obj.body != nil && obj.body.space != nil)
+        {
+            [space remove:obj.body];
+            obj.body = nil;
+        }
+        
+        [gameLayer removeChild:obj.sprite cleanup:YES];
+    }
+    
+    for (ActiveFieldObject* obj in gameLevel.staticFieldObjects)
+    {
+        if (obj.body != nil && obj.body.space != nil)
+        {
+            [space remove:obj.body];
+            obj.body =  nil;
+        }
+    }
+    
+    [space reindexStatic];
+    
+    [self addAllGameObjects];
+    
+    [space reindexStatic];
+}
+
+
+
+- (void) clearAllObjects:(BOOL) isChanged
 {
     for (ActiveFieldObject* obj in gameLevel.gameConfig.activeFieldObjects)
     {
@@ -2330,7 +2368,7 @@ if (accelHalfXTimer > 0) a *= 0.5
     [gameLevel.gameConfig.activeFieldObjects removeAllObjects];
     [self updateObjectAvailability];
     [space reindexStatic];
-    gameLevel.isChanged = YES;
+    gameLevel.isChanged = isChanged;
 }
 
 

@@ -152,6 +152,7 @@
     
     CGPoint pTap = [tap locationInView:[[CCDirector sharedDirector] view]];
     CGPoint pDial = [_objectDial convertToNodeSpaceAR:pTap];
+    pDial = [self adjustPointForBannerAd:pDial];
     pDial = ccp(pDial.x, -pDial.y);
     
     // if decrement
@@ -202,6 +203,7 @@
     
     CGPoint pTap = [press locationInView:[[CCDirector sharedDirector] view]];
     CGPoint pDial = [_objectDial convertToNodeSpaceAR:pTap];
+    pDial = [self adjustPointForBannerAd:pDial];
     pDial = ccp(pDial.x, -pDial.y);
     
     // if decrement
@@ -267,6 +269,7 @@
     
     CGPoint pTap = [tap locationInView:[[CCDirector sharedDirector] view]];
     CGPoint pDial = [_objectDial convertToNodeSpaceAR:pTap];
+    pDial = [self adjustPointForBannerAd:pDial];
     pDial = ccp(pDial.x, -pDial.y);
     
     // see if they've "touched" the dial

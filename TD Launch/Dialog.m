@@ -9,6 +9,7 @@
 #import "Dialog.h"
 #import "CCGestureRecognizer.h"
 #import "GestureRecognizerWithBlock.h"
+#import "AppDelegate.h"
 
 @implementation Dialog
 // The dialog fills the whole screen and acts as the "glass" that detects touches off the main
@@ -62,6 +63,14 @@
     }
     [self removeChild:_glass cleanup:YES];
     [self.parent removeChild:self cleanup:YES];
+}
+
+- (CGPoint) adjustPointForBannerAd:(CGPoint)point
+{
+    if (!APPCONTROLLER.adBannerVisible)
+        return point;
+    
+    return CGPointMake(point.x, point.y - APPCONTROLLER.iAdView.bounds.size.height);
 }
 
 @end
