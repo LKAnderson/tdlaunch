@@ -292,8 +292,7 @@ GameLevel* getLevelForID(int ID)
     gameCenterButton.isTouchEnabled = NO;
     
     
-    //TODO: Localize this!
-    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:@"Store" fntFile:@"TDFont120.fnt"];
+    CCLabelBMFont* storeSprite = [CCLabelBMFont labelWithString:NSLocalizedString(@"LevelMenu_StoreLabel", @"Store") fntFile:@"TDFont120.fnt"];
     TDFONT_MEDIUM(storeSprite);
     if (isSmallScreen)
         TDFONT_MEDIUMLARGE(storeSprite);
