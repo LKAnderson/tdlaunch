@@ -289,7 +289,6 @@
 		24D3D67317903A9600468839 /* ObjectDials-ipadhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 24D3D66F17903A9500468839 /* ObjectDials-ipadhd.png */; };
 		24D3D6AE1791A59A00468839 /* Dialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D3D6AD1791A59A00468839 /* Dialog.m */; };
 		24D3D6E81791B62900468839 /* RotationSettingsDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D3D6E71791B62900468839 /* RotationSettingsDialog.m */; };
-		24DB611618608DAC0054F17A /* ChipmunkPro-iPhone in Resources */ = {isa = PBXBuildFile; fileRef = 24DB611518608DAC0054F17A /* ChipmunkPro-iPhone */; };
 		24DB611818608EA00054F17A /* libChipmunkPro-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24DB611718608EA00054F17A /* libChipmunkPro-iPhone.a */; };
 		24DC0C421885725200A9BF7D /* TDFont120-ipad.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 24DC0C3A1885725200A9BF7D /* TDFont120-ipad.fnt */; };
 		24DC0C431885725200A9BF7D /* TDFont120-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 24DC0C3B1885725200A9BF7D /* TDFont120-ipad.png */; };
@@ -663,7 +662,6 @@
 		24D3D6AD1791A59A00468839 /* Dialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dialog.m; sourceTree = "<group>"; };
 		24D3D6E61791B62900468839 /* RotationSettingsDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationSettingsDialog.h; sourceTree = "<group>"; };
 		24D3D6E71791B62900468839 /* RotationSettingsDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationSettingsDialog.m; sourceTree = "<group>"; };
-		24DB611518608DAC0054F17A /* ChipmunkPro-iPhone */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ChipmunkPro-iPhone"; path = "../ChipmunkPro-6.2.1/ChipmunkPro-iPhone"; sourceTree = "<group>"; };
 		24DB611718608EA00054F17A /* libChipmunkPro-iPhone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libChipmunkPro-iPhone.a"; path = "../ChipmunkPro-6.2.1/ChipmunkPro-iPhone/libChipmunkPro-iPhone.a"; sourceTree = "<group>"; };
 		24DC0C3A1885725200A9BF7D /* TDFont120-ipad.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "TDFont120-ipad.fnt"; path = "Resources/TDFont120-ipad.fnt"; sourceTree = "<group>"; };
 		24DC0C3B1885725200A9BF7D /* TDFont120-ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "TDFont120-ipad.png"; path = "Resources/TDFont120-ipad.png"; sourceTree = "<group>"; };
@@ -718,7 +716,6 @@
 				2405611215D1431B00CF2B9B /* TD Launch */,
 				240560FF15D1431B00CF2B9B /* Frameworks */,
 				240560FD15D1431B00CF2B9B /* Products */,
-				24DB611518608DAC0054F17A /* ChipmunkPro-iPhone */,
 				2405648A15D1490C00CF2B9B /* cocos2d-ios.xcodeproj */,
 			);
 			sourceTree = "<group>";
@@ -1467,7 +1464,6 @@
 				2484C66E17182B7400CC9A6B /* L6-Bkg-1024-3072-ipad.png in Resources */,
 				243634A1183265C20088D248 /* StaticBlueSky-ipad.png in Resources */,
 				2484C66F17182B7400CC9A6B /* L6-Bkg-1024-3072-ipadhd.png in Resources */,
-				24DB611618608DAC0054F17A /* ChipmunkPro-iPhone in Resources */,
 				2484C672171A15D200CC9A6B /* L6-Water-ipad.png in Resources */,
 				243634DF1833BC780088D248 /* CloudLibrary-ipad.png in Resources */,
 				24DC0C551888158C00A9BF7D /* TDFontYellow96-ipadhd.fnt in Resources */,
